@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+    <script type="text/javascript" src="settings.js" data-origin="settings"></script>
+  </head>
+  <body>
+    <h1 data-i18n="settings.title"></h1>
+    <p data-i18n="settings.subtitle"></p>
+
+    <fieldset>   
+      <legend data-i18n="settings.keyLegend"></legend>
+      <p data-i18n="settings.keyLocation1"></p>
+      <p data-i18n="settings.keyLocation2"></p>
+      <p data-i18n="settings.keyLocation3"></p>
+      <div class="field row">
+        <label for="motion_key" data-i18n="settings.keyField"></label>
+        <input id="motion_key" type="password" value="" maxlength="16" pattern="[\-0-9A-Za-z]{16}"/>
+      </div>
+    </fieldset>
+    <button id="save" class="right" data-i18n="settings.save"></button>
+    <button id="clear" class="left" data-i18n="settings.clear"></button>
+  </body>
+</html>
+
+<!doctype html>
+<html>

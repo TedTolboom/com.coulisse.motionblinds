@@ -1,0 +1,27 @@
+{
+  "id": "com.coulisse.motionblinds",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#2F9C94",
+  "name": {
+    "en": "Motion Blinds",
+    "nl": "Motion Blinds"
+  },
+  "description": {
+    "en": "Adds support for Motion Blinds by Coulisse.",
+    "nl": "Voegt ondersteuning toe voor Motion Blinds van Coulisse."
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Edwin Delsman",
+    "email": "sp.delsman+homey@gmail.com"
+  }
+}

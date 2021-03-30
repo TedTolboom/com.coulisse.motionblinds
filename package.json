@@ -1,0 +1,8 @@
+{
+  "name": "com.coulisse.motionblinds",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.1.0"
+  }
+}
