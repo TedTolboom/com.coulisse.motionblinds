@@ -9,7 +9,7 @@ Slimme raamdecoratie past zich automatisch aan op jouw dagelijkse ritme en op na
 ### BESCHIKBAARHEID
 MOTION, een merk van het Franse bedrijf Coulisse, levert motorkits die toegepast kunnen worden in bijna elk rolgordijn door de ketting te verwijderen en de oplaadbare motor in te oorspronkelijke buis te steken. Het rolgordijn kan dan opgehangen worden met de meegeleverde beugels. Het eindresultaat is vrijwel niet te onderscheiden van een normaal rolgordijn zonder motor. Diverse winkels verkopen de kits in verschillende landen, soms onder hun eigen merknaam. Ze zijn makkelijk te herkennen aan hun herkenbare afstandbedieningen en gateways.
 
-The MOTION rolgordijnkits worden onder andere verkocht door [Hornbach.nl!](https://www.hornbach.nl/shop/MOTION-Motor-voor-Soluna-rolgordijnen/10251929/artikel.html) en [Robbshop.nl!](https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt)
+The MOTION rolgordijnkits worden onder andere verkocht door [Hornbach.nl](https://www.hornbach.nl/shop/MOTION-Motor-voor-Soluna-rolgordijnen/10251929/artikel.html) en [Robbshop.nl](https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt)
 
 ### GEBRUIK
 Om je MOTION apparaten te verbinden met Homey moet je een MOTION WIFI gateway in je lokale netwerk hebben die is geconfigureerd met de originele MOTION blinds app. De eenvoudige WIFI dongle gateway volstaat. Homey communiceert met een of meer gateways om de apparaten te bedienen die aan de gateway vervonden zijn. Let op dat afstandsbedieningen nuttig zijn voor MOTION apparaten, maar dat je deze niet toe kunt voegen aan de gateway of Homey. De afstandsbediening bedient het apparaat, en het apparaat meldt wat er gebeurt aan de gateway.
