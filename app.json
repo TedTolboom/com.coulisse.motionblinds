@@ -9,8 +9,8 @@
     "nl": "Motion Blinds"
   },
   "description": {
-    "en": "Adds support for Motion Blinds by Coulisse.",
-    "nl": "Voegt ondersteuning toe voor Motion Blinds van Coulisse."
+    "en": "Smart window ccverings, by Coulisse.",
+    "nl": "Slimme raamdecoratie, door Coulisse."
   },
   "category": [
     "appliances"
@@ -22,6 +22,25 @@
   },
   "author": {
     "name": "Edwin Delsman",
-    "email": "sp.delsman+homey@gmail.com"
-  }
+    "email": "sp.delsman+motion.app@gmail.com"
+  },
+  "drivers": [
+    {
+      "id": "driver_blind",
+      "name": {
+        "en": "Blind",
+        "nl": "Rolgordijn"
+      },
+      "class": "blinds",
+      "capabilities": [
+        "windowcoverings_set",
+        "windowcoverings_state",
+        "measure_battery"
+      ],
+      "images": {
+        "large": "/drivers/driver_blind/assets/images/large.png",
+        "small": "/drivers/driver_blind/assets/images/small.png"
+      }
+    }
+  ]
 }
