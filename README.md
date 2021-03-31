@@ -7,7 +7,7 @@ MotionBlinds is a ground-breaking window covering automation solution that makes
 Smart window coverings automatically adapt to your daily rhythm and to natural elements, such as temperature and daylight. Even when you are away from home. This makes your smart home safer, more comfortable and more energy efficient. Discover the endless possibilities of MotionBlinds.
 
 ### AVAILABILITY
-MOTION, a brand of the French company Coulisse, delivers a motorkit that can be applied to almost any existing rollerblind by removing the chain and inserting the rechargeable motor in the original rollerblind tube, and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorised rollerblind. Various shops in different countries sell these devices, sometimes under their own brand name. Those are often easily spotted by the distinctly remotes and gateways.
+MOTION, a brand of the French company Coulisse, delivers a motorkit that can be applied to almost any existing rollerblind by removing the chain, inserting the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorised rollerblind. Various shops in different countries sell these devices, sometimes under their own brand name. Those are often easily spotted by the distinctly remotes and gateways.
 
 The MOTION rollerblind kits are for example sold by [Hornbach.nl](https://www.hornbach.nl/shop/MOTION-Motor-voor-Soluna-rolgordijnen/10251929/artikel.html) and [Robbshop.nl](https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt)
 

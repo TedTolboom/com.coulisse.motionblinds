@@ -10,7 +10,7 @@ Smart window coverings automatically adapt to your daily rhythm and to natural e
 
 AVAILABILITY
 
-MOTION delivers a motorkit that can be applied to almost any existing rollerblind by removing the chain and inserting the rechargeable motor in the original rollerblind tube, and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorised rollerblind. Various shops in different countries sell these devices, sometimes under their own brand name. Those are often easily spotted by the distinctly remotes and gateways.
+MOTION delivers a motorkit that can be applied to almost any existing rollerblind by removing the chain, inserting the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorised rollerblind. Various shops in different countries sell these devices, sometimes under their own brand name. Those are often easily spotted by the distinctly remotes and gateways.
 
 The MOTION rollerblind kits are for example sold by Hornbach.nl and Robbshop.nl
 

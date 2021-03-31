@@ -165,6 +165,7 @@ class MotionDriver extends EventEmitter {
         this.devices = new Map();
         this.logging = true;
         this.verbose = false;
+        this.logHeartbeat = false;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
 
         let currentMotionDriver = this;
@@ -234,10 +235,12 @@ class MotionDriver extends EventEmitter {
         return undefined;
     }
 
-    getDevices() {
+    getDevices(type = undefined) {
         let devices = [];
         for (let entry of this.devices.values()) 
-            if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.Gateway2)
+            if (type == entry.id.deviceType || 
+                ((type == undefined || type == null) && 
+                    entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.Gateway2))
                 devices.push(entry.id);
         return devices;
     }
@@ -272,7 +275,8 @@ class MotionDriver extends EventEmitter {
 
     onMessage(msg, info) {
         let message = JSON.parse(msg.toString());
-        this.log(this.verbose ? message : 'Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
+        if (this.logHeartbeat || message.msgType != 'Heartbeat')
+            this.log(this.verbose ? message : 'Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
 		if (message.mac != undefined && info != null && info != undefined && info.address != undefined && 
 		     info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
             let gateway = this.getGateway(message.mac, message.deviceType);

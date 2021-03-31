@@ -9,5 +9,8 @@
         "keyField": "Secret key:",
         "save": "Save key",
         "clear": "Clear key"
+    },
+    "blind": {
+        "defaultName": "Blind number"
     }
 }

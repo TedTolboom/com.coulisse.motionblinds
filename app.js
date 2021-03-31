@@ -1,15 +1,15 @@
 'use strict';
 
 const Homey = require('homey');
-const MotionGateway = require('./motion/motion')
+const MotionDriver = require('./motion/motion')
 
 
 class MotionBlinds extends Homey.App {
-  gateway = null;
+  driver = null;
 
   async onInit() {
-    this.gateway = new MotionGateway(this);
-    var gw = this.gateway;
+    this.driver = new MotionDriver(this);
+    var gw = this.driver;
     gw.setAppKey(this.homey.settings.get('motion_key'));
     this.homey.settings.on('set', function() {
       gw.setAppKey(this.homey.settings.get('motion_key'));
@@ -17,7 +17,7 @@ class MotionBlinds extends Homey.App {
     this.homey.settings.on('unset', function() {
       gw.setAppKey(null);
     })
-    this.gateway.connect();
+    this.driver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
   }
 }
