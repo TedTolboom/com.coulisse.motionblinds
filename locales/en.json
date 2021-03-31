@@ -11,6 +11,6 @@
         "clear": "Clear key"
     },
     "blind": {
-        "defaultName": "Blind number"
+        "defaultName": "Blind nr"
     }
 }

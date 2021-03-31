@@ -1,3 +1,5 @@
+// Support for MOTION Blinds by Coulisse, by Edwin Delsman
+
 function onHomeyReady(Homey) {
     var keyElement = document.getElementById('motion_key');
     var saveElement = document.getElementById('save');

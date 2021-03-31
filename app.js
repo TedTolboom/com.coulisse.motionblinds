@@ -1,3 +1,4 @@
+// Support for MOTION Blinds by Coulisse, by Edwin Delsman
 'use strict';
 
 const Homey = require('homey');

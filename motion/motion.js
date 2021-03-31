@@ -1,4 +1,4 @@
-// Support for motion blinds by Coulisse, by Edwin Delsman
+// Support for MOTION Blinds by Coulisse, by Edwin Delsman
 
 const Crypto = require('crypto');
 const UDP = require('dgram');

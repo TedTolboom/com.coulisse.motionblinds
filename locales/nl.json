@@ -1,0 +1,17 @@
+{
+    "settings": {
+        "title": "Wifi Gateway settings",
+        "subtitle": "Deze app vereist een MOTION blinds gateway in hetzelfde netwerk als Homey.",
+        "keyLegend": "MOTION App sleutel",
+        "keyLocation1": "De geheime sleutel is verplicht om commando's te kunnen sturen naar de Motion Blinds wifi gateway. Deze is gegenereerd door de originele  MOTION Blinds app.",
+        "keyLocation2": "Om de sleutel te verkrijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Als het 'Over MOTION' scherm verschijnt, tik dan snel vijf keer achter elkaar op het schermpje. Je krijgt dan een reminder scherm waar je de geheime sleutel kunt kopiëren.",
+        "keyLocation22": "To obtain it, open the app on you phone or tablet. Select the 3 dot menu on the top right, choose settings, scroll down and pick 'About MOTION'. When the About dialog appears, quickly tap it five times in a row. You will then get a reminder screen where you can copy the secret key.",
+        "keyLocation3": "Een geldige sleutel moet een vergelijkbaar format hebben als het volgende voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
+        "keyField": "Geheime sleutel:",
+        "save": "Sleutel opslaan",
+        "clear": "Sleutel wissen"
+    },
+    "blind": {
+        "defaultName": "Rolgordijn nr"
+    }
+}
