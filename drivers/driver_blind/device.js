@@ -48,19 +48,35 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   async onCapabilityMeasure_battery(value, opts) {
+    this.setCapabilityValue('measure_battery', value);
     this.log('onCapabilityMeasure_battery', this.getData().mac, 'handled', value, opts);
   }
 
+  setStates(msg) {
+    let pos = Math.max(Math.min(1 - msg.data.currentPosition/100, 1), 0);
+    let battery = msg.data.batteryLevel / 10;
+    let state = 'idle';
+    switch(msg.data.operation) {
+      case 0: state = 'down'; break;
+      case 1: state = 'up'; break;
+    }
+    this.setCapabilityValue('windowcoverings_set', pos);
+    this.setCapabilityValue('windowcoverings_state', state);
+    this.setCapabilityValue('measure_battery', battery);
+  }
+
   async onReport(msg, info) {
-    //this.setCapabilityValue('onoff', true).catch(this.error);
+    this.setStates(msg);
     this.log('Blind onReport', this.getData().mac, 'handled');
   }
 
   async onReadDeviceAck(msg, info) {
+    this.setStates(msg);
     this.log('Blind onReadDeviceAck', this.getData().mac, 'handled');
   }
 
   async onWriteDeviceAck(msg, info) {
+    this.setStates(msg);
     this.log('Blind onWriteDeviceAck', this.getData().mac, 'handled');
   }
 
