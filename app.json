@@ -33,10 +33,13 @@
       },
       "class": "blinds",
       "capabilities": [
-        "windowcoverings_set",
         "windowcoverings_state",
+        "windowcoverings_set",
         "measure_battery"
       ],
+      "energy": {
+        "batteries": ["INTERNAL"]
+      },
       "images": {
         "large": "/drivers/driver_blind/assets/images/large.png",
         "small": "/drivers/driver_blind/assets/images/small.png"
