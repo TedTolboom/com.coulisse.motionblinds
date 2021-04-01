@@ -14,6 +14,7 @@ class MotionDeviceBlinds extends Homey.Device {
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowcoverings_state.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
+    this.homey.app.driver.verbose = true;
     this.readDevice();
     this.log('Blind', mac, 'initialised');
   }
@@ -54,16 +55,24 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   setStates(msg) {
-    let pos = Math.max(Math.min(1 - msg.data.currentPosition/100, 1), 0);
-    let battery = msg.data.batteryLevel / 10;
-    let state = 'idle';
-    switch(msg.data.operation) {
-      case 0: state = 'down'; break;
-      case 1: state = 'up'; break;
+    if (msg.data != undefined) {
+      let state = undefined;
+      switch(msg.data.operation) {
+        case 0: state = 'down'; break;
+        case 1: state = 'up'; break;
+        case 2: state = 'idle'; break;
+      }
+      if (state != undefined) 
+        this.setCapabilityValue('windowcoverings_state', state);
+      if (msg.data.currentPosition != undefined  &&  msg.data.targetPosition == undefined) { // don't reset old position when acknowledging on set position
+        let pos = Math.max(Math.min(1 - msg.data.currentPosition/100, 1), 0);
+        this.setCapabilityValue('windowcoverings_set', pos);
+      }
+      if (msg.data.batteryLevel != undefined) {
+        let battery = msg.data.batteryLevel / 10;
+        this.setCapabilityValue('measure_battery', battery);
+      }
     }
-    this.setCapabilityValue('windowcoverings_set', pos);
-    this.setCapabilityValue('windowcoverings_state', state);
-    this.setCapabilityValue('measure_battery', battery);
   }
 
   async onReport(msg, info) {
@@ -77,7 +86,7 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   async onWriteDeviceAck(msg, info) {
-    this.setStates(msg);
+    // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.log('Blind onWriteDeviceAck', this.getData().mac, 'handled');
   }
 
