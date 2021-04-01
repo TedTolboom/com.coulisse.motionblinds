@@ -166,6 +166,8 @@ class MotionDriver extends EventEmitter {
         this.logging = true;
         this.verbose = false;
         this.logHeartbeat = false;
+        this.pollAgain = false;
+        this.pollTimer = undefined;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
 
         let currentMotionDriver = this;
@@ -345,6 +347,37 @@ class MotionDriver extends EventEmitter {
     isReady(mac) {
         let gateway = this.getGateway(mac, '02000001');
         return gateway != undefined && gateway.isReady();
+    }
+
+    /**
+     * Poll all states of all devices. Subsequent calls within the minute will be postponed until the minute is over.
+     */
+    async pollStates() {
+        this.log('pollStates, pollTimer = ' + this.pollTimer);
+        if (this.pollTimer == undefined) {
+            let currentMotionDriver = this;
+            this.pollTimer = setTimeout(function() {
+                currentMotionDriver.log('PollTimer ends, pollAgain = ' + currentMotionDriver.pollAgain);
+                currentMotionDriver.pollTimer = undefined;
+                if (currentMotionDriver.pollAgain) {
+                    currentMotionDriver.pollAgain = false;
+                    currentMotionDriver.pollStates();
+                }
+              }, 60000);
+            this.pollAgain = false;
+            for (let entry of this.devices.values()) 
+                if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.Gateway2)
+                    this.send({
+                        msgType: 'ReadDevice',
+                        mac: entry.id.mac,
+                        deviceType: entry.id.deviceType,
+                        accessToken: this.getAccessTokenByID(entry.id),
+                        msgID: this.getMessageID()
+            });
+        } else {
+            this.pollAgain = true;
+            this.log('Nested poll postponed', this.pollTimer);
+        }
     }
 
     async send(msg) {
