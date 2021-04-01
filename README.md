@@ -12,6 +12,6 @@ MOTION, a brand of the French company Coulisse, delivers a motorkit that can be 
 The MOTION rollerblind kits are for example sold by [Hornbach.nl](https://www.hornbach.nl/shop/MOTION-Motor-voor-Soluna-rolgordijnen/10251929/artikel.html) and [Robbshop.nl](https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt)
 
 ### USAGE
-To connect your MOTION devices to Homey, you must have a MotionBlinds WIFI gateway in your home network, configured with the devices you need by using the official MOTION Blinds app. The simple USB dongle gateway will suffice. Homey communicates with one or more of these gateways to control the devices connected to them. Note that Remotes are useful for MMOTION devices but cannot be added to the gateway or Homey. The remotes control the device directly, and the device reports what is happening to the gateway. 
+To connect your MOTION devices to Homey, you must have a MotionBlinds WIFI gateway in your home network, configured with the devices you need by using the official MOTION Blinds app. The simple USB dongle gateway will suffice. Homey communicates with one or more of these gateways to control the devices connected to them. Note that Remotes are useful for MOTION devices but cannot be added to the gateway or Homey. The remotes control the device directly, and the device reports what is happening to the gateway. 
 
 In order for Homey to be allowed to send commands to the gateways, it needs a Key. The key can be configured in the app settings. You will find instructions there on how to obtain the key.

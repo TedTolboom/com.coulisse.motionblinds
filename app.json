@@ -4,6 +4,20 @@
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
+  "homepage": "https://motionblinds.com/",
+  "homeyCommunityTopicId": 45608,
+  "support": "https://community.athom.com/t/app-motion-blinds/45608",
+  "source": "https://github.com/EDelsman/com.coulisse.motionblinds",
+  "bugs": {
+    "support": "https://community.athom.com/t/app-motion-blinds/45608"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "edwindelsman"
+      }
+    }
+  },
   "name": {
     "en": "Motion Blinds",
     "nl": "Motion Blinds"
