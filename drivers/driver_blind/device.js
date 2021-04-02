@@ -7,7 +7,6 @@ const MotionDriver = require('../../motion/motion')
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
     this.mdriver = this.homey.app.mdriver;
-//    this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
     let blind = this;
@@ -38,12 +37,12 @@ class MotionDeviceBlinds extends Homey.Device {
   }
    
   async onCapabilityWindowcoverings_set(value, opts) {
-    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_set', value, opts);
+    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_set', value);
     this.setPercentageOpen(value);
   }
 
   async onCapabilityWindowcoverings_state(value, opts) {
-    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_state', value, opts);
+    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_state', value);
     switch(value) {
       case 'up': this.up(); break;
       case 'down': this.down(); break;
@@ -54,6 +53,20 @@ class MotionDeviceBlinds extends Homey.Device {
   async onCapabilityMeasure_battery(value, opts) {
     this.log('Blind', this.getData().mac, 'onCapabilityMeasure_battery', value, opts);
     this.setCapabilityValue('measure_battery', value);
+  }
+
+  setCapabilityState(state) {
+    if (state != undefined && this.getCapabilityValue('windowcoverings_state') != state) {
+      this.log('Blind', this.getData().mac, 'setCapabilityState', state);
+      this.setCapabilityValue('windowcoverings_state', state);
+    }
+  }
+
+  setCapabilityPercentage(perc) {
+    if (perc != undefined && (Math.abs(this.getCapabilityValue('windowcoverings_set') - perc) >= 0.05)) {
+      this.log('Blind', this.getData().mac, 'setCapabilityPercentage', perc);
+      this.setCapabilityValue('windowcoverings_set', perc);
+    }
   }
 
   setStates(msg) {
@@ -76,10 +89,8 @@ class MotionDeviceBlinds extends Homey.Device {
         case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
         case this.mdriver.Operation.Stop:       state = 'idle'; break;
       }
-      if (state != undefined && this.getCapabilityValue('windowcoverings_state') != state) 
-        this.setCapabilityValue('windowcoverings_state', state);
-      if (perc != undefined && (Math.abs(this.getCapabilityValue('windowcoverings_set') - perc) >= 0.05))
-        this.setCapabilityValue('windowcoverings_set', perc);
+      this.setCapabilityState(state);
+      this.setCapabilityPercentage(perc);
       if (msg.data.batteryLevel != undefined) {
         let battery = msg.data.batteryLevel / 10;
         this.setCapabilityValue('measure_battery', battery);
@@ -142,31 +153,23 @@ class MotionDeviceBlinds extends Homey.Device {
 
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
+    this.log('Blind', this.getData().mac, 'setPosition', pos);
     switch (pos) {
-      case this.mdriver.Position.Open_Up:   
-        if (this.getCapabilityValue('windowcoverings_state') != 'up') 
-          this.setCapabilityValue('windowcoverings_state', 'up');   
-        break;
-      case this.mdriver.Position.Close_Down: 
-        if (this.getCapabilityValue('windowcoverings_state') != 'down') 
-          this.setCapabilityValue('windowcoverings_state', 'down'); 
-        break;      
+      case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
+      case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
     }
-    this.log('Blind', this.getData().mac, 'setPosition' + pos);
     this.writeDevice({ "targetPosition": pos });    
   }
 
   up() {
     this.log('Blind', this.getData().mac, 'up');
-    if (this.getCapabilityValue('windowcoverings_set') != 1)
-      this.setCapabilityValue('windowcoverings_set', 1);
+    this.setCapabilityPercentage(1);
     this.writeDevice({ "operation": this.mdriver.Operation.Open_Up });    
   }
 
   down() {
     this.log('Blind', this.getData().mac, 'down');
-    if (this.getCapabilityValue('windowcoverings_set') != 0)
-      this.setCapabilityValue('windowcoverings_set', 0);
+    this.setCapabilityPercentage(0);
     this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
   }
 
