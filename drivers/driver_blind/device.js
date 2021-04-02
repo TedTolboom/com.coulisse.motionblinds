@@ -6,6 +6,7 @@ const Homey = require('homey');
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
     this.motiondriver = this.homey.app.driver;
+    //this.motiondriver.verbose = true;
     let blind = this;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
@@ -59,15 +60,23 @@ class MotionDeviceBlinds extends Homey.Device {
       let state = undefined;
       switch(msg.data.operation) {
         case 0: state = 'down'; break;
-        case 1: state = 'up'; break;
+        case 1: state = 'up';   break;
+        case undefined: 
         case 2: state = 'idle'; break;
       }
       if (state != undefined) 
         this.setCapabilityValue('windowcoverings_state', state);
-      if (msg.data.currentPosition != undefined  &&  msg.data.targetPosition == undefined) { // don't reset old position when acknowledging on set position
-        let pos = Math.max(Math.min(1 - msg.data.currentPosition/100, 1), 0);
+      let pos = undefined;
+      if (msg.data.targetPosition != undefined) {
+        switch (msg.data.targetPosition) {
+          case 0:   state = 'up';   break;
+          case 100: state = 'down'; break;
+        }
+        pos = 1 - Math.max(Math.min(msg.data.targetPosition / 100, 1), 0);
+      } else if (msg.data.currentPosition != undefined) 
+        pos = 1 - Math.max(Math.min(msg.data.currentPosition / 100, 1), 0);
+      if (pos != undefined)
         this.setCapabilityValue('windowcoverings_set', pos);
-      }
       if (msg.data.batteryLevel != undefined) {
         let battery = msg.data.batteryLevel / 10;
         this.setCapabilityValue('measure_battery', battery);
@@ -130,17 +139,31 @@ class MotionDeviceBlinds extends Homey.Device {
 
   setPosition(pos) {
     let newpos = 100 - Math.max(Math.min(Math.round(pos * 100), 100), 0);
+    switch (newpos) {
+      case 0:   
+        if (this.getCapabilityValue('windowcoverings_state') != 'up') 
+          this.setCapabilityValue('windowcoverings_state', 'up');   
+        break;
+      case 100: 
+        if (this.getCapabilityValue('windowcoverings_state') != 'down') 
+          this.setCapabilityValue('windowcoverings_state', 'down'); 
+        break;      
+    }
     this.log('Blind', this.getData().mac, ' setPosition' + newpos);
     this.writeDevice({ targetPosition: newpos });    
   }
 
   up() {
-    this.log('Blind', this.getData().mac, ' up');
+    this.log('Blind', this.getData().mac, 'up');
+    if (this.getCapabilityValue('windowcoverings_set') != 1)
+      this.setCapabilityValue('windowcoverings_set', 1);
     this.writeDevice({ operation: 1 });    
   }
 
   down() {
     this.log('Blind', this.getData().mac, 'down');
+    if (this.getCapabilityValue('windowcoverings_set') != 1)
+      this.setCapabilityValue('windowcoverings_set', 1);
     this.writeDevice({ operation: 0 });    
   }
 
@@ -148,7 +171,6 @@ class MotionDeviceBlinds extends Homey.Device {
     this.log('Blind', this.getData().mac, 'stop');
     this.writeDevice({ operation: 2 });    
   }
-
 }
 
 module.exports = MotionDeviceBlinds;
