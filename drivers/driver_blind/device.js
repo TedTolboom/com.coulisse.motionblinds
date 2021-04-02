@@ -162,8 +162,8 @@ class MotionDeviceBlinds extends Homey.Device {
 
   down() {
     this.log('Blind', this.getData().mac, 'down');
-    if (this.getCapabilityValue('windowcoverings_set') != 1)
-      this.setCapabilityValue('windowcoverings_set', 1);
+    if (this.getCapabilityValue('windowcoverings_set') != 0)
+      this.setCapabilityValue('windowcoverings_set', 0);
     this.writeDevice({ operation: 0 });    
   }
 
