@@ -19,8 +19,8 @@ class MotionDriver_Blind extends Homey.Driver {
   async onPairListDevices() {
     try {
       this.log('Pairing Blinds');
-      let driver = this.homey.app.driver;
-        let devices = driver.getDevices(driver.DeviceType.Blind);
+      let mdriver = this.homey.app.mdriver;
+        let devices = mdriver.getDevices(mdriver.DeviceType.Blind);
         this.log('Blinds available at start pairing', devices);
         let pairedDriverDevices = [];
         this.getDevices().forEach(device => pairedDriverDevices.push(device.getData().mac));

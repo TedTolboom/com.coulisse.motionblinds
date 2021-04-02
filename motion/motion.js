@@ -109,20 +109,13 @@ so it is wise to listen for the incoming 'GetDeviceListAck' message instead.
 class MotionDriver extends EventEmitter {
     DeviceType = {
         Gateway: '02000001', 
-        Gateway2: '02000002', 
+        ChildGateway: '02000002', 
         Blind: '10000000', 
         TopDownBottomUp: '10000001', 
         DoubleRoller: '10000002'
     }
     
-    GatewayStatus = { 
-        Working: 1,
-        Pairing: 2,
-        Updating: 3
-    }
-    
     BlindType = { // Blind type matching of the blind using the values provided by the MotionDriver
-        Unknown: -1,
         RollerBlind: 1,
         VenetianBlind: 2,
         RomanBlind: 3,
@@ -141,23 +134,38 @@ class MotionDriver extends EventEmitter {
         Switch: 43
     }
     
-    BlindStatus = { 
-        Unknown: -1,
-        Closing: 0,
-        Opening: 1,
-        Stopped: 2,
+    Operation = { 
+        Close_Down: 0,
+        Open_Up: 1,
+        Stop: 2,
         StatusQuery: 5
     }
-    
+
+    Position = { 
+        Open_Up: 0,
+        Close_Down: 100
+    }
+
     LimitStatus = { 
-        Unknown: -1,
-        NoLimit: 0,
+        NoLimits: 0,
         TopLimit: 1,
         BottomLimit: 2,
         Limits: 3,
         Limit3: 4
     }
-        
+    
+    VoltageMode = { 
+        AC: 0,
+        DC: 1
+    }
+    
+    WirelessMode = { 
+        UniDirection: 0,
+        BiDirection: 1,
+        BidirectionMech: 2,
+        Others: 3
+    }
+    
     constructor(motionapp = null) { 
         super();
         this.app = motionapp; // using external reference somehow works better than Homey.app, which is undefined when this initialises?
@@ -221,6 +229,24 @@ class MotionDriver extends EventEmitter {
         return this.getAccessToken(id.mac, id.deviceType);
     }
 
+    percentageClosedToPosition(perc) {
+        let pos = Math.round(perc * this.Position.Close_Down);
+        return Math.max(Math.min(pos, this.Position.Close_Down), this.Position.Open_Up);
+    }
+
+    percentageOpenToPosition(perc) {
+        return this.Position.Close_Down - this.percentageClosedToPosition(perc);
+    }
+
+    positionToPercentageClosed(pos) {
+        let perc = Math.round(pos) / this.Position.Close_Down;
+        return Math.min(Math.max(perc, 0), 1);
+    }
+
+    positionToPercentageOpen(pos) {
+        return 1 - this.positionToPercentageClosed(pos);
+    }
+
     /** use mac to find getGateway by it's mac, or add one if the deviceType is for a gateway and it isn't found yet.
      * If mac is null or undefined, it returns undefined, otherwise it returns a MotionGateway (either new or existing)
      */
@@ -228,7 +254,7 @@ class MotionDriver extends EventEmitter {
         if (mac == undefined || mac == null)
             return undefined;
         let item = this.devices.get(mac);
-        if ((deviceType == this.DeviceType.Gateway || deviceType == this.DeviceType.Gateway2) && item == undefined) {
+        if ((deviceType == this.DeviceType.Gateway || deviceType == this.DeviceType.ChildGateway) && item == undefined) {
             item = new MotionDevice(mac, deviceType, new MotionGateway(this, mac));
             this.devices.set(mac, item);
         }
@@ -242,7 +268,7 @@ class MotionDriver extends EventEmitter {
         for (let entry of this.devices.values()) 
             if (type == entry.id.deviceType || 
                 ((type == undefined || type == null) && 
-                    entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.Gateway2))
+                    entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway))
                 devices.push(entry.id);
         return devices;
     }
@@ -366,13 +392,13 @@ class MotionDriver extends EventEmitter {
               }, 60000);
             this.pollAgain = false;
             for (let entry of this.devices.values()) 
-                if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.Gateway2)
+                if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)
                     this.send({
-                        msgType: 'ReadDevice',
-                        mac: entry.id.mac,
-                        deviceType: entry.id.deviceType,
-                        accessToken: this.getAccessTokenByID(entry.id),
-                        msgID: this.getMessageID()
+                        "msgType": 'ReadDevice',
+                        "mac": entry.id.mac,
+                        "deviceType": entry.id.deviceType,
+                        "accessToken": this.getAccessTokenByID(entry.id),
+                        "msgID": this.getMessageID()
             });
         } else {
             this.pollAgain = true;

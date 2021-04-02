@@ -2,20 +2,21 @@
 'use strict';
 
 const Homey = require('homey');
+const MotionDriver = require('../../motion/motion')
 
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
-    this.motiondriver = this.homey.app.driver;
-    //this.motiondriver.verbose = true;
-    let blind = this;
+    this.mdriver = this.homey.app.mdriver;
+//    this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
-    this.motiondriver.on('Report', function(msg, info) { if (mac == msg.mac) blind.onReport(msg, info); });
-    this.motiondriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onReadDeviceAck(msg, info); });
-    this.motiondriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onWriteDeviceAck(msg, info); });
+    let blind = this;
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowcoverings_state.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
+    this.mdriver.on('Report', function(msg, info) { if (mac == msg.mac) blind.onReport(msg, info); });
+    this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onReadDeviceAck(msg, info); });
+    this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onWriteDeviceAck(msg, info); });
     this.readDevice();
     this.log('Blind', mac, 'initialised');
   }
@@ -38,7 +39,7 @@ class MotionDeviceBlinds extends Homey.Device {
    
   async onCapabilityWindowcoverings_set(value, opts) {
     this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_set', value, opts);
-    this.setPosition(value);
+    this.setPercentageOpen(value);
   }
 
   async onCapabilityWindowcoverings_state(value, opts) {
@@ -58,25 +59,27 @@ class MotionDeviceBlinds extends Homey.Device {
   setStates(msg) {
     if (msg.data != undefined) {
       let state = undefined;
-      switch(msg.data.operation) {
-        case 0: state = 'down'; break;
-        case 1: state = 'up';   break;
-        case undefined: 
-        case 2: state = 'idle'; break;
-      }
-      if (state != undefined) 
-        this.setCapabilityValue('windowcoverings_state', state);
-      let pos = undefined;
+      let perc = undefined;
       if (msg.data.targetPosition != undefined) {
+        state = 'idle';
         switch (msg.data.targetPosition) {
-          case 0:   state = 'up';   break;
-          case 100: state = 'down'; break;
+          case this.mdriver.Position.Up_Open:    state = 'up';   break;
+          case this.mdriver.Position.Close_Down: state = 'down'; break;
         }
-        pos = 1 - Math.max(Math.min(msg.data.targetPosition / 100, 1), 0);
-      } else if (msg.data.currentPosition != undefined) 
-        pos = 1 - Math.max(Math.min(msg.data.currentPosition / 100, 1), 0);
-      if (pos != undefined)
-        this.setCapabilityValue('windowcoverings_set', pos);
+        perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition);
+      } else if (msg.data.currentPosition != undefined) {
+        perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
+        state = 'idle';
+      }
+      switch(msg.data.operation) {
+        case this.mdriver.Operation.Close_Down: state = 'down'; perc = 0; break;
+        case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
+        case this.mdriver.Operation.Stop:       state = 'idle'; break;
+      }
+      if (state != undefined && this.getCapabilityValue('windowcoverings_state') != state) 
+        this.setCapabilityValue('windowcoverings_state', state);
+      if (perc != undefined && (Math.abs(this.getCapabilityValue('windowcoverings_set') - perc) >= 0.05))
+        this.setCapabilityValue('windowcoverings_set', perc);
       if (msg.data.batteryLevel != undefined) {
         let battery = msg.data.batteryLevel / 10;
         this.setCapabilityValue('measure_battery', battery);
@@ -92,7 +95,7 @@ class MotionDeviceBlinds extends Homey.Device {
       this.expectReportTimer = undefined;
     } else { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, poll them all
       this.log('Blind', this.getData().mac, 'unexpected Report triggered poll');
-      this.motiondriver.pollStates();
+      this.mdriver.pollStates();
     }
   }
 
@@ -108,12 +111,12 @@ class MotionDeviceBlinds extends Homey.Device {
 
   async readDevice() {
     let data = this.getData();
-    this.motiondriver.send({
-			msgType: 'ReadDevice',
-			mac: data.mac,
-			deviceType: data.deviceType,
-			accessToken: this.motiondriver.getAccessTokenByID(data),
-			msgID: this.motiondriver.getMessageID()
+    this.mdriver.send({
+			"msgType": 'ReadDevice',
+			"mac": data.mac,
+			"deviceType": data.deviceType,
+			"accessToken": this.mdriver.getAccessTokenByID(data),
+			"msgID": this.mdriver.getMessageID()
 		});  
   }
 
@@ -127,49 +130,49 @@ class MotionDeviceBlinds extends Homey.Device {
         currentDriver.expectReportTimer = undefined;
         currentDriver.readDevice();
       }, 60000); 
-    this.motiondriver.send({
-			msgType: 'WriteDevice',
-			mac: data.mac,
-			deviceType: data.deviceType,
-			accessToken: this.motiondriver.getAccessTokenByID(data),
-			msgID: this.motiondriver.getMessageID(),
-      data: newdata
+    this.mdriver.send({
+			"msgType": 'WriteDevice',
+			"mac": data.mac,
+			"deviceType": data.deviceType,
+			"accessToken": this.mdriver.getAccessTokenByID(data),
+			"msgID": this.mdriver.getMessageID(),
+      "data": newdata
 		});  
   }
 
-  setPosition(pos) {
-    let newpos = 100 - Math.max(Math.min(Math.round(pos * 100), 100), 0);
-    switch (newpos) {
-      case 0:   
+  setPercentageOpen(perc) {
+    let pos = this.mdriver.percentageOpenToPosition(perc);
+    switch (pos) {
+      case this.mdriver.Position.Open_Up:   
         if (this.getCapabilityValue('windowcoverings_state') != 'up') 
           this.setCapabilityValue('windowcoverings_state', 'up');   
         break;
-      case 100: 
+      case this.mdriver.Position.Close_Down: 
         if (this.getCapabilityValue('windowcoverings_state') != 'down') 
           this.setCapabilityValue('windowcoverings_state', 'down'); 
         break;      
     }
-    this.log('Blind', this.getData().mac, ' setPosition' + newpos);
-    this.writeDevice({ targetPosition: newpos });    
+    this.log('Blind', this.getData().mac, 'setPosition' + pos);
+    this.writeDevice({ "targetPosition": pos });    
   }
 
   up() {
     this.log('Blind', this.getData().mac, 'up');
     if (this.getCapabilityValue('windowcoverings_set') != 1)
       this.setCapabilityValue('windowcoverings_set', 1);
-    this.writeDevice({ operation: 1 });    
+    this.writeDevice({ "operation": this.mdriver.Operation.Open_Up });    
   }
 
   down() {
     this.log('Blind', this.getData().mac, 'down');
     if (this.getCapabilityValue('windowcoverings_set') != 0)
       this.setCapabilityValue('windowcoverings_set', 0);
-    this.writeDevice({ operation: 0 });    
+    this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
   }
 
   stop() {
     this.log('Blind', this.getData().mac, 'stop');
-    this.writeDevice({ operation: 2 });    
+    this.writeDevice({ "operation": this.mdriver.Operation.Stop });    
   }
 }
 
