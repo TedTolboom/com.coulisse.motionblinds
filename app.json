@@ -38,6 +38,26 @@
     "name": "Edwin Delsman",
     "email": "sp.delsman+motion.app@gmail.com"
   },
+  "capabilities": {
+    "measure_mb_rssi": {
+      "type": "number",
+      "title": {
+        "en": "Signal strenth",
+        "nl": "Signaalsterkte"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": false,
+      "units": {
+        "en": "dBm",
+        "nl": "dBm"
+      },
+      "min": -100,
+      "max": 0,
+      "step": 1,
+      "decimals": 0
+    }
+  },
   "drivers": [
     {
       "id": "driver_blind",
@@ -49,7 +69,8 @@
       "capabilities": [
         "windowcoverings_state",
         "windowcoverings_set",
-        "measure_battery"
+        "measure_battery",
+        "measure_mb_rssi"
       ],
       "energy": {
         "batteries": ["INTERNAL"]

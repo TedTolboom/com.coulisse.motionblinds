@@ -4,7 +4,7 @@
     "en": "• Initial version"
   },
   "1.0.1": {
-    "nl": "• Betere synchronisatietussen omhoog/omlaag en slider • Probleem opgelost met slider status als de verandering via een flow gestuurd wordt.",
-    "en": "• Better synchronisation between up/down and slider • Fixed state changes to curtain slider when triggered from a flow."
+    "nl": "• Signaalsterkte eigenschap toegevoegd • Betere synchronisatietussen omhoog/omlaag en slider • Probleem opgelost met slider status als de verandering via een flow gestuurd wordt.",
+    "en": "• Added signal strength capability • Better synchronisation between up/down and slider • Fixed state changes to curtain slider when triggered from a flow."
   }
 }

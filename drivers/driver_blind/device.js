@@ -7,6 +7,7 @@ const MotionDriver = require('../../motion/motion')
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
     this.mdriver = this.homey.app.mdriver;
+//    this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
     let blind = this;
@@ -95,6 +96,8 @@ class MotionDeviceBlinds extends Homey.Device {
         let battery = msg.data.batteryLevel / 10;
         this.setCapabilityValue('measure_battery', battery);
       }
+      if (this.hasCapability('measure_mb_rssi') && msg.data.RSSI != undefined) 
+        this.setCapabilityValue('measure_mb_rssi', msg.data.RSSI);
     }
   }
 
