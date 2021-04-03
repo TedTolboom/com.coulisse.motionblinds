@@ -63,22 +63,31 @@ class MotionDeviceBlinds extends Homey.Device {
     }
   }
 
+  numberChanged(newval, oldval, treshold) {
+      if (oldval == undefined || oldval == null)
+        return (newval != null && newval != undefined);
+      if ((newval == null || newval == undefined))
+        return false;
+      return (oldval - newval) >= treshold;
+  }
+
   setCapabilityPercentage(perc) {
-    if (perc != undefined && (Math.abs(this.getCapabilityValue('windowcoverings_set') - perc) >= 0.05)) {
+    this.log('Blind', this.getData().mac, 'checkCapabilityPercentage', perc, this.getCapabilityValue('windowcoverings_set'));
+    if (this.numberChanged(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
       this.log('Blind', this.getData().mac, 'setCapabilityPercentage', perc);
       this.setCapabilityValue('windowcoverings_set', perc);
     }
   }
 
   setCapabilityBattery(perc) {
-    if (perc != undefined && (Math.abs(this.getCapabilityValue('measure_battery') - perc) >= 0.05)) {
+    if (this.numberChanged(perc, this.getCapabilityValue('measure_battery'), 0.05)) {
       this.log('Blind', this.getData().mac, 'setCapabilityBattery', perc);
       this.setCapabilityValue('measure_battery', perc);
     }
   }
 
   setCapabilityRSSI(dBm) {
-    if (this.hasCapability('measure_mb_rssi') && dBm != undefined && (Math.abs(this.getCapabilityValue('measure_mb_rssi') - dBm) >= 0.5)) {
+    if (this.hasCapability('measure_mb_rssi') && this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
       this.log('Blind', this.getData().mac, 'setCapabilityRSSI', dBm);
       this.setCapabilityValue('measure_mb_rssi', dBm);
     }
