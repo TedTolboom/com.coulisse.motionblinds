@@ -72,7 +72,6 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   setCapabilityPercentage(perc) {
-    this.log('Blind', this.getData().mac, 'checkCapabilityPercentage', perc, this.getCapabilityValue('windowcoverings_set'));
     if (this.numberChanged(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
       this.log('Blind', this.getData().mac, 'setCapabilityPercentage', perc);
       this.setCapabilityValue('windowcoverings_set', perc);
@@ -115,10 +114,8 @@ class MotionDeviceBlinds extends Homey.Device {
       }
       this.setCapabilityState(state);
       this.setCapabilityPercentage(perc);
-      if (msg.data.batteryLevel != undefined) {
-        let battery = msg.data.batteryLevel / 10;
-        this.setCapabilityBattery(battery);
-      }
+      if (msg.data.batteryLevel != undefined) 
+        this.setCapabilityBattery(msg.data.batteryLevel / 10);
       this.setCapabilityRSSI(msg.data.RSSI);
     }
   }
