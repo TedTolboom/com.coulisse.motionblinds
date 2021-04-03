@@ -7,7 +7,6 @@ const MotionDriver = require('../../motion/motion')
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
     this.mdriver = this.homey.app.mdriver;
-//    this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
