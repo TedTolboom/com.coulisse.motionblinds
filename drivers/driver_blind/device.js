@@ -91,10 +91,10 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   setCapabilityRSSI(dBm) {
-    if (!this.hasCapability('measure_mb_rssi'))
-      this.addCapability('measure_mb_rssi');
     if (this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
       this.log(this.getData().mac, 'setCapabilityRSSI', dBm);
+      if (!this.hasCapability('measure_mb_rssi'))
+        this.addCapability('measure_mb_rssi');
       this.setCapabilityValue('measure_mb_rssi', dBm);
       return true;
     }
