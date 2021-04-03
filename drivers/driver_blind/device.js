@@ -16,34 +16,35 @@ class MotionDeviceBlinds extends Homey.Device {
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
     this.mdriver.on('Report', function(msg, info) { if (mac == msg.mac) blind.onReport(msg, info); });
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onReadDeviceAck(msg, info); });
+    this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) blind.onWriteDevice(msg, info); });
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) blind.onWriteDeviceAck(msg, info); });
     this.readDevice();
-    this.log('Blind', mac, 'initialised');
+    this.log(mac, 'initialised');
   }
 
   async onAdded() {
-    this.log('Blind', this.getData().mac, 'added');
+    this.log(this.getData().mac, 'added');
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('Blind', this.getData().mac, 'changed settings');
+    this.log(this.getData().mac, 'changed settings');
   }
 
   async onRenamed(name) {
-    this.log('Blind', this.getData().mac, 'renamed to', name);
+    this.log(this.getData().mac, 'renamed to', name);
   }
 
   async onDeleted() {
-    this.log('Blind', this.getData().mac, 'deleted');
+    this.log(this.getData().mac, 'deleted');
   }
    
   async onCapabilityWindowcoverings_set(value, opts) {
-    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_set', value);
+    this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value);
     this.setPercentageOpen(value);
   }
 
   async onCapabilityWindowcoverings_state(value, opts) {
-    this.log('Blind', this.getData().mac, 'onCapabilityWindowcoverings_state', value);
+    this.log(this.getData().mac, 'onCapabilityWindowcoverings_state', value);
     switch(value) {
       case 'up': this.up(); break;
       case 'down': this.down(); break;
@@ -52,13 +53,13 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   async onCapabilityMeasure_battery(value, opts) {
-    this.log('Blind', this.getData().mac, 'onCapabilityMeasure_battery', value, opts);
+    this.log(this.getData().mac, 'onCapabilityMeasure_battery', value, opts);
     this.setCapabilityValue('measure_battery', value);
   }
 
   setCapabilityState(state) {
     if (state != undefined && this.getCapabilityValue('windowcoverings_state') != state) {
-      this.log('Blind', this.getData().mac, 'setCapabilityState', state);
+      this.log(this.getData().mac, 'setCapabilityState', state);
       this.setCapabilityValue('windowcoverings_state', state);
     }
   }
@@ -68,49 +69,56 @@ class MotionDeviceBlinds extends Homey.Device {
         return (newval != null && newval != undefined);
       if ((newval == null || newval == undefined))
         return false;
-      return (oldval - newval) >= treshold;
+      return Math.abs(oldval - newval) >= treshold;
   }
 
   setCapabilityPercentage(perc) {
     if (this.numberChanged(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
-      this.log('Blind', this.getData().mac, 'setCapabilityPercentage', perc);
+      this.log(this.getData().mac, 'setCapabilityPercentage', perc);
       this.setCapabilityValue('windowcoverings_set', perc);
     }
   }
 
   setCapabilityBattery(perc) {
     if (this.numberChanged(perc, this.getCapabilityValue('measure_battery'), 0.05)) {
-      this.log('Blind', this.getData().mac, 'setCapabilityBattery', perc);
+      this.log(this.getData().mac, 'setCapabilityBattery', perc);
       this.setCapabilityValue('measure_battery', perc);
     }
   }
 
   setCapabilityRSSI(dBm) {
     if (this.hasCapability('measure_mb_rssi') && this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
-      this.log('Blind', this.getData().mac, 'setCapabilityRSSI', dBm);
+      this.log(this.getData().mac, 'setCapabilityRSSI', dBm);
       this.setCapabilityValue('measure_mb_rssi', dBm);
     }
+  }
+
+  travelDirection(newperc, oldperc) {
+    if (oldperc == null || oldperc == null || newperc == null || newperc == null)
+      return 'idle';
+    return newperc > oldperc ? 'up' : 'down';
   }
 
   setStates(msg) {
     if (msg.data != undefined) {
       let state = undefined;
       let perc = undefined;
-      if (msg.data.targetPosition != undefined) {
-        state = 'idle';
-        switch (msg.data.targetPosition) {
-          case this.mdriver.Position.Up_Open:    state = 'up';   break;
-          case this.mdriver.Position.Close_Down: state = 'down'; break;
-        }
-        perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition);
-      } else if (msg.data.currentPosition != undefined) {
-        perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
-        state = 'idle';
-      }
-      switch(msg.data.operation) {
+      switch(msg.data.operation) { // beware! no difference between current and action! Do this first, because for write the others aren't there
         case this.mdriver.Operation.Close_Down: state = 'down'; perc = 0; break;
         case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
         case this.mdriver.Operation.Stop:       state = 'idle'; break;
+      }
+      if (msg.data.currentPosition != undefined) { // if currentposition received, overrule operation because this is not a aet
+        perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
+        state = 'idle';
+      }
+      if (msg.data.targetPosition != undefined) { // so if targetposition specified, overrule current position and operation!
+        perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition);
+        switch (msg.data.targetPosition) {
+          case this.mdriver.Position.Up_Open:    state = 'up';   break;
+          case this.mdriver.Position.Close_Down: state = 'down'; break;
+          default: state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set')); break;
+        }
       }
       this.setCapabilityState(state);
       this.setCapabilityPercentage(perc);
@@ -121,25 +129,30 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   async onReport(msg, info) {
-    this.log('Blind', this.getData().mac, 'onReport');
+    this.log(this.getData().mac, 'onReport');
     this.setStates(msg);
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
     } else { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, poll them all
-      this.log('Blind', this.getData().mac, 'unexpected Report triggered poll');
+      this.log(this.getData().mac, 'unexpected Report triggered poll');
       this.mdriver.pollStates();
     }
   }
 
   async onReadDeviceAck(msg, info) {
-    this.log('Blind', this.getData().mac, 'onReadDeviceAck');
+    this.log(this.getData().mac, 'onReadDeviceAck');
+    this.setStates(msg);
+  }
+
+  async onWriteDevice(msg, info) {
+    this.log(this.getData().mac, 'onWriteDevice');
     this.setStates(msg);
   }
 
   async onWriteDeviceAck(msg, info) {
     // this.setStates(msg, false);  don't set 'old' state, wait for result of change
-    this.log('Blind', this.getData().mac, 'onWriteDeviceAck');
+    this.log(this.getData().mac, 'onWriteDeviceAck');
   }
 
   async readDevice() {
@@ -159,7 +172,7 @@ class MotionDeviceBlinds extends Homey.Device {
     if (this.expectReportTimer) 
       clearTimeout(this.expectReportTimer); // expect report later if commands follow up quickly
     this.expectReportTimer = setTimeout(function() { // expect a report, if it does not come in a minute, read state by yourself
-        currentDriver.log('Blind', currentDriver.getData().mac, 'onReportTimeout');
+        currentDriver.log(currentDriver.getData().mac, 'onReportTimeout');
         currentDriver.expectReportTimer = undefined;
         currentDriver.readDevice();
       }, 60000); 
@@ -175,7 +188,7 @@ class MotionDeviceBlinds extends Homey.Device {
 
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
-    this.log('Blind', this.getData().mac, 'setPosition', pos);
+    this.log(this.getData().mac, 'setPosition', pos);
     switch (pos) {
       case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
       case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
@@ -184,19 +197,19 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   up() {
-    this.log('Blind', this.getData().mac, 'up');
+    this.log(this.getData().mac, 'up');
     this.setCapabilityPercentage(1);
     this.writeDevice({ "operation": this.mdriver.Operation.Open_Up });    
   }
 
   down() {
-    this.log('Blind', this.getData().mac, 'down');
+    this.log(this.getData().mac, 'down');
     this.setCapabilityPercentage(0);
     this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
   }
 
   stop() {
-    this.log('Blind', this.getData().mac, 'stop');
+    this.log(this.getData().mac, 'stop');
     this.writeDevice({ "operation": this.mdriver.Operation.Stop });    
   }
 }

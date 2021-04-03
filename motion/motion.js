@@ -420,6 +420,7 @@ class MotionDriver extends EventEmitter {
                 currentMotionDriver.emit(message.msgType, message);
             }
         })
+        this.emit(msg.msgType, msg);
     }
 }
 
