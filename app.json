@@ -45,9 +45,11 @@
         "en": "Signal strenth",
         "nl": "Signaalsterkte"
       },
+      "uiComponent": null,
       "getable": true,
       "setable": false,
       "insights": false,
+      "preventtag": false,
       "units": {
         "en": "dBm",
         "nl": "dBm"
