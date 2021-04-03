@@ -10,14 +10,13 @@ class MotionBlinds extends Homey.App {
 
   async onInit() {
     this.mdriver = new MotionDriver(this);
-    var gw = this.mdriver;
-    gw.setAppKey(this.homey.settings.get('motion_key'));
+    this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
     this.homey.settings.on('set', function() {
-      gw.setAppKey(this.homey.settings.get('motion_key'));
-    });
+      this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
+    }.bind(this));
     this.homey.settings.on('unset', function() {
-      gw.setAppKey(null);
-    })
+      this.mdriver.setAppKey(null);
+    }.bind(this))
     this.mdriver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
   }

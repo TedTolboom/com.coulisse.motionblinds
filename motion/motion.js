@@ -177,13 +177,11 @@ class MotionDriver extends EventEmitter {
         this.pollAgain = false;
         this.pollTimer = undefined;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
-
-        let currentMotionDriver = this;
-        this.client.on('listening', function() { currentMotionDriver.onListening() });
-        this.client.on('error', function(error) { currentMotionDriver.onError(error) });
-        this.client.on('message', function(msg, info) { currentMotionDriver.onMessage(msg, info) });
-        this.client.on('close', function() { currentMotionDriver.onClose() });
-        process.on('SIGTERM', function() { currentMotionDriver.disconnect() });
+        this.client.on('listening', function() { this.onListening() }.bind(this));
+        this.client.on('error', function(error) { this.onError(error) }.bind(this));
+        this.client.on('message', function(msg, info) { this.onMessage(msg, info) }.bind(this));
+        this.client.on('close', function() { this.onClose() }.bind(this));
+        process.on('SIGTERM', function() { this.disconnect() }.bind(this));
     }
 
 	log(msg) {
@@ -346,23 +344,21 @@ class MotionDriver extends EventEmitter {
     }
 
     async connect() {
-        let currentMotionDriver = this;
         let id = this.getMessageID();
         this.client.bind(UDP_PORT_RECEIVE, function() {
-            currentMotionDriver.send({ "msgType": "GetDeviceList", "msgID": id });
-            currentMotionDriver.emit('connect');
-        })
+            this.send({ "msgType": "GetDeviceList", "msgID": id });
+            this.emit('connect');
+        }.bind(this))
     }
 
     async disconnect() {
-        let currentMotionDriver = this;
         this.client.close(function () {
-            currentMotionDriver.token = null;
-            currentMotionDriver.accessToken = null;
-            currentMotionDriver.deviceList = null;
-            currentMotionDriver.gatewayAddress = null;
-            currentMotionDriver.emit('disconnect');
-        })
+            this.token = null;
+            this.accessToken = null;
+            this.deviceList = null;
+            this.gatewayAddress = null;
+            this.emit('disconnect');
+        }.bind(this))
     }
 
     /**
@@ -379,17 +375,16 @@ class MotionDriver extends EventEmitter {
      * Poll all states of all devices. Subsequent calls within the minute will be postponed until the minute is over.
      */
     async pollStates() {
-        this.log('pollStates, pollTimer = ' + this.pollTimer);
+        this.log('pollStates');
         if (this.pollTimer == undefined) {
-            let currentMotionDriver = this;
             this.pollTimer = setTimeout(function() {
-                currentMotionDriver.log('PollTimer ends, pollAgain = ' + currentMotionDriver.pollAgain);
-                currentMotionDriver.pollTimer = undefined;
-                if (currentMotionDriver.pollAgain) {
-                    currentMotionDriver.pollAgain = false;
-                    currentMotionDriver.pollStates();
+                this.log('PollTimer ends, pollAgain = ' + this.pollAgain);
+                this.pollTimer = undefined;
+                if (this.pollAgain) {
+                    this.pollAgain = false;
+                    this.pollStates();
                 }
-              }, 60000);
+              }.bind(this), 60000);
             this.pollAgain = false;
             for (let entry of this.devices.values()) 
                 if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)
@@ -408,18 +403,17 @@ class MotionDriver extends EventEmitter {
 
     async send(msg) {
         let message = JSON.stringify(msg);
-        let currentMotionDriver = this;
         let gateway = this.getGateway(msg.mac, msg.deviceType);
 		let addr = gateway == undefined || gateway.gatewayAddress == null ? MULTICAST_ADDRESS : gateway.gatewayAddress;
         this.log(this.verbose ? msg : 'Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
         this.client.send(message, UDP_PORT_SEND, addr, function (error) {
             if (error) {
-                currentMotionDriver.error(error);
-                currentMotionDriver.emit('error', error);
+                this.error(error);
+                this.emit('error', error);
             } else {
-                currentMotionDriver.emit(message.msgType, message);
+                this.emit(message.msgType, message);
             }
-        })
+        }.bind(this));
         this.emit(msg.msgType, msg);
     }
 }
