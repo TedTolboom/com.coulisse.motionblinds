@@ -70,6 +70,20 @@ class MotionDeviceBlinds extends Homey.Device {
     }
   }
 
+  setCapabilityBattery(perc) {
+    if (perc != undefined && (Math.abs(this.getCapabilityValue('measure_battery') - perc) >= 0.05)) {
+      this.log('Blind', this.getData().mac, 'setCapabilityBattery', perc);
+      this.setCapabilityValue('measure_battery', perc);
+    }
+  }
+
+  setCapabilityRSSI(dBm) {
+    if (this.hasCapability('measure_mb_rssi') && dBm != undefined && (Math.abs(this.getCapabilityValue('measure_mb_rssi') - dBm) >= 0.5)) {
+      this.log('Blind', this.getData().mac, 'setCapabilityRSSI', dBm);
+      this.setCapabilityValue('measure_mb_rssi', dBm);
+    }
+  }
+
   setStates(msg) {
     if (msg.data != undefined) {
       let state = undefined;
@@ -94,10 +108,9 @@ class MotionDeviceBlinds extends Homey.Device {
       this.setCapabilityPercentage(perc);
       if (msg.data.batteryLevel != undefined) {
         let battery = msg.data.batteryLevel / 10;
-        this.setCapabilityValue('measure_battery', battery);
+        this.setCapabilityBattery(battery);
       }
-      if (this.hasCapability('measure_mb_rssi') && msg.data.RSSI != undefined) 
-        this.setCapabilityValue('measure_mb_rssi', msg.data.RSSI);
+      this.setCapabilityRSSI(msg.data.RSSI);
     }
   }
 
