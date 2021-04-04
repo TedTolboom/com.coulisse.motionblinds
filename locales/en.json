@@ -12,5 +12,11 @@
     },
     "blind": {
         "defaultName": "Blind nr"
+    },
+    "venetian": {
+        "defaultName": "Venetian blind nr"
+    },
+    "generic": {
+        "defaultName": "MotionBlind nr"
     }
 }

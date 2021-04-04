@@ -4,7 +4,7 @@
     "en": "• Initial version"
   },
   "1.0.1": {
-    "nl": "• Automatische selectie van mogelijkheden • Tegel toont nu status open/dicht indien mogelijk • Signaalsterkte eigenschap toegevoegd • Betere synchronisatietussen omhoog/omlaag en slider • Probleem opgelost met slider status als de verandering via een flow gestuurd wordt.",
-    "en": "• Automatic selection of capabilities • Tile now shows open/cloed status when possible • Added signal strength capability • Better synchronisation between up/down and slider • Fixed state changes to curtain slider when triggered from a flow."
+    "nl": "• Ondersteuning voor jaloezieën (kantelen) • Automatische selectie van mogelijkheden • Tegel toont nu status open/dicht indien mogelijk • Signaalsterkte eigenschap toegevoegd • Betere synchronisatietussen omhoog/omlaag en slider • Probleem opgelost met slider status als de verandering via een flow gestuurd wordt.",
+    "en": "• Support for venetian blinds (tilt) • Automatic selection of capabilities • Tile now shows open/cloed status when possible • Added signal strength capability • Better synchronisation between up/down and slider • Fixed state changes to curtain slider when triggered from a flow."
   }
 }

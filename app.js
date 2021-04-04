@@ -10,6 +10,8 @@ class MotionBlinds extends Homey.App {
 
   async onInit() {
     this.mdriver = new MotionDriver(this);
+    this.mdriver.on('newDevices', function() { this.onNewDevices(); }.bind(this));
+
     this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
     this.homey.settings.on('set', function() {
       this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
@@ -19,6 +21,11 @@ class MotionBlinds extends Homey.App {
     }.bind(this))
     this.mdriver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
+  }
+
+  async onNewDevices() { // a new gateway is added, poll unknown devices
+    this.log('New devices discovered');
+    this.mdriver.pollStates(false);
   }
 }
 

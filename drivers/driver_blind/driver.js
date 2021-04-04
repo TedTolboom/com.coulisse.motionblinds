@@ -2,43 +2,32 @@
 'use strict';
 
 const Homey = require('homey');
-const MotionDriver = require('../../motion/motion')
+const MotionDriverGeneric = require('../genericdriver')
 
-class MotionDriver_Blind extends Homey.Driver {
-  /**
-   * onInit is called when the driver is initialized.
-   */
-  async onInit() {
-    this.log('MotionDriver initialized');
+class MotionDriverBlind extends MotionDriverGeneric {
+  getAllowedTypes() { 
+    let mdriver = this.homey.app.mdriver;
+    return [ // not sure, but allow all since the driver is generic anyway
+      mdriver.BlindType.RollerBlind,
+      mdriver.BlindType.RomanBlind,
+      mdriver.BlindType.HoneycombBlind,
+      mdriver.BlindType.RollerShutter,
+      mdriver.BlindType.RollerGate,
+      mdriver.BlindType.Awning,
+      mdriver.BlindType.TopDownBottomUp,
+      mdriver.BlindType.DayNightBlind,
+      mdriver.BlindType.DimmingBlind,
+      mdriver.BlindType.Curtain,
+      mdriver.BlindType.CurtainLeft,
+      mdriver.BlindType.CurtainRight,
+      mdriver.BlindType.DoubleRoller, 
+      mdriver.BlindType.Switch
+    ]; 
   }
 
-  /**
-   * onPairListDevices is called when a user is adding a device and the 'list_devices' view is called.
-   * This should return an array with the data of devices that are available for pairing.
-   */
-  async onPairListDevices() {
-    try {
-      this.log('Pairing Blinds');
-      let mdriver = this.homey.app.mdriver;
-        let devices = mdriver.getDevices(mdriver.DeviceType.Blind);
-        this.log('Blinds available at start pairing', devices);
-        let pairedDriverDevices = [];
-        this.getDevices().forEach(device => pairedDriverDevices.push(device.getData().mac));
-        this.log('Paired Blinds', pairedDriverDevices);
-        const results = devices.filter(device => !pairedDriverDevices.includes(device.mac))
-          .map((r, i) => ({ 
-              name: this.homey.__('blind.defaultName') + ' ' + r.mac.substr(r.mac.length - 4), 
-              data: {
-                  mac: r.mac, 
-                  deviceType: r.deviceType
-              }  
-          }));
-        this.log('Pairable Blinds', results);
-        return Promise.resolve(results);
-    } catch (exception) {
-       this.homey.app.error(exception); 
-    }
+  getDefaultName() {
+    return this.homey.__('blind.defaultName');
   }
 }
 
-module.exports = MotionDriver_Blind;
+module.exports = MotionDriverBlind;

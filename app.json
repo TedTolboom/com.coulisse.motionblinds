@@ -107,6 +107,41 @@
           "template": "add_devices" 
         }    
       ]
+    },
+    {
+      "id": "driver_venetian",
+      "name": {
+        "en": "Venetian Blind",
+        "nl": "Jaloezieën"
+      },
+      "class": "blinds",
+      "capabilities": [
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "windowcoverings_tilt_set",
+        "measure_battery",
+        "measure_mb_rssi"
+      ],
+      "energy": {
+        "batteries": ["INTERNAL"]
+      },
+      "images": {
+        "large": "/drivers/driver_venetian/assets/images/large.png",
+        "small": "/drivers/driver_venetian/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices", 
+          "navigation": {
+            "next": "add_my_devices" 
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices" 
+        }    
+      ]
     }
   ]
 }

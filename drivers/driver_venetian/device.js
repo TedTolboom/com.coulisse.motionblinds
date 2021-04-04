@@ -4,7 +4,7 @@
 const Homey = require('homey');
 const MotionDeviceGeneric = require('../genericdevice')
 
-class MotionDeviceBlind extends MotionDeviceGeneric {
+class MotionDeviceVenetian extends MotionDeviceGeneric {
 }
 
-module.exports = MotionDeviceBlind;
+module.exports = MotionDeviceVenetian;

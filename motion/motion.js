@@ -71,6 +71,7 @@ class MotionDeviceID {
     constructor(mac, deviceType) {
         this.mac = mac;
         this.deviceType = deviceType;
+        this.registered = false;
     }
 }
 
@@ -95,6 +96,7 @@ You can listen to the following events (though there should not be any imminent 
 'disconnect' The Motion Gateway is being disconnected
 'ready' The accesstoken is calculated for the gateway with the given mac, so you can write to its devices and/or get device states.
 'notReady' The accesstoken for the gateway with the given mac is no longer available (e.g. due to close or key reset)
+'newDevice' the device with the given mac is added
 'newDevices' One or more new device were detected
 
 Furthermote you can listen to all the msgTypes that the gateway supports. 
@@ -144,6 +146,11 @@ class MotionDriver extends EventEmitter {
     Position = { 
         Open_Up: 0,
         Close_Down: 100
+    }
+
+    Angle = { 
+        Open: 0,
+        Close: 180
     }
 
     LimitStatus = { 
@@ -244,6 +251,16 @@ class MotionDriver extends EventEmitter {
     positionToPercentageOpen(pos) {
         return 1 - this.positionToPercentageClosed(pos);
     }
+    
+    angleToPercentageTilt(angle) {
+        let perc = Math.round(angle) / this.Angle.Close;
+        return Math.min(Math.max(perc, 0), 1);
+    }
+
+    percentageTiltToAngle(perc) {
+        let angle = Math.round(perc * this.Angle.Close);
+        return Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
+    }
 
     /** use mac to find getGateway by it's mac, or add one if the deviceType is for a gateway and it isn't found yet.
      * If mac is null or undefined, it returns undefined, otherwise it returns a MotionGateway (either new or existing)
@@ -261,12 +278,33 @@ class MotionDriver extends EventEmitter {
         return undefined;
     }
 
-    getDevices(type = undefined) {
+    registerDeviceType(msg) { 
+        if (msg.mac != undefined && msg.mac != null && msg.data != undefined && msg.data != null && msg.data.type != undefined) {
+            let item = this.devices.get(msg.mac);
+            if (item != undefined && item.id.type != msg.data.type) {
+                this.log('Registered type ' + msg.data.type + ' for ' + msg.mac);
+                item.id.type = msg.data.type;
+                if (msg.data.wirelessMode != undefined)
+                    item.id.wirelessMode = msg.data.wirelessMode;
+            }
+        }
+    }
+
+    registerDevice(mac, register = true) { 
+        let item = this.devices.get(mac);
+        if (item != undefined && item.id.registered != register) {
+            this.log((register ? 'Registered ' : 'Unregistered ') + mac);
+            item.id.registered = register;
+        } 
+    }
+
+    getDevices(type = undefined, filter = undefined) {
         let devices = [];
         for (let entry of this.devices.values()) 
-            if (type == entry.id.deviceType || 
+            if ((type == entry.id.deviceType || 
                 ((type == undefined || type == null) && 
-                    entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway))
+                    entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)) &&
+                    (filter == undefined || filter(entry.id)))
                 devices.push(entry.id);
         return devices;
     }
@@ -314,6 +352,7 @@ class MotionDriver extends EventEmitter {
         else if (message.msgType == 'GetDeviceListAck')
             this.onGetDeviceListAck(message, info);
         this.emit(message.msgType, message, info);
+        this.registerDeviceType(message);
     }
 
     onClose() {
@@ -330,6 +369,7 @@ class MotionDriver extends EventEmitter {
                 if (this.devices.get(device.mac) == undefined) {
                     this.devices.set(device.mac, new MotionDevice(device.mac, device.deviceType, gateway));
                     added = true;
+                    this.emit('newDevice', device.mac);
                 }
         }
         if (added)
@@ -373,9 +413,13 @@ class MotionDriver extends EventEmitter {
 
     /**
      * Poll all states of all devices. Subsequent calls within the minute will be postponed until the minute is over.
+     * if the wirelessMode of the device is known to be bidirectional then ReadDevice is used, 
+     * otherwise WriteDevice with operation StatusQuery is called instead.
+     * @param registered: if true only devices that registered themselves are polled, otherwise all. 
+     * if false, only unregistered devices are polled. if undefined, all devices are polled. 
      */
-    async pollStates() {
-        this.log('pollStates');
+    async pollStates(registered = true) {
+        this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')));
         if (this.pollTimer == undefined) {
             this.pollTimer = setTimeout(function() {
                 this.log('PollTimer ends, pollAgain = ' + this.pollAgain);
@@ -386,18 +430,35 @@ class MotionDriver extends EventEmitter {
                 }
               }.bind(this), 60000);
             this.pollAgain = false;
+            let pollcount = 0;
             for (let entry of this.devices.values()) 
-                if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)
-                    this.send({
-                        "msgType": 'ReadDevice',
-                        "mac": entry.id.mac,
-                        "deviceType": entry.id.deviceType,
-                        "accessToken": this.getAccessTokenByID(entry.id),
-                        "msgID": this.getMessageID()
-            });
+                if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway && 
+                    (registered == undefined || entry.id.registered == registered)) {
+                        ++pollcount;
+                        if (entry.id.wirelessMode == this.WirelessMode.BiDirection || entry.id.wirelessMode == this.WirelessMode.BidirectionMech) 
+                        this.send({
+                            "msgType": 'ReadDevice',
+                            "mac": entry.id.mac,
+                            "deviceType": entry.id.deviceType,
+                            "accessToken": this.getAccessTokenByID(entry.id),
+                            "msgID": this.getMessageID()
+                        });
+                    else
+                        this.send({
+                            "msgType": 'WriteDevice',
+                            "mac": entry.id.mac,
+                            "deviceType": entry.id.deviceType,
+                            "accessToken": this.getAccessTokenByID(entry.id),
+                            "msgID": this.getMessageID(),
+                            "data": {
+                                "operation": this.Operation.StatusQuery
+                            }
+                        });
+                    }
+            this.log('polled ' + pollcount + ' devices');
         } else {
             this.pollAgain = true;
-            this.log('Nested poll postponed', this.pollTimer);
+            this.log('Nested poll postponed');
         }
     }
 
