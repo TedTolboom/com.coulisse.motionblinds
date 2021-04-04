@@ -273,7 +273,7 @@ class MotionDriver extends EventEmitter {
 
     onListening() {
             let address = this.client.address();
-            this.log('Listening using ' + address.family + ' on ' + address.address + ":" + address.port + (this.key == null ? ' without' : 'with') + ' key');
+            this.log('Listening using ' + address.family + ' on ' + address.address + ":" + address.port + ' ' + (this.key == null ? ' without' : 'with') + ' key');
             this.client.setBroadcast(true);
             this.client.setMulticastTTL(128);
             this.client.addMembership(MULTICAST_ADDRESS);

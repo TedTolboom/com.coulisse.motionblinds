@@ -58,6 +58,19 @@
       "max": 0,
       "step": 1,
       "decimals": 0
+    },
+    "state_mb_part_closed": {
+      "type": "boolean",
+      "title": {
+        "en": "(Partially) closed",
+        "nl": "(Deels) dicht"
+      },
+      "uiQuickAction": true,
+      "uiComponent": null,
+      "getable": true,
+      "setable": false,
+      "insights": false,
+      "preventtag": true
     }
   },
   "drivers": [
