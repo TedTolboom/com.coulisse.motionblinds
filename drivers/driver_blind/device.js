@@ -166,9 +166,34 @@ class MotionDeviceBlinds extends Homey.Device {
     }
   }
 
+  checkSettings(msg) {
+    if (msg.data != undefined) {
+      let save = false;
+      let settings = this.getSettings();
+      let newsettings = { };
+      if (settings == undefined)
+        settings = { };
+        if (msg.data.type != undefined && msg.data.type != settings.type) { 
+          newsettings.type = msg.data.type; 
+          save = true; 
+        }
+        if (msg.data.voltageMode != undefined && msg.data.voltageMode != settings.voltageMode) { 
+        newsettings.voltageMode = msg.data.voltageMode; 
+        save = true; 
+      }
+      if (msg.data.wirelessMode != undefined && msg.data.wirelessMode != settings.wirelessMode) { 
+        newsettings.wirelessMode = msg.data.wirelessMode; 
+        save = true; 
+      }
+      if (save)
+        this.setSettings(newsettings);
+    }
+  }
+
   async onReport(msg, info) {
     this.log(this.getData().mac, 'onReport');
     this.setStates(msg);
+    this.checkSettings(msg);
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
@@ -181,6 +206,7 @@ class MotionDeviceBlinds extends Homey.Device {
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
     this.setStates(msg);
+    this.checkSettings(msg);
   }
 
   async onWriteDevice(msg, info) {
@@ -191,6 +217,7 @@ class MotionDeviceBlinds extends Homey.Device {
   async onWriteDeviceAck(msg, info) {
     // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.log(this.getData().mac, 'onWriteDeviceAck');
+    this.checkSettings(msg);
   }
 
   async readDevice() {
