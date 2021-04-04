@@ -7,6 +7,7 @@ const MotionDriver = require('../../motion/motion')
 class MotionDeviceBlinds extends Homey.Device {
   async onInit() {
     this.mdriver = this.homey.app.mdriver;
+    // this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined; 
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
@@ -17,9 +18,11 @@ class MotionDeviceBlinds extends Homey.Device {
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
-    if (!this.hasCapability('state_mb_part_closed')) this.addCapability('state_mb_part_closed');
-    if (!this.hasCapability('measure_mb_rssi')) this.addCapability('measure_mb_rssi');
-    this.readDevice();
+    let wirelessMode = this.getSetting('wirelessMode');
+    if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
+        this.readDevice();
+      else
+        this.statusQuery();
     this.log(mac, 'initialised');
   }
 
@@ -52,9 +55,9 @@ class MotionDeviceBlinds extends Homey.Device {
   async onCapabilityWindowcoverings_state(value, opts) {
     this.log(this.getData().mac, 'onCapabilityWindowcoverings_state', value);
     switch(value) {
-      case 'up': this.up(); break;
-      case 'down': this.down(); break;
-      case 'idle': this.stop(); break;
+      case 'up': this.openUp();      break;
+      case 'down': this.closeDown(); break;
+      case 'idle': this.stop();      break;
     }
   }
 
@@ -63,10 +66,18 @@ class MotionDeviceBlinds extends Homey.Device {
     this.setCapabilityValue('measure_battery', value);
   }
 
+  numberChanged(newval, oldval, treshold) {
+    if (oldval == undefined || oldval == null)
+      return (newval != null && newval != undefined);
+    if ((newval == null || newval == undefined))
+      return false;
+    return Math.abs(oldval - newval) >= treshold;
+  }
+
   setCapabilityPartClosed(perc) {
     if (perc != undefined) {
       let closed = perc <= 0.99;
-      if (this.getCapabilityValue('state_mb_part_closed') != closed) {
+      if (this.hasCapability('state_mb_part_closed') && this.getCapabilityValue('state_mb_part_closed') != closed) {
         this.log(this.getData().mac, 'setCapabilityPartClosed', closed);
         this.setCapabilityValue('state_mb_part_closed', closed);
       }
@@ -84,17 +95,9 @@ class MotionDeviceBlinds extends Homey.Device {
     return false;
   }
 
-  numberChanged(newval, oldval, treshold) {
-      if (oldval == undefined || oldval == null)
-        return (newval != null && newval != undefined);
-      if ((newval == null || newval == undefined))
-        return false;
-      return Math.abs(oldval - newval) >= treshold;
-  }
-
   setCapabilityPercentage(perc) {
     this.setCapabilityPartClosed(perc);
-    if (this.numberChanged(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
+    if (this.hasCapability('windowcoverings_set') && this.numberChanged(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
       this.log(this.getData().mac, 'setCapabilityPercentage', perc);
       this.setCapabilityValue('windowcoverings_set', perc);
       return true;
@@ -103,7 +106,7 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   setCapabilityBattery(perc) {
-    if (this.numberChanged(perc, this.getCapabilityValue('measure_battery'), 0.1)) {
+    if (this.hasCapability('measure_battery') && this.numberChanged(perc, this.getCapabilityValue('measure_battery'), 0.1)) {
       this.log(this.getData().mac, 'setCapabilityBattery', perc);
       this.setCapabilityValue('measure_battery', perc);
       return true;
@@ -112,9 +115,11 @@ class MotionDeviceBlinds extends Homey.Device {
   }
 
   setCapabilityRSSI(dBm) {
-    if (this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
+    if (dBm != undefined && this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
       this.log(this.getData().mac, 'setCapabilityRSSI', dBm);
-      this.setCapabilityValue('measure_mb_rssi', dBm);
+          if (!this.hasCapability('measure_mb_rssi')) 
+            this.addCapability('measure_mb_rssi');
+          this.setCapabilityValue('measure_mb_rssi', dBm);
       return true;
     }
     return false;
@@ -170,20 +175,43 @@ class MotionDeviceBlinds extends Homey.Device {
     if (msg.data != undefined) {
       let save = false;
       let settings = this.getSettings();
-      let newsettings = { };
       if (settings == undefined)
         settings = { };
-        if (msg.data.type != undefined && msg.data.type != settings.type) { 
-          newsettings.type = msg.data.type; 
+      if (msg.data.type != undefined) {
+        if (msg.data.type == this.mdriver.WirelessMode.BiDirection || msg.data.type == this.mdriver.WirelessMode.BidirectionMech) {
+          if (!this.hasCapability('state_mb_part_closed')) 
+            this.addCapability('state_mb_part_closed');
+          if (!this.hasCapability('windowcoverings_set'))
+            this.addCapability('windowcoverings_set')
+        } else {
+          if (this.hasCapability('state_mb_part_closed')) 
+            this.removeCapability('state_mb_part_closed');
+          if (this.hasCapability('windowcoverings_set'))
+            this.removeCapability('windowcoverings_set')
+        }
+        if (msg.data.type != settings.type) { 
+            newsettings.type = msg.data.type; 
+          save = true;
+        } 
+      }
+      if (msg.data.voltageMode != undefined) {
+        if (msg.data.voltageMode == this.mdriver.VoltageMode.DC) {
+          if (!this.hasCapability('measure_battery'))
+            this.addCapability('measure_battery');
+        } else {
+          if (this.hasCapability('measure_battery'))
+            this.removeCapability('measure_battery');
+        }
+        if (msg.data.voltageMode != settings.voltageMode) { 
+          newsettings.voltageMode = msg.data.voltageMode; 
           save = true; 
         }
-        if (msg.data.voltageMode != undefined && msg.data.voltageMode != settings.voltageMode) { 
-        newsettings.voltageMode = msg.data.voltageMode; 
-        save = true; 
       }
-      if (msg.data.wirelessMode != undefined && msg.data.wirelessMode != settings.wirelessMode) { 
-        newsettings.wirelessMode = msg.data.wirelessMode; 
-        save = true; 
+      if (msg.data.wirelessMode != undefined) {
+        if (msg.data.wirelessMode != settings.wirelessMode) { 
+          newsettings.wirelessMode = msg.data.wirelessMode; 
+          save = true; 
+        }
       }
       if (save)
         this.setSettings(newsettings);
@@ -205,8 +233,8 @@ class MotionDeviceBlinds extends Homey.Device {
 
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
-    this.setStates(msg);
-    this.checkSettings(msg);
+   // this.setStates(msg);
+    // this.checkSettings(msg);
   }
 
   async onWriteDevice(msg, info) {
@@ -260,19 +288,24 @@ class MotionDeviceBlinds extends Homey.Device {
     this.writeDevice({ "targetPosition": pos });    
   }
 
-  up() {
-    this.log(this.getData().mac, 'up');
+  openUp() {
+    this.log(this.getData().mac, 'OpenUp');
     this.writeDevice({ "operation": this.mdriver.Operation.Open_Up });    
   }
 
-  down() {
-    this.log(this.getData().mac, 'down');
+  closeDown() {
+    this.log(this.getData().mac, 'CloseDown');
     this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
   }
 
   stop() {
     this.log(this.getData().mac, 'stop');
     this.writeDevice({ "operation": this.mdriver.Operation.Stop });    
+  }
+
+  statusQuery() {
+    this.log(this.getData().mac, 'statusQuery');
+    this.writeDevice({ "operation": this.mdriver.Operation.StatusQuery });    
   }
 }
 
