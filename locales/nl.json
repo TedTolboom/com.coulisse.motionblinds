@@ -11,19 +11,19 @@
         "clear": "Sleutel wissen"
     },
     "blind": {
-        "defaultName": "Rolgordijn nr",
+        "defaultName": "Rolgordijn",
         "nr": "nr"
     },
     "venetian": {
-        "defaultName": "Jaloezieën nr",
+        "defaultName": "Jaloezieën",
         "nr": "nr"
     },
     "curtain": {
-        "defaultName": "Gordijn nr",
+        "defaultName": "Gordijn",
         "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind nr",
+        "defaultName": "MotionBlind",
         "nr": "nr"
     },
     "DeviceType": {
@@ -45,7 +45,7 @@
         "9": "Top/down bottom/up gordijn",
         "10": "Dag-/nachtgordijn",
         "11": "Verduistergordijn",
-        "12": "Curtain",
+        "12": "Gordijn",
         "13": "Gordijn (open links)",
         "14": "Gordijn (open rechts)",
         "17": "Dubbel rolgordijn",

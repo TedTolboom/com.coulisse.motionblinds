@@ -16,6 +16,13 @@ class MotionDriverGeneric extends Homey.Driver {
     return this.homey.__('generic.defaultName');
   }
 
+  getTypeName(type) {
+    let name = type == undefined ? null : this.homey.app.getBlindTypeName(type);
+    if (name == null || name == undefined)
+      name = this.getDefaultName();
+    return name + ' ' + this.homey.__('generic.nr');
+  }
+
   getAllowedTypes() { 
     return unknown; 
   }
@@ -39,7 +46,7 @@ class MotionDriverGeneric extends Homey.Driver {
         this.log('Paired', pairedDriverDevices);
         const results = devices.filter(device => !pairedDriverDevices.includes(device.mac))
           .map((r, i) => ({ 
-              name: this.getDefaultName() + ' ' + r.mac.substr(r.mac.length - 4), 
+              name: this.getTypeName(r.type) + ' ' + r.mac.substr(r.mac.length - 4), 
               data: {
                   mac: r.mac, 
                   deviceType: r.deviceType

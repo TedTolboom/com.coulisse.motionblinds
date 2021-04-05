@@ -11,19 +11,19 @@
         "clear": "Clear key"
     },
     "blind": {
-        "defaultName": "Blind nr",
+        "defaultName": "Blind",
         "nr": "nr"
     },
     "venetian": {
-        "defaultName": "Venetian blind nr",
+        "defaultName": "Venetian blind",
         "nr": "nr"
     },
     "curtain": {
-        "defaultName": "Curtain nr",
+        "defaultName": "Curtain",
         "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind nr",
+        "defaultName": "MotionBlind",
         "nr": "nr"
     },
     "DeviceType": {
