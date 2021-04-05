@@ -26,6 +26,7 @@ class MotionDeviceGeneric extends Homey.Device {
 
   onNewDevice() { // the motiondriver now knows me, so register
     if (this.mdriver.registerDevice(this.getData().mac)) { // check if set. onInit calls this too so it may already be done
+      this.mdriver.setDeviceInGroup(this.getData().mac, this.getSetting('inRemoteGroup'));
       let wirelessMode = this.getSetting('wirelessMode');
       if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
           this.readDevice();
@@ -39,7 +40,8 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log(this.getData().mac, 'changed settings');
+    this.mdriver.setDeviceInGroup(this.getData().mac, newSettings.inRemoteGroup);
+    this.log(this.getData().mac, 'changed settings', newSettings);
   }
 
   async onRenamed(name) {
@@ -203,21 +205,31 @@ class MotionDeviceGeneric extends Homey.Device {
   checkSettings(msg) {
     if (msg.data != undefined) {
       let save = false;
-      let newsettings = {};
+      let newSettings = {};
       let settings = this.getSettings();
       if (settings == undefined)
         settings = { };
+        newSettings.number1 = undefined;
+      if (settings.deviceTypeName == undefined || settings.deviceTypeName == '?') {
+        newSettings.deviceTypeName = this.homey.app.getDeviceTypeName(this.getData().deviceType);
+        if (newSettings.deviceTypeName == null || newSettings.deviceTypeName == undefined || newSettings.deviceTypeName == '?')
+          newSettings.deviceTypeName = '-';
+        save = true;
+      }
       if (msg.data.type != undefined) {
-        // if (msg.data.type == this.mdriver.BlindType.VenetianBlind || 
-        //     msg.data.type == this.mdriver.BlindType.ShangriLaBlind) {
-        //   if (!this.hasCapability('windowcoverings_tilt_set'))
-        //     this.addCapability('windowcoverings_tilt_set')
-        // } else {
-        //   if (this.hasCapability('windowcoverings_tilt_set'))
-        //     this.removeCapability('windowcoverings_tilt_set')
-        // }
-        if (msg.data.type != settings.type) { 
-            newsettings.type = msg.data.type; 
+        if (msg.data.type == this.mdriver.BlindType.VenetianBlind || 
+            msg.data.type == this.mdriver.BlindType.ShangriLaBlind) {
+          if (!this.hasCapability('windowcoverings_tilt_set'))
+            this.addCapability('windowcoverings_tilt_set')
+        } else {
+          if (this.hasCapability('windowcoverings_tilt_set'))
+            this.removeCapability('windowcoverings_tilt_set')
+        }
+        if (msg.data.type != settings.type || settings.typeName == undefined || settings.typeName == '?') { 
+            newSettings.type = msg.data.type; 
+            newSettings.typeName = this.homey.app.getBlindTypeName(msg.data.type);
+            if (newSettings.typeName == null || newSettings.typeName == undefined || newSettings.typeName == '?')
+              newSettings.typeName = '-';
           save = true;
         } 
       }
@@ -229,9 +241,12 @@ class MotionDeviceGeneric extends Homey.Device {
           if (this.hasCapability('measure_battery'))
             this.removeCapability('measure_battery');
         }
-        if (msg.data.voltageMode != settings.voltageMode) { 
-          newsettings.voltageMode = msg.data.voltageMode; 
-          save = true; 
+        if (msg.data.voltageMode != settings.voltageMode || settings.voltageModeName == undefined || settings.voltageModeName == '?') { 
+          newSettings.voltageMode = msg.data.voltageMode; 
+          newSettings.voltageModeName = this.homey.app.getVoltageModeName(msg.data.voltageMode);
+          if (newSettings.voltageModeName == null || newSettings.voltageModeName == undefined ||  newSettings.voltageModeName == '?')
+            newSettings.voltageModeName = '-';
+        save = true; 
         }
       }
       if (msg.data.wirelessMode != undefined) {
@@ -247,17 +262,18 @@ class MotionDeviceGeneric extends Homey.Device {
           if (this.hasCapability('windowcoverings_set'))
             this.removeCapability('windowcoverings_set')
         }
-        if (msg.data.type != settings.type) { 
-            newsettings.type = msg.data.type; 
-          save = true;
-        } 
-        if (msg.data.wirelessMode != settings.wirelessMode) { 
-          newsettings.wirelessMode = msg.data.wirelessMode; 
+        if (msg.data.wirelessMode != settings.wirelessMode || settings.wirelessModeName == undefined || settings.wirelessModeName == '?') { 
+          newSettings.wirelessMode = msg.data.wirelessMode; 
+          newSettings.wirelessModeName = this.homey.app.getWirelessModeName(msg.data.wirelessMode);
+          if (newSettings.wirelessModeName == null || newSettings.wirelessModeName == undefined || newSettings.wirelessModeName == '?')
+            newSettings.wirelessModeName = '-';
           save = true; 
-        }
+          }
       }
-      if (save)
-        this.setSettings(newsettings);
+      if (save) {
+        this.log(this.getData().mac, 'Save settings ', newSettings);
+        this.setSettings(newSettings);
+      } 
     }
   }
 
@@ -268,16 +284,16 @@ class MotionDeviceGeneric extends Homey.Device {
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
-    } else { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, poll them all
+    } else if (this.getSetting('inRemoteGroup')) { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, if it is part of a group, poll them all
       this.log(this.getData().mac, 'unexpected Report triggered poll');
-      this.mdriver.pollStates();
+      this.mdriver.pollStates(true, true);
     }
   }
 
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
-   // this.setStates(msg);
-    // this.checkSettings(msg);
+    this.setStates(msg);
+    this.checkSettings(msg);
   }
 
   async onWriteDevice(msg, info) {
@@ -286,8 +302,8 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async onWriteDeviceAck(msg, info) {
-    // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.log(this.getData().mac, 'onWriteDeviceAck');
+    // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.checkSettings(msg);
   }
 
@@ -306,11 +322,16 @@ class MotionDeviceGeneric extends Homey.Device {
     let data = this.getData();
     if (this.expectReportTimer) 
       clearTimeout(this.expectReportTimer); // expect report later if commands follow up quickly
+    let timeout = this.getSetting('maxTravelTime');
+    if (timeout == null ||  timeout == undefined)
+      timeout = 60;
+    else if (timeout < 5)
+      timeout = 5;
     this.expectReportTimer = setTimeout(function() { // expect a report, if it does not come in a minute, read state by yourself
-        this.log(this.getData().mac, 'onReportTimeout');
+        this.log(this.getData().mac, 'onReportTimeout ', timeout);
         this.expectReportTimer = undefined;
         this.readDevice();
-      }.bind(this), 60000); 
+      }.bind(this), 1000 * timeout); 
     this.mdriver.send({
 			"msgType": 'WriteDevice',
 			"mac": data.mac,
