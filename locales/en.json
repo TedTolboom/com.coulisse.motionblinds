@@ -11,15 +11,75 @@
         "clear": "Clear key"
     },
     "blind": {
-        "defaultName": "Blind nr"
+        "defaultName": "Blind",
+        "nr": "nr"
     },
     "venetian": {
-        "defaultName": "Venetian blind nr"
+        "defaultName": "Venetian blind",
+        "nr": "nr"
     },
     "curtain": {
-        "defaultName": "Curtain nr"
+        "defaultName": "Curtain",
+        "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind nr"
+        "defaultName": "MotionBlind",
+        "nr": "nr"
+    },
+    "DeviceType": {
+        "02000001": "Gateway",
+        "02000002": "Child gateway", 
+        "10000000": "Blind", 
+        "10000001": "Top/Down Bottom/Up", 
+        "10000002": "Double roller"
+    },
+    "BlindType": {
+        "1": "Roller blind",
+        "2": "Venetian blind",
+        "3": "Roman blind",
+        "4": "Honeycomb blind",
+        "5": "Shangri-La blind",
+        "6": "Roller shutter",
+        "7": "Roller gate",
+        "8": "Awning",
+        "9": "Top/down Bottom/Up",
+        "10": "Day/night blind",
+        "11": "Dimming blind",
+        "12": "Curtain",
+        "13": "Curtain (open left)",
+        "14": "Curtain (open right)",
+        "17": "Double roller",
+        "43": "Switch"
+    },
+    "Operation": {
+        "0": "Close/down",
+        "1": "Open/up",
+        "2": "Stop",
+        "5": "Status query"
+    },
+    "Position": {
+        "0": "Open/up",
+        "100": "Closed/down"
+    },
+    "Angle": {
+        "0": "Open",
+        "180": "Closed"
+    },
+    "LimitStatus": {
+        "0": "No limits", 
+        "1": "Top limit detected", 
+        "2": "Bottom limit detected", 
+        "3": "Limits detected", 
+        "4": "3rd Limit detected"
+    },
+    "VoltageMode": {
+        "0": "AC",
+        "1": "DC"
+    },
+    "WirelessMode": {
+        "0": "Uni-directional",
+        "1": "Bi-directional",
+        "2": "Bi-directional (mechanical limits)",
+        "3": "Others"
     }
 }

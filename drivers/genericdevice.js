@@ -14,18 +14,21 @@ class MotionDeviceGeneric extends Homey.Device {
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowcoverings_tilt_set.bind(this));
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowcoverings_state.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
-    this.registerCapabilityListener('state_mb_part_closed', this.onCapabilitystate_mb_part_closed.bind(this));
+    this.registerCapabilityListener('state_mb_part_closed', this.onCapabilityState_mb_part_closed.bind(this));
+    this.registerCapabilityListener('alarm_contact', this.onCapabilityAlarm_contact.bind(this));
     this.mdriver.on('newDevice', function(newmac) { if (mac == newmac) this.onNewDevice(); }.bind(this));
     this.mdriver.on('Report', function(msg, info) { if (mac == msg.mac) this.onReport(msg, info); }.bind(this));
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
     this.log(mac, 'initialized');
+    this.checkAlarmContactCapability();
     this.onNewDevice();
   }
 
   onNewDevice() { // the motiondriver now knows me, so register
     if (this.mdriver.registerDevice(this.getData().mac)) { // check if set. onInit calls this too so it may already be done
+      this.mdriver.setDeviceInGroup(this.getData().mac, this.getSetting('inRemoteGroup'));
       let wirelessMode = this.getSetting('wirelessMode');
       if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
           this.readDevice();
@@ -39,7 +42,8 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log(this.getData().mac, 'changed settings');
+    this.mdriver.setDeviceInGroup(this.getData().mac, newSettings.inRemoteGroup);
+    this.log(this.getData().mac, 'changed settings', newSettings);
   }
 
   async onRenamed(name) {
@@ -51,8 +55,22 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.registerDevice(this.getData().mac, false);
   }
    
+  async onBlockAction(args, state) {
+    if (this.hasCapability('alarm_contact')) {
+      this.log(this.getData().mac, 'blocked');
+      this.setCapabilityValue('alarm_contact', true);
+    }
+  }
+   
+  async onUnblockAction(args, state) {
+    if (this.hasCapability('alarm_contact')) {
+      this.log(this.getData().mac, 'unblocked');
+      this.setCapabilityValue('alarm_contact', false);
+    }
+  }
+   
   async onCapabilityWindowcoverings_set(value, opts) {
-    this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value);
+    this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value, opts);
     this.setCapabilityPartClosed(value);
     this.setPercentageOpen(value);
   }
@@ -62,7 +80,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.setPercentageTilt(value);
   }
 
-  async onCapabilitystate_mb_part_closed(value, opts) {
+  async onCapabilityState_mb_part_closed(value, opts) {
     this.log(this.getData().mac, 'onCapabilitystate_mb_part_closed', value, opts);
   }
 
@@ -73,6 +91,11 @@ class MotionDeviceGeneric extends Homey.Device {
       case 'down': this.closeDown(); break;
       case 'idle': this.stop();      break;
     }
+  }
+
+  async onCapabilityAlarm_contact(value, opts) {
+    this.log(this.getData().mac, 'onCapabilityAlarm_contact', value, opts);
+    this.checkAlarmContactCapability();
   }
 
   async onCapabilityMeasure_battery(value, opts) {
@@ -203,21 +226,31 @@ class MotionDeviceGeneric extends Homey.Device {
   checkSettings(msg) {
     if (msg.data != undefined) {
       let save = false;
-      let newsettings = {};
+      let newSettings = {};
       let settings = this.getSettings();
       if (settings == undefined)
         settings = { };
+        newSettings.number1 = undefined;
+      if (settings.deviceTypeName == undefined || settings.deviceTypeName == '?') {
+        newSettings.deviceTypeName = this.homey.app.getDeviceTypeName(this.getData().deviceType);
+        if (newSettings.deviceTypeName == null || newSettings.deviceTypeName == undefined || newSettings.deviceTypeName == '?')
+          newSettings.deviceTypeName = '-';
+        save = true;
+      }
       if (msg.data.type != undefined) {
-        // if (msg.data.type == this.mdriver.BlindType.VenetianBlind || 
-        //     msg.data.type == this.mdriver.BlindType.ShangriLaBlind) {
-        //   if (!this.hasCapability('windowcoverings_tilt_set'))
-        //     this.addCapability('windowcoverings_tilt_set')
-        // } else {
-        //   if (this.hasCapability('windowcoverings_tilt_set'))
-        //     this.removeCapability('windowcoverings_tilt_set')
-        // }
-        if (msg.data.type != settings.type) { 
-            newsettings.type = msg.data.type; 
+        if (msg.data.type == this.mdriver.BlindType.VenetianBlind || 
+            msg.data.type == this.mdriver.BlindType.ShangriLaBlind) {
+          if (!this.hasCapability('windowcoverings_tilt_set'))
+            this.addCapability('windowcoverings_tilt_set')
+        } else {
+          if (this.hasCapability('windowcoverings_tilt_set'))
+            this.removeCapability('windowcoverings_tilt_set')
+        }
+        if (msg.data.type != settings.type || settings.typeName == undefined || settings.typeName == '?') { 
+            newSettings.type = msg.data.type; 
+            newSettings.typeName = this.homey.app.getBlindTypeName(msg.data.type);
+            if (newSettings.typeName == null || newSettings.typeName == undefined || newSettings.typeName == '?')
+              newSettings.typeName = '-';
           save = true;
         } 
       }
@@ -229,9 +262,12 @@ class MotionDeviceGeneric extends Homey.Device {
           if (this.hasCapability('measure_battery'))
             this.removeCapability('measure_battery');
         }
-        if (msg.data.voltageMode != settings.voltageMode) { 
-          newsettings.voltageMode = msg.data.voltageMode; 
-          save = true; 
+        if (msg.data.voltageMode != settings.voltageMode || settings.voltageModeName == undefined || settings.voltageModeName == '?') { 
+          newSettings.voltageMode = msg.data.voltageMode; 
+          newSettings.voltageModeName = this.homey.app.getVoltageModeName(msg.data.voltageMode);
+          if (newSettings.voltageModeName == null || newSettings.voltageModeName == undefined ||  newSettings.voltageModeName == '?')
+            newSettings.voltageModeName = '-';
+        save = true; 
         }
       }
       if (msg.data.wirelessMode != undefined) {
@@ -247,17 +283,18 @@ class MotionDeviceGeneric extends Homey.Device {
           if (this.hasCapability('windowcoverings_set'))
             this.removeCapability('windowcoverings_set')
         }
-        if (msg.data.type != settings.type) { 
-            newsettings.type = msg.data.type; 
-          save = true;
-        } 
-        if (msg.data.wirelessMode != settings.wirelessMode) { 
-          newsettings.wirelessMode = msg.data.wirelessMode; 
+        if (msg.data.wirelessMode != settings.wirelessMode || settings.wirelessModeName == undefined || settings.wirelessModeName == '?') { 
+          newSettings.wirelessMode = msg.data.wirelessMode; 
+          newSettings.wirelessModeName = this.homey.app.getWirelessModeName(msg.data.wirelessMode);
+          if (newSettings.wirelessModeName == null || newSettings.wirelessModeName == undefined || newSettings.wirelessModeName == '?')
+            newSettings.wirelessModeName = '-';
           save = true; 
-        }
+          }
       }
-      if (save)
-        this.setSettings(newsettings);
+      if (save) {
+        this.log(this.getData().mac, 'Save settings ', newSettings);
+        this.setSettings(newSettings);
+      } 
     }
   }
 
@@ -268,16 +305,24 @@ class MotionDeviceGeneric extends Homey.Device {
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
-    } else { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, poll them all
+    } else if (this.getSetting('inRemoteGroup')) { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, if it is part of a group, poll them all
       this.log(this.getData().mac, 'unexpected Report triggered poll');
-      this.mdriver.pollStates();
+      this.mdriver.pollStates(true, true);
     }
+  }
+
+  async checkAlarmContactCapability() {
+    if (this.getSetting('addBlockAlarm')) {
+      if (!this.hasCapability('alarm_contact'))
+        this.addCapability('alarm_contact');
+    } else if (this.hasCapability('alarm_contact'))
+      this.removeCapability('alarm_contact');
   }
 
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
-   // this.setStates(msg);
-    // this.checkSettings(msg);
+    this.setStates(msg);
+    this.checkSettings(msg);
   }
 
   async onWriteDevice(msg, info) {
@@ -286,8 +331,8 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async onWriteDeviceAck(msg, info) {
-    // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.log(this.getData().mac, 'onWriteDeviceAck');
+    // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.checkSettings(msg);
   }
 
@@ -306,11 +351,16 @@ class MotionDeviceGeneric extends Homey.Device {
     let data = this.getData();
     if (this.expectReportTimer) 
       clearTimeout(this.expectReportTimer); // expect report later if commands follow up quickly
+    let timeout = this.getSetting('maxTravelTime');
+    if (timeout == null ||  timeout == undefined)
+      timeout = 60;
+    else if (timeout < 5)
+      timeout = 5;
     this.expectReportTimer = setTimeout(function() { // expect a report, if it does not come in a minute, read state by yourself
-        this.log(this.getData().mac, 'onReportTimeout');
+        this.log(this.getData().mac, 'onReportTimeout ', timeout);
         this.expectReportTimer = undefined;
         this.readDevice();
-      }.bind(this), 60000); 
+      }.bind(this), 1000 * timeout); 
     this.mdriver.send({
 			"msgType": 'WriteDevice',
 			"mac": data.mac,
@@ -321,14 +371,28 @@ class MotionDeviceGeneric extends Homey.Device {
 		});  
   }
 
+  async triggerBlocked(tokens = {}, state = {}) {
+    let device = this; // We're in a Device instance
+    this.driver.ready().then(() => { 
+      device.log('Trigger flow blocked cards');
+      device.driver.triggerBlockedFlow(device, tokens, state); 
+    });
+  }
+
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
-    this.log(this.getData().mac, 'setPosition', pos);
-    switch (pos) {
-      case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
-      case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
+    if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+      this.log(this.getData().mac, 'CloseDownBlocked');
+      this.readDevice();
+      this.triggerBlocked();
+    } else {
+      this.log(this.getData().mac, 'setPosition', pos);
+      switch (pos) {
+        case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
+        case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
+      }
+      this.writeDevice({ "targetPosition": pos });    
     }
-    this.writeDevice({ "targetPosition": pos });    
   }
 
   setPercentageTilt(perc) {
@@ -343,8 +407,17 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   closeDown() {
-    this.log(this.getData().mac, 'CloseDown');
-    this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
+    if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+      this.log(this.getData().mac, 'CloseDownBlocked');
+      if (this.hasCapability('windowcoverings_set'))
+        this.readDevice();
+      else
+        this.scheduleStop();
+      this.triggerBlocked();
+    } else {
+      this.log(this.getData().mac, 'CloseDown');
+      this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
+    }
   }
 
   stop() {

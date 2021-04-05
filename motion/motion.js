@@ -254,12 +254,12 @@ class MotionDriver extends EventEmitter {
     
     angleToPercentageTilt(angle) {
         let perc = Math.round(angle) / this.Angle.Close;
-        return Math.min(Math.max(perc, 0), 1);
+        return 1 - Math.min(Math.max(perc, 0), 1);
     }
 
     percentageTiltToAngle(perc) {
         let angle = Math.round(perc * this.Angle.Close);
-        return Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
+        return this.Angle.Close - Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
     }
 
     /** use mac to find getGateway by it's mac, or add one if the deviceType is for a gateway and it isn't found yet.
@@ -295,6 +295,16 @@ class MotionDriver extends EventEmitter {
         if (item != undefined && item.id.registered != register) {
             this.log((register ? 'Registered ' : 'Unregistered ') + mac);
             item.id.registered = register;
+            return true;
+        } 
+        return false;
+    }
+
+    setDeviceInGroup(mac, group = true) { 
+        let item = this.devices.get(mac);
+        if (item != undefined && (item.id.inGroup == true) != group) {
+            this.log((mac + (group ? ' put in group' : ' removed from group')));
+            item.id.inGroup = group;
             return true;
         } 
         return false;
@@ -428,23 +438,25 @@ class MotionDriver extends EventEmitter {
      * otherwise WriteDevice with operation StatusQuery is called instead.
      * @param registered: if true only devices that registered themselves are polled, otherwise all. 
      * if false, only unregistered devices are polled. if undefined, all devices are polled. 
+     * @param groupOnly: only poll those that are set to be part of a group
      */
-    async pollStates(registered = true) {
-        this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')));
+    async pollStates(registered = true, groupOnly = false) {
+        this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')) + (groupOnly ? ' groupOnly' : ''));
         if (this.pollTimer == undefined) {
             this.pollTimer = setTimeout(function() {
                 this.log('PollTimer ends, pollAgain = ' + this.pollAgain);
                 this.pollTimer = undefined;
                 if (this.pollAgain) {
                     this.pollAgain = false;
-                    this.pollStates();
+                    this.pollStates(registered, groupOnly);
                 }
               }.bind(this), 60000);
             this.pollAgain = false;
             let pollcount = 0;
             for (let entry of this.devices.values()) 
                 if (entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway && 
-                    (registered == undefined || entry.id.registered == registered)) {
+                    (registered == undefined || entry.id.registered == registered) &&
+                    (!groupOnly || entry.id.inGroup == true)) {
                         ++pollcount;
                         if (entry.id.wirelessMode == this.WirelessMode.BiDirection || entry.id.wirelessMode == this.WirelessMode.BidirectionMech) 
                         this.send({

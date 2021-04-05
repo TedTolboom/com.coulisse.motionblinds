@@ -9,11 +9,25 @@ class MotionDriverGeneric extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('MotionDriver initialized');
+    this.flowTriggerBlocked = this.homey.flow.getDeviceTriggerCard('trigger_BLIND_BLOCKED');
+    this.log('Initialized');
+  }
+
+  triggerBlockedFlow(device, tokens, state) {
+    this.flowTriggerBlocked.trigger(device, tokens, state)
+      .then(this.log)
+      .catch(this.error);
   }
 
   getDefaultName() {
     return this.homey.__('generic.defaultName');
+  }
+
+  getTypeName(type) {
+    let name = type == undefined ? null : this.homey.app.getBlindTypeName(type);
+    if (name == null || name == undefined)
+      name = this.getDefaultName();
+    return name + ' ' + this.homey.__('generic.nr');
   }
 
   getAllowedTypes() { 
@@ -39,7 +53,7 @@ class MotionDriverGeneric extends Homey.Driver {
         this.log('Paired', pairedDriverDevices);
         const results = devices.filter(device => !pairedDriverDevices.includes(device.mac))
           .map((r, i) => ({ 
-              name: this.getDefaultName() + ' ' + r.mac.substr(r.mac.length - 4), 
+              name: this.getTypeName(r.type) + ' ' + r.mac.substr(r.mac.length - 4), 
               data: {
                   mac: r.mac, 
                   deviceType: r.deviceType
