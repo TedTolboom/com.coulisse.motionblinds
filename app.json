@@ -79,8 +79,12 @@
       {
         "id": "trigger_BLIND_BLOCKED",
         "title": {
-          "en": "The blins was blocked",
+          "en": "The blind was blocked",
           "nl": "Het gordijn werd geblokkeerd"
+        },
+        "titleFormatted": {
+          "en": "The [[device]] was blocked",
+          "nl": "Het [[device]] werd geblokkeerd"
         },
         "hint": {
           "en": "The blind refused to close because a contact alarm was active, in order to protect the blind.",
@@ -106,6 +110,10 @@
           "en": "Block closing blind",
           "nl": "Blokkeer gordijn sluiten"
         },
+        "titleFormatted": {
+          "en": "Block closing [[device]]",
+          "nl": "Blokkeer [[device]] sluiten"
+        },
         "args": [
           {
             "name": "device",
@@ -122,6 +130,10 @@
         "title": {
           "en": "Unblock closing blind",
           "nl": "Deblokkeer gordijn sluiten"
+        },
+        "titleFormatted": {
+          "en": "Unblock closing [[device]]",
+          "nl": "Deblokkeer [[device]] sluiten"
         },
         "args": [
           {
