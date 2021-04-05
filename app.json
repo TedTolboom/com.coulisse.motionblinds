@@ -82,8 +82,8 @@
           "nl": "Het gordijn werd geblokkeerd"
         },
         "titleFormatted": {
-          "en": "The [[device]] was blocked",
-          "nl": "Het [[device]] werd geblokkeerd"
+          "en": "The blind was blocked [[device]]",
+          "nl": "Het gordijn werd geblokkeerd [[device]]"
         },
         "hint": {
           "en": "The blind refused to close because a contact alarm was active, in order to protect the blind.",
@@ -110,8 +110,8 @@
           "nl": "Blokkeer gordijn sluiten"
         },
         "titleFormatted": {
-          "en": "Block closing [[device]]",
-          "nl": "Blokkeer [[device]] sluiten"
+          "en": "Block closing blind [[device]]",
+          "nl": "Blokkeer gordijn sluiten [[device]]"
         },
         "args": [
           {
@@ -131,8 +131,8 @@
           "nl": "Deblokkeer gordijn sluiten"
         },
         "titleFormatted": {
-          "en": "Unblock closing [[device]]",
-          "nl": "Deblokkeer [[device]] sluiten"
+          "en": "Unblock closing blind [[device]]",
+          "nl": "Deblokkeer gordijn sluiten [[device]]"
         },
         "args": [
           {
