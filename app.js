@@ -27,6 +27,15 @@ class MotionBlinds extends Homey.App {
     this.log('New devices discovered');
     this.mdriver.pollStates(false);
   }
+  
+  getDeviceTypeName(id)   { return this.homey.__('DeviceType.' + id); }
+  getBlindTypeName(id)    { return this.homey.__('BlindType.' + id); }
+  getOperationName(id)    { return this.homey.__('Operation.' + id); }
+  getPositionName(id)     { return this.homey.__('Position.' + id); }
+  getAngleName(id)        { return this.homey.__('Angle.' + id); }
+  getLimitStatusName(id)  { return this.homey.__('LimitStatus.' + id); }
+  getVoltageModeName(id)  { return this.homey.__('VoltageMode.' + id); }
+  getWirelessModeName(id) { return this.homey.__('WirelessMode.' + id); }
 }
 
 module.exports = MotionBlinds;

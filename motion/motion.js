@@ -254,12 +254,12 @@ class MotionDriver extends EventEmitter {
     
     angleToPercentageTilt(angle) {
         let perc = Math.round(angle) / this.Angle.Close;
-        return Math.min(Math.max(perc, 0), 1);
+        return 1 - Math.min(Math.max(perc, 0), 1);
     }
 
     percentageTiltToAngle(perc) {
         let angle = Math.round(perc * this.Angle.Close);
-        return Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
+        return this.Angle.Close - Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
     }
 
     /** use mac to find getGateway by it's mac, or add one if the deviceType is for a gateway and it isn't found yet.

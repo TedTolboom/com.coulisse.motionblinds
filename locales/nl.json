@@ -11,15 +11,19 @@
         "clear": "Sleutel wissen"
     },
     "blind": {
-        "defaultName": "Rolgordijn nr"
+        "defaultName": "Rolgordijn nr",
+        "nr": "nr"
     },
     "venetian": {
-        "defaultName": "Jaloezieën nr"
+        "defaultName": "Jaloezieën nr",
+        "nr": "nr"
     },
     "curtain": {
-        "defaultName": "Gordijn nr"
+        "defaultName": "Gordijn nr",
+        "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind nr"
+        "defaultName": "MotionBlind nr",
+        "nr": "nr"
     }
 }
