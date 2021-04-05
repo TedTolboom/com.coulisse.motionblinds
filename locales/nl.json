@@ -16,6 +16,9 @@
     "venetian": {
         "defaultName": "Jaloezieën nr"
     },
+    "curtain": {
+        "defaultName": "Gordijn nr"
+    },
     "generic": {
         "defaultName": "MotionBlind nr"
     }

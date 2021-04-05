@@ -16,6 +16,9 @@
     "venetian": {
         "defaultName": "Venetian blind nr"
     },
+    "curtain": {
+        "defaultName": "Curtain nr"
+    },
     "generic": {
         "defaultName": "MotionBlind nr"
     }

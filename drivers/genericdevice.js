@@ -20,7 +20,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
-    this.log(mac, 'initialised');
+    this.log(mac, 'initialized');
     this.onNewDevice();
   }
 

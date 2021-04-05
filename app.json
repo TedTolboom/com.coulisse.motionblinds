@@ -142,6 +142,40 @@
           "template": "add_devices" 
         }    
       ]
+    },
+    {
+      "id": "driver_curtain",
+      "name": {
+        "en": "Curtain",
+        "nl": "Gordijn"
+      },
+      "class": "curtain",
+      "capabilities": [
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "measure_battery",
+        "measure_mb_rssi"
+      ],
+      "energy": {
+        "batteries": ["INTERNAL"]
+      },
+      "images": {
+        "large": "/drivers/driver_curtain/assets/images/large.png",
+        "small": "/drivers/driver_curtain/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices", 
+          "navigation": {
+            "next": "add_my_devices" 
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices" 
+        }    
+      ]
     }
   ]
 }

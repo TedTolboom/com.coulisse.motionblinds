@@ -16,9 +16,6 @@ class MotionDriverBlind extends MotionDriverGeneric {
       mdriver.BlindType.Awning,
       mdriver.BlindType.DayNightBlind,
       mdriver.BlindType.DimmingBlind,
-      mdriver.BlindType.Curtain,
-      mdriver.BlindType.CurtainLeft,
-      mdriver.BlindType.CurtainRight,
       mdriver.BlindType.DoubleRoller, 
       mdriver.BlindType.Switch
     ]; 
