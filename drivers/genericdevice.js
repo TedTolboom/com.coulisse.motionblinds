@@ -371,11 +371,20 @@ class MotionDeviceGeneric extends Homey.Device {
 		});  
   }
 
+  async triggerBlocked(tokens = {}, state = {}) {
+    let device = this; // We're in a Device instance
+    this.driver.ready().then(() => { 
+      device.log('Trigger flow blocked cards');
+      device.driver.triggerBlockedFlow(device, tokens, state); 
+    });
+  }
+
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
     if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
       this.log(this.getData().mac, 'CloseDownBlocked');
       this.readDevice();
+      this.triggerBlocked();
     } else {
       this.log(this.getData().mac, 'setPosition', pos);
       switch (pos) {
@@ -400,7 +409,11 @@ class MotionDeviceGeneric extends Homey.Device {
   closeDown() {
     if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
       this.log(this.getData().mac, 'CloseDownBlocked');
-      this.scheduleStop();
+      if (this.hasCapability('windowcoverings_set'))
+        this.readDevice();
+      else
+        this.scheduleStop();
+      this.triggerBlocked();
     } else {
       this.log(this.getData().mac, 'CloseDown');
       this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    

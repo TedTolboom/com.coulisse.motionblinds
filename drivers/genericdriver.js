@@ -9,7 +9,14 @@ class MotionDriverGeneric extends Homey.Driver {
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('MotionDriver initialized');
+    this.flowTriggerBlocked = this.homey.flow.getDeviceTriggerCard('trigger_BLIND_BLOCKED');
+    this.log('Initialized');
+  }
+
+  triggerBlockedFlow(device, tokens, state) {
+    this.flowTriggerBlocked.trigger(device, tokens, state)
+      .then(this.log)
+      .catch(this.error);
   }
 
   getDefaultName() {

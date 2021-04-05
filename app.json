@@ -75,7 +75,29 @@
   },
 
   "flow": {
-    "triggers": [],
+    "triggers": [
+      {
+        "id": "trigger_BLIND_BLOCKED",
+        "title": {
+          "en": "The blins was blocked",
+          "nl": "Het gordijn werd geblokkeerd"
+        },
+        "hint": {
+          "en": "The blind refused to close because a contact alarm was active, in order to protect the blind.",
+          "nl": "Het gordijn weigerde te sluiten omdat een contactalarm actief was, om zo het gordijn te beschermen."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "capabilities": "alarm_contact"
+            }
+          }
+        ]
+      }
+    ],
     "conditions": [],
     "actions": [
       {
