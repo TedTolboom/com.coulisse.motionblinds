@@ -42,24 +42,24 @@
         "6": "Roller shutter",
         "7": "Roller gate",
         "8": "Awning",
-        "9": "Top/Down Bottom/Up",
-        "10": "Day/Night blind",
+        "9": "Top/down Bottom/Up",
+        "10": "Day/night blind",
         "11": "Dimming blind",
         "12": "Curtain",
-        "13": "Curtain (left)",
-        "14": "Curtain (right)",
+        "13": "Curtain (open left)",
+        "14": "Curtain (open right)",
         "17": "Double roller",
         "43": "Switch"
     },
     "Operation": {
-        "0": "Close/Down",
-        "1": "Open/Up",
+        "0": "Close/down",
+        "1": "Open/up",
         "2": "Stop",
         "5": "Status query"
     },
     "Position": {
-        "0": "Open/Up",
-        "100": "Closed/Down"
+        "0": "Open/up",
+        "100": "Closed/down"
     },
     "Angle": {
         "0": "Open",
@@ -67,19 +67,19 @@
     },
     "LimitStatus": {
         "0": "No limits", 
-        "1": "Top limit", 
-        "2": "Bottom limit", 
-        "3": "Limits", 
-        "4": "3rd Limit"
+        "1": "Top limit detected", 
+        "2": "Bottom limit detected", 
+        "3": "Limits detected", 
+        "4": "3rd Limit detected"
     },
     "VoltageMode": {
         "0": "AC",
         "1": "DC"
     },
     "WirelessMode": {
-        "0": "Uni-direction",
-        "1": "Bi-direction",
-        "2": "Bi-direction (mechanical limits)",
+        "0": "Uni-directional",
+        "1": "Bi-directional",
+        "2": "Bi-directional (mechanical limits)",
         "3": "Others"
     }
 }

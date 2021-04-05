@@ -25,5 +25,61 @@
     "generic": {
         "defaultName": "MotionBlind nr",
         "nr": "nr"
+    },
+    "DeviceType": {
+        "02000001": "Gateway",
+        "02000002": "Subgateway", 
+        "10000000": "Raambekleding", 
+        "10000001": "Top/down bottom/up gordijn", 
+        "10000002": "Dubbel rolgordijn"
+    },
+    "BlindType": {
+        "1": "Rolgordijn",
+        "2": "Jaloezieën",
+        "3": "Vouwgordijn",
+        "4": "Plisségordijn",
+        "5": "Shangri-La gordijn",
+        "6": "Rolluik",
+        "7": "Rolhek",
+        "8": "Knikarmscherm",
+        "9": "Top/down bottom/up gordijn",
+        "10": "Dag-/nachtgordijn",
+        "11": "Verduistergordijn",
+        "12": "Curtain",
+        "13": "Gordijn (open links)",
+        "14": "Gordijn (open rechts)",
+        "17": "Dubbel rolgordijn",
+        "43": "Switch"
+    },
+    "Operation": {
+        "0": "Sluit/omlaag",
+        "1": "Open/Omhoog",
+        "2": "Stop",
+        "5": "Statusverzoek"
+    },
+    "Position": {
+        "0": "Open/omhoog",
+        "100": "Gesloten/omlaag"
+    },
+    "Angle": {
+        "0": "Open",
+        "180": "Gesloten"
+    },
+    "LimitStatus": {
+        "0": "Geen grenzen", 
+        "1": "Bovengrens gedetecteerd", 
+        "2": "Ondergrens gedetecteerd", 
+        "3": "Grenzen gedetecteerd", 
+        "4": "3e grens gedetecteerd"
+    },
+    "VoltageMode": {
+        "0": "AC",
+        "1": "DC"
+    },
+    "WirelessMode": {
+        "0": "Eenrichting",
+        "1": "Tweerichting",
+        "2": "Tweerichting (mechannische limieten)",
+        "3": "Anderen"
     }
 }
