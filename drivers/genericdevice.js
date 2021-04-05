@@ -21,15 +21,17 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
     this.log(mac, 'initialised');
+    this.onNewDevice();
   }
 
-  onNewDevice() { // the driver now knows me, so register
-    this.mdriver.registerDevice(this.getData().mac);
-    let wirelessMode = this.getSetting('wirelessMode');
-    if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
-        this.readDevice();
-      else
-        this.statusQuery();
+  onNewDevice() { // the motiondriver now knows me, so register
+    if (this.mdriver.registerDevice(this.getData().mac)) { // check if set. onInit calls this too so it may already be done
+      let wirelessMode = this.getSetting('wirelessMode');
+      if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
+          this.readDevice();
+        else
+          this.statusQuery();
+    }
   }
 
   async onAdded() {

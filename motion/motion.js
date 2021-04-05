@@ -295,7 +295,18 @@ class MotionDriver extends EventEmitter {
         if (item != undefined && item.id.registered != register) {
             this.log((register ? 'Registered ' : 'Unregistered ') + mac);
             item.id.registered = register;
+            return true;
         } 
+        return false;
+    }
+
+    isRegisteredDevice(mac) { 
+        let item = this.devices.get(mac);
+        if (item != undefined) {
+            return item.id.registered;
+            return true;
+        } 
+        return false;
     }
 
     getDevices(type = undefined, filter = undefined) {
