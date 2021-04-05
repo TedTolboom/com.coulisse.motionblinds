@@ -12,18 +12,28 @@ class MotionBlinds extends Homey.App {
     this.mdriver = new MotionDriver(this);
     this.mdriver.on('newDevices', function() { this.onNewDevices(); }.bind(this));
 
-    this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
-    this.homey.settings.on('set', function() {
-      this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
-    }.bind(this));
-    this.homey.settings.on('unset', function() {
-      this.mdriver.setAppKey(null);
-    }.bind(this))
+    let blockAction = this.homey.flow.getActionCard('action_BLOCK_BLIND');
+    let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
+    blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
+    unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
+     this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
+    this.homey.settings.on('set',   function() { this.mdriver.setAppKey(this.homey.settings.get('motion_key')); }.bind(this));
+    this.homey.settings.on('unset', function() { this.mdriver.setAppKey(null); }.bind(this));
     this.mdriver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
   }
 
-  async onNewDevices() { // a new gateway is added, poll unknown devices
+  async onBlockAction(args, state) {
+    if (args.device != undefined)
+      args.device.onBlockAction(args, state);
+  }
+   
+  async onUnblockAction(args, state) {
+    if (args.device != undefined)
+      args.device.onUnblockAction(args, state);
+  }
+   
+async onNewDevices() { // a new gateway is added, poll unknown devices
     this.log('New devices discovered');
     this.mdriver.pollStates(false);
   }

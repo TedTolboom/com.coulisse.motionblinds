@@ -14,13 +14,15 @@ class MotionDeviceGeneric extends Homey.Device {
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowcoverings_tilt_set.bind(this));
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowcoverings_state.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
-    this.registerCapabilityListener('state_mb_part_closed', this.onCapabilitystate_mb_part_closed.bind(this));
+    this.registerCapabilityListener('state_mb_part_closed', this.onCapabilityState_mb_part_closed.bind(this));
+    this.registerCapabilityListener('alarm_contact', this.onCapabilityAlarm_contact.bind(this));
     this.mdriver.on('newDevice', function(newmac) { if (mac == newmac) this.onNewDevice(); }.bind(this));
     this.mdriver.on('Report', function(msg, info) { if (mac == msg.mac) this.onReport(msg, info); }.bind(this));
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
     this.log(mac, 'initialized');
+    this.checkAlarmContactCapability();
     this.onNewDevice();
   }
 
@@ -53,8 +55,22 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.registerDevice(this.getData().mac, false);
   }
    
+  async onBlockAction(args, state) {
+    if (this.hasCapability('alarm_contact')) {
+      this.log(this.getData().mac, 'blocked');
+      this.setCapabilityValue('alarm_contact', true);
+    }
+  }
+   
+  async onUnblockAction(args, state) {
+    if (this.hasCapability('alarm_contact')) {
+      this.log(this.getData().mac, 'unblocked');
+      this.setCapabilityValue('alarm_contact', false);
+    }
+  }
+   
   async onCapabilityWindowcoverings_set(value, opts) {
-    this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value);
+    this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value, opts);
     this.setCapabilityPartClosed(value);
     this.setPercentageOpen(value);
   }
@@ -64,7 +80,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.setPercentageTilt(value);
   }
 
-  async onCapabilitystate_mb_part_closed(value, opts) {
+  async onCapabilityState_mb_part_closed(value, opts) {
     this.log(this.getData().mac, 'onCapabilitystate_mb_part_closed', value, opts);
   }
 
@@ -75,6 +91,11 @@ class MotionDeviceGeneric extends Homey.Device {
       case 'down': this.closeDown(); break;
       case 'idle': this.stop();      break;
     }
+  }
+
+  async onCapabilityAlarm_contact(value, opts) {
+    this.log(this.getData().mac, 'onCapabilityAlarm_contact', value, opts);
+    this.checkAlarmContactCapability();
   }
 
   async onCapabilityMeasure_battery(value, opts) {
@@ -290,6 +311,14 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
 
+  async checkAlarmContactCapability() {
+    if (this.getSetting('addBlockAlarm')) {
+      if (!this.hasCapability('alarm_contact'))
+        this.addCapability('alarm_contact');
+    } else if (this.hasCapability('alarm_contact'))
+      this.removeCapability('alarm_contact');
+  }
+
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
     this.setStates(msg);
@@ -344,12 +373,17 @@ class MotionDeviceGeneric extends Homey.Device {
 
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
-    this.log(this.getData().mac, 'setPosition', pos);
-    switch (pos) {
-      case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
-      case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
+    if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+      this.log(this.getData().mac, 'CloseDownBlocked');
+      this.readDevice();
+    } else {
+      this.log(this.getData().mac, 'setPosition', pos);
+      switch (pos) {
+        case this.mdriver.Position.Open_Up:    this.setCapabilityState('up');   break;
+        case this.mdriver.Position.Close_Down: this.setCapabilityState('down'); break;      
+      }
+      this.writeDevice({ "targetPosition": pos });    
     }
-    this.writeDevice({ "targetPosition": pos });    
   }
 
   setPercentageTilt(perc) {
@@ -364,8 +398,13 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   closeDown() {
-    this.log(this.getData().mac, 'CloseDown');
-    this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
+    if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+      this.log(this.getData().mac, 'CloseDownBlocked');
+      this.scheduleStop();
+    } else {
+      this.log(this.getData().mac, 'CloseDown');
+      this.writeDevice({ "operation": this.mdriver.Operation.Close_Down });    
+    }
   }
 
   stop() {

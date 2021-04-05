@@ -73,6 +73,48 @@
       "preventtag": true
     }
   },
+
+  "flow": {
+    "triggers": [],
+    "conditions": [],
+    "actions": [
+      {
+        "id": "action_BLOCK_BLIND",
+        "title": {
+          "en": "Block closing blind",
+          "nl": "Blokkeer gordijn sluiten"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "capabilities": "alarm_contact"
+            }
+          }
+        ]
+      },
+      {
+        "id": "action_UNBLOCK_BLIND",
+        "title": {
+          "en": "Unblock closing blind",
+          "nl": "Deblokkeer gordijn sluiten"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "capabilities": "alarm_contact"
+            }
+          }
+        ]
+      }
+    ]
+  },
+
   "drivers": [
     {
       "id": "driver_blind",
@@ -84,6 +126,7 @@
       "capabilities": [
         "windowcoverings_state",
         "windowcoverings_set",
+        "alarm_contact",
         "measure_battery",
         "measure_mb_rssi"
       ],
@@ -132,6 +175,19 @@
               "hint": {
                 "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
                 "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
+              }
+            },
+            {
+              "id": "addBlockAlarm",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Add an alarm to block opening",
+                "nl": "Alarm toevoegen om openen te blokkeren"
+              },
+              "hint": {
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is."
               }
             },
             {
@@ -207,6 +263,7 @@
         "windowcoverings_state",
         "windowcoverings_set",
         "windowcoverings_tilt_set",
+        "alarm_contact",
         "measure_battery",
         "measure_mb_rssi"
       ],
@@ -255,6 +312,19 @@
               "hint": {
                 "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
                 "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
+              }
+            },
+            {
+              "id": "addBlockAlarm",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Add an alarm to block opening",
+                "nl": "Alarm toevoegen om openen te blokkeren"
+              },
+              "hint": {
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is."
               }
             },
             {
@@ -329,6 +399,7 @@
       "capabilities": [
         "windowcoverings_state",
         "windowcoverings_set",
+        "alarm_contact",
         "measure_battery",
         "measure_mb_rssi"
       ],
@@ -378,6 +449,19 @@
                 "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
                 "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
               }            
+            },
+            {
+              "id": "addBlockAlarm",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Add an alarm to block opening",
+                "nl": "Alarm toevoegen om openen te blokkeren"
+              },
+              "hint": {
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+              }
             },
             {
               "id": "inRemoteGroup",
