@@ -1,7 +1,7 @@
 {
   "1.0.2": {
-    "en": "• Added advanced setting for window sensor that blocks the curtain from closing, including flow cards • Added advanced device settings for maximum traveltime, if a blind is part of a remote group to reduce system load and increase performance.",
-    "nl": "• Geavanceerde instelling toegevoegd voor raamsensor die het gordijn blokkeert om te sluiten, inclusief flow kaarten • Geavanceerde instellingen toegevoegd foor maximale looptijd en of een gordijn onderdeel is van een afstandsbediening-groep om systeembelasting te verlagen en performance te verhogen."
+    "en": "• Added advanced device setting for window sensor that blocks the curtain from closing, including flow cards • Added advanced device setting for maximum traveltime • Added advanced device setting if a blind is part of a remote group to reduce system load and increase performance.",
+    "nl": "• Geavanceerde apparaatinstelling toegevoegd voor een raamsensor die het gordijn blokkeert om te sluiten, inclusief flow kaarten • Geavanceerde apparaatinstelling toegevoegd voor maximale looptijd • Geavanceerde apparaatinstelling toegevoegd voor of een gordijn onderdeel is van een afstandsbediening-groep om systeembelasting te verlagen en performance te verhogen."
   },
   "1.0.1": {
     "en": "• Support for venetian blinds (tilt) • Support for curtains • Automatic selection of capabilities • Tile now shows open/closed status when possible • Added signal strength capability • Better synchronisation between up/down and slider • Fixed state changes to curtain slider when triggered from a flow.",
