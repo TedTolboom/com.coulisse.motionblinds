@@ -73,7 +73,6 @@
       "preventtag": true
     }
   },
-
   "flow": {
     "triggers": [
       {
@@ -148,7 +147,6 @@
       }
     ]
   },
-
   "drivers": [
     {
       "id": "driver_blind",
