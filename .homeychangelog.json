@@ -1,7 +1,7 @@
 {
   "1.0.3": {
-    "en": "•  • ",
-    "nl": "•  • "
+    "en": "• Implemented debug setting that logs all messages • A blocked blind will now allow to go to the open position from the slider as well • Small textual changes.",
+    "nl": "•  Debug instelling toegevoegd die alle berichten logt • Een geblokkeerd gordijn staat nu ook de open positie toe vanuit de schuifregelaar • Kleine tekstuele wijzigingen."
   },
   "1.0.2": {
     "en": "• Added advanced device setting for window sensor that blocks the curtain from closing, including flow cards • Added advanced device setting for maximum traveltime • Added advanced device setting if a blind is part of a remote group to reduce system load and increase performance.",
