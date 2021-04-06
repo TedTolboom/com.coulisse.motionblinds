@@ -2,12 +2,9 @@
 'use strict';
 
 const Homey = require('homey');
-const MotionDriver = require('../motion/motion')
+const MotionDriver = require('../motion/motion');
 
 class MotionDriverGeneric extends Homey.Driver {
-  /**
-   * onInit is called when the driver is initialized.
-   */
   async onInit() {
     this.flowTriggerBlocked = this.homey.flow.getDeviceTriggerCard('trigger_BLIND_BLOCKED');
     this.log('Initialized');
@@ -34,10 +31,6 @@ class MotionDriverGeneric extends Homey.Driver {
     return unknown; 
   }
 
-  /**
-   * onPairListDevices is called when a user is adding a device and the 'list_devices' view is called.
-   * This should return an array with the data of devices that are available for pairing.
-   */
   async onPairListDevices() {
     try {
       this.log('Pairing');
@@ -45,7 +38,8 @@ class MotionDriverGeneric extends Homey.Driver {
       this.log('Allowed', this.getAllowedTypes());
       let devices = mdriver.getDevices(mdriver.DeviceType.Blind, function(id) { 
         this.log('filter', id);
-          return !id.registered && (this.getAllowedTypes() == undefined || id.type == undefined || this.getAllowedTypes().includes(id.type));
+          return !id.registered && (this.getAllowedTypes() == undefined || 
+                  id.type == undefined || this.getAllowedTypes().includes(id.type));
         }.bind(this));
         this.log('Devices available at start pairing', devices);
         let pairedDriverDevices = [];

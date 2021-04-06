@@ -1,4 +1,8 @@
 {
+  "1.0.3": {
+    "en": "•  • ",
+    "nl": "•  • "
+  },
   "1.0.2": {
     "en": "• Added advanced device setting for window sensor that blocks the curtain from closing, including flow cards • Added advanced device setting for maximum traveltime • Added advanced device setting if a blind is part of a remote group to reduce system load and increase performance.",
     "nl": "• Geavanceerde apparaatinstelling toegevoegd voor een raamsensor die het gordijn blokkeert om te sluiten, inclusief flow kaarten • Geavanceerde apparaatinstelling toegevoegd voor maximale looptijd • Geavanceerde apparaatinstelling toegevoegd voor of een gordijn onderdeel is van een afstandsbediening-groep om systeembelasting te verlagen en performance te verhogen."

@@ -7,7 +7,6 @@ const MotionDriver = require('../motion/motion')
 class MotionDeviceGeneric extends Homey.Device {
   async onInit() {
     this.mdriver = this.homey.app.mdriver;
-    // this.mdriver.verbose = true;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
@@ -298,6 +297,14 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
 
+  async checkAlarmContactCapability() {
+    if (this.getSetting('addBlockAlarm')) {
+      if (!this.hasCapability('alarm_contact'))
+        this.addCapability('alarm_contact');
+    } else if (this.hasCapability('alarm_contact'))
+      this.removeCapability('alarm_contact');
+  }
+
   async onReport(msg, info) {
     this.log(this.getData().mac, 'onReport');
     this.setStates(msg);
@@ -309,14 +316,6 @@ class MotionDeviceGeneric extends Homey.Device {
       this.log(this.getData().mac, 'unexpected Report triggered poll');
       this.mdriver.pollStates(true, true);
     }
-  }
-
-  async checkAlarmContactCapability() {
-    if (this.getSetting('addBlockAlarm')) {
-      if (!this.hasCapability('alarm_contact'))
-        this.addCapability('alarm_contact');
-    } else if (this.hasCapability('alarm_contact'))
-      this.removeCapability('alarm_contact');
   }
 
   async onReadDeviceAck(msg, info) {
@@ -381,7 +380,7 @@ class MotionDeviceGeneric extends Homey.Device {
 
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
-    if (this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+    if (pos != 1 && this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
       this.log(this.getData().mac, 'CloseDownBlocked');
       this.readDevice();
       this.triggerBlocked();

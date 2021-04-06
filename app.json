@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -10,13 +10,6 @@
   "source": "https://github.com/EDelsman/com.coulisse.motionblinds",
   "bugs": {
     "url": "https://community.athom.com/t/app-motion-blinds/45608"
-  },
-  "contributing": {
-    "donate": {
-      "paypal": {
-        "username": "edwindelsman"
-      }
-    }
   },
   "name": {
     "en": "Motion Blinds",
@@ -37,6 +30,13 @@
   "author": {
     "name": "Edwin Delsman",
     "email": "sp.delsman+motion.app@gmail.com"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "edwindelsman"
+      }
+    }
   },
   "capabilities": {
     "measure_mb_rssi": {

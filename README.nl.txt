@@ -1,5 +1,3 @@
-MOTION Blinds
-
 ONTDEK MOTIONBLINDS
 
 MotionBlinds is een baanbrekende automatiseringsoplossing voor raambekleding, waarmee gemotoriseerde raambekleding voor iedereen bereikbaar is. De raambekleding kan heel eenvoudig worden geïnstalleerd en vanaf iedere plek en op iedere gewenste manier worden bediend. Ontdek de eindeloze keuzemogelijkheden om de oplossing te vinden die aan jouw eisen voldoet.

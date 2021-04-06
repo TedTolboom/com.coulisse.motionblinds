@@ -16,7 +16,7 @@ class MotionBlinds extends Homey.App {
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
     blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
     unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
-     this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
+    this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
     this.homey.settings.on('set',   function() { this.mdriver.setAppKey(this.homey.settings.get('motion_key')); }.bind(this));
     this.homey.settings.on('unset', function() { this.mdriver.setAppKey(null); }.bind(this));
     this.mdriver.connect();
@@ -33,7 +33,7 @@ class MotionBlinds extends Homey.App {
       args.device.onUnblockAction(args, state);
   }
    
-async onNewDevices() { // a new gateway is added, poll unknown devices
+  async onNewDevices() { // a new gateway is added, poll unknown devices
     this.log('New devices discovered');
     this.mdriver.pollStates(false);
   }

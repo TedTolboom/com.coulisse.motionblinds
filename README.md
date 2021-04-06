@@ -1,5 +1,3 @@
-# MOTION Blinds
-
 ### DISCOVER MOTIONBLINDS
 MotionBlinds is a ground-breaking window covering automation solution that makes motorized blinds available to everyone. The blinds are super easy to install and can be operated from anywhere, in any way. Discover the endless options to find the solution that fits your requirements.
 

@@ -2,7 +2,7 @@
 'use strict';
 
 const Homey = require('homey');
-const MotionDriverGeneric = require('../genericdriver')
+const MotionDriverGeneric = require('../genericdriver');
 
 class MotionDriverVenetian extends MotionDriverGeneric {
 
