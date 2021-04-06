@@ -380,7 +380,7 @@ class MotionDeviceGeneric extends Homey.Device {
 
   setPercentageOpen(perc) {
     let pos = this.mdriver.percentageOpenToPosition(perc);
-    if (pos != 1 && this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
+    if (pos != this.mdriver.Position.Open_Up && this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
       this.log(this.getData().mac, 'CloseDownBlocked');
       this.readDevice();
       this.triggerBlocked();
