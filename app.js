@@ -16,11 +16,28 @@ class MotionBlinds extends Homey.App {
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
     blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
     unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
-    this.mdriver.setAppKey(this.homey.settings.get('motion_key'));
-    this.homey.settings.on('set',   function() { this.mdriver.setAppKey(this.homey.settings.get('motion_key')); }.bind(this));
-    this.homey.settings.on('unset', function() { this.mdriver.setAppKey(null); }.bind(this));
+    this.homey.settings.on('set',   function() { this.onSaveSettings(); }.bind(this));
+    this.homey.settings.on('unset', function() { this.onClearSettings(); }.bind(this));
+    this.onSaveSettings();
     this.mdriver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
+  }
+
+  onSaveSettings() {
+    this.mdriver.verbose = this.homey.settings.get('debug') == true;
+    let key = this.homey.settings.get('motion_key');
+    if (key != null && key != undefined && key.length == 16)
+      try {
+        this.mdriver.setAppKey(key);
+      } catch (error) {
+        this.mdriver.setAppKey(null);
+        this.error(error);
+      }
+  }
+
+  async onClearSettings() {
+    this.mdriver.setAppKey(null);
+    this.mdriver.verbose = false;
   }
 
   async onBlockAction(args, state) {

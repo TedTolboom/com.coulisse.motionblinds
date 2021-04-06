@@ -6,9 +6,12 @@
         "keyLocation1": "De geheime sleutel is verplicht om commando's te kunnen sturen naar de Motion Blinds wifi gateway. Deze is gegenereerd door de originele  MOTION Blinds app.",
         "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Als het 'Over MOTION' scherm verschijnt, tik dan snel vijf keer achter elkaar op het schermpje. Je krijgt dan een reminder scherm waar je de geheime sleutel kunt kopiëren.",
         "keyLocation3": "Een geldige sleutel moet een vergelijkbaar format hebben als het volgende voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
-        "keyField": "Geheime sleutel:",
-        "save": "Sleutel opslaan",
-        "clear": "Sleutel wissen"
+        "keyField": "Geheime sleutel",
+        "options": "Opties",
+        "debugDescription": "De Debug instelling alleen aanzetten als de ontwikkelaar hierom vraagt.",
+        "debug": "Alle meldingen loggen voor het debuggen",
+        "save": "Instellingen opslaan",
+        "clear": "Instellingen wissen"
     },
     "blind": {
         "defaultName": "Rolgordijn",
