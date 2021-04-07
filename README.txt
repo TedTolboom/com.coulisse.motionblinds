@@ -16,6 +16,4 @@ AVAILABILITY
 
 ROBB Smarrt is a quality home brand of ROBBshop.nl. It features various MOTION Blinds products, among which is a MOTION motor that can be applied to almost any existing rollerblind. Simply remove the original chain control, insert the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorized rollerblind.
 
-Rollerblind motor: https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt
-Wifi bridge: https://www.robbshop.nl/wifi-bridge-voor-motion-rolgordijnmotor
-Remote: https://www.robbshop.nl/afstandsbediening-433mhz-voor-rolgordijn
+The rollerblind motor, Wifi bridge and optional remote you need to get started are available from ROBBshop.nl

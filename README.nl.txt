@@ -16,6 +16,4 @@ BESCHIKBAARHEID
 
 ROBB Smarrt is een kwaliteits-huismerk van ROBBshop.nl. Het omvat diverse MOTION Blinds producten, waaronder een MOTION motor die toegepast kan worden in bijna elk rolgordijn. Haal eenvoudigweg de oude kettingbediening eraf en steek de oplaadbare motor in de oorspronkelijke rolgordijnbuis. Het rolgordijn kan dan opgehangen worden met de meegeleverde beugels. Het eindresultaat is vrijwel niet te onderscheiden van een normaal rolgordijn zonder motor. 
 
-Rolgordijn motor: https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt
-Wifi bridge: https://www.robbshop.nl/wifi-bridge-voor-motion-rolgordijnmotor
-Afstandsbediening: https://www.robbshop.nl/afstandsbediening-433mhz-voor-rolgordijn
+De rolgordijn motor, Wifi bridge en optionele afstandsbediening die je nodig hebt om te beginnen zijn verkrijgbaar bij ROBBshop.nl
