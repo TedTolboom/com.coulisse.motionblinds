@@ -1,4 +1,8 @@
 {
+  "1.0.4": {
+    "en": "• Removed faulty formatting on flow cards and applied branding.",
+    "ln": "• Foutieve formattering op Flow kaarten verwijderd en branding toegepast."
+  },
   "1.0.3": {
     "en": "• Implemented debug setting that logs all messages • A blocked blind will now allow to go to the open position from the slider as well • Small textual changes.",
     "nl": "•  Debug instelling toegevoegd die alle berichten logt • Een geblokkeerd gordijn staat nu ook de open positie toe vanuit de schuifregelaar • Kleine tekstuele wijzigingen."

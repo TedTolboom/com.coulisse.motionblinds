@@ -8,7 +8,7 @@
         "keyLocation3": "Een geldige sleutel moet een vergelijkbaar format hebben als het volgende voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
         "keyField": "Geheime sleutel",
         "options": "Opties",
-        "debugDescription": "De Debug instelling alleen aanzetten als de ontwikkelaar hierom vraagt.",
+        "debugDescription": "De debug instelling alleen aanzetten als de ontwikkelaar hierom vraagt.",
         "debug": "Alle meldingen loggen voor het debuggen",
         "save": "Instellingen opslaan",
         "clear": "Instellingen wissen"

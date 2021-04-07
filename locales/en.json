@@ -8,7 +8,7 @@
         "keyLocation3": "A valid key must have a similar format as the following example, including the hyphens: 74ae544c-d16e-4c",
         "keyField": "Secret key",
         "options": "Options",
-        "debugDescription": "Only turn the Debug option on if the developer asks you to do so.",
+        "debugDescription": "Only turn the debug option on if the developer asks you to do so.",
         "debug": "Log all messages for debugging",
         "save": "Save settings",
         "clear": "Clear settings"
