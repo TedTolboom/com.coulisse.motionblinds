@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -16,8 +16,8 @@
     "nl": "Motion Blinds"
   },
   "description": {
-    "en": "Smart window coverings, by ROBB Smarrt.",
-    "nl": "Slimme raamdecoratie, van ROBB Smarrt."
+    "en": "Smart window coverings by ROBB Smarrt.",
+    "nl": "Slimme raamdecoratie van ROBB Smarrt."
   },
   "category": [
     "appliances"
@@ -105,6 +105,10 @@
           "en": "Block closing blind",
           "nl": "Blokkeer gordijn sluiten"
         },
+        "hint": {
+          "en": "Set this when a window is opened inward under the blind to prevent the blind from closing.",
+          "nl": "Zet dit aan als een raam naar binnen toe is opengezet om te voorkomen dat het gordijn sluit."
+        },
         "args": [
           {
             "name": "device",
@@ -121,6 +125,10 @@
         "title": {
           "en": "Unblock closing blind",
           "nl": "Deblokkeer gordijn sluiten"
+        },
+        "hint": {
+          "en": "Lets the curtain close normally again when the window that was blocking the blind is closed.",
+          "nl": "Laat het gordijn weer normaal dichtgaan als het raam dat het gordijn blokkeerde wordt gesloten."
         },
         "args": [
           {
