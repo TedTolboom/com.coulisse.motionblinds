@@ -4,7 +4,7 @@
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
-  "homepage": "https://motionblinds.com/",
+  "homepage": "https://www.robbshop.nl/merken/robb-smarrt",
   "homeyCommunityTopicId": 45608,
   "support": "https://community.athom.com/t/app-motion-blinds/45608",
   "source": "https://github.com/EDelsman/com.coulisse.motionblinds",
@@ -16,8 +16,8 @@
     "nl": "Motion Blinds"
   },
   "description": {
-    "en": "Smart window ccverings, by Coulisse.",
-    "nl": "Slimme raamdecoratie, door Coulisse."
+    "en": "Smart window coverings, by ROBB Smarrt.",
+    "nl": "Slimme raamdecoratie, van ROBB Smarrt."
   },
   "category": [
     "appliances"

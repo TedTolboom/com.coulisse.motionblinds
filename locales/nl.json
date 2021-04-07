@@ -1,9 +1,9 @@
 {
     "settings": {
-        "title": "Wifi Gateway settings",
-        "subtitle": "Deze app vereist een MOTION Blinds gateway in hetzelfde netwerk als Homey.",
+        "title": "Wifi bridge instellingen",
+        "subtitle": "Deze app vereist een MOTION Blinds bridge in hetzelfde netwerk als Homey.",
         "keyLegend": "MOTION App sleutel",
-        "keyLocation1": "De geheime sleutel is verplicht om commando's te kunnen sturen naar de Motion Blinds wifi gateway. Deze is gegenereerd door de originele  MOTION Blinds app.",
+        "keyLocation1": "De geheime sleutel is verplicht om commando's te kunnen sturen naar de Motion Blinds wifi bridge. Deze is gegenereerd door de originele MOTION Blinds app.",
         "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Als het 'Over MOTION' scherm verschijnt, tik dan snel vijf keer achter elkaar op het schermpje. Je krijgt dan een reminder scherm waar je de geheime sleutel kunt kopiëren.",
         "keyLocation3": "Een geldige sleutel moet een vergelijkbaar format hebben als het volgende voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
         "keyField": "Geheime sleutel",
@@ -30,8 +30,8 @@
         "nr": "nr"
     },
     "DeviceType": {
-        "02000001": "Gateway",
-        "02000002": "Subgateway", 
+        "02000001": "Bridge",
+        "02000002": "Sub-bridge", 
         "10000000": "Raambekleding", 
         "10000001": "Top/down bottom/up gordijn", 
         "10000002": "Dubbel rolgordijn"
