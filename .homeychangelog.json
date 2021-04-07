@@ -1,4 +1,8 @@
 {
+  "1.0.5": {
+    "en": "• Bolder icon lines in style with new Homey design.",
+    "ln": "• Dikkere icoonlijnen in stijl met nieuwe Homey ontwerp."
+  },
   "1.0.4": {
     "en": "• Removed faulty formatting on flow cards and applied branding.",
     "ln": "• Foutieve formattering op Flow kaarten verwijderd en branding toegepast."
