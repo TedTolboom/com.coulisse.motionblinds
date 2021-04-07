@@ -14,7 +14,7 @@ In order for Homey to be allowed to send commands to the bridge, it needs a key.
 
 AVAILABILITY
 
-ROBB Smarrt is a quality home brand of ROBBshop.nl. It features various MOTION Blinds products, among which is a MOTION motorkit that can be applied to almost any existing rollerblind. Simply remove the original chain control, insert the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorized rollerblind.
+ROBB Smarrt is a quality home brand of ROBBshop.nl. It features various MOTION Blinds products, among which is a MOTION motor that can be applied to almost any existing rollerblind. Simply remove the original chain control, insert the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorized rollerblind.
 
 Rollerblind motor: https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt
 Wifi bridge: https://www.robbshop.nl/wifi-bridge-voor-motion-rolgordijnmotor

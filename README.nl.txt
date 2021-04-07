@@ -14,7 +14,7 @@ Om te zorgen dat Homey commando's naar de bridge kan sturen is een sleutel nodig
 
 BESCHIKBAARHEID
 
-ROBB Smarrt is een kwaliteits-huismerk van ROBBshop.nl. Het omvat diverse MOTION Blinds producten, waaronder een MOTION motorkit motorkits die toegepast kan worden in bijna elk rolgordijn. Haal eenvoudigweg de oude kettingbediening eraf en steek de oplaadbare motor in te oorspronkelijke buis. Het rolgordijn kan dan opgehangen worden met de meegeleverde beugels. Het eindresultaat is vrijwel niet te onderscheiden van een normaal rolgordijn zonder motor. 
+ROBB Smarrt is een kwaliteits-huismerk van ROBBshop.nl. Het omvat diverse MOTION Blinds producten, waaronder een MOTION motor die toegepast kan worden in bijna elk rolgordijn. Haal eenvoudigweg de oude kettingbediening eraf en steek de oplaadbare motor in te oorspronkelijke buis. Het rolgordijn kan dan opgehangen worden met de meegeleverde beugels. Het eindresultaat is vrijwel niet te onderscheiden van een normaal rolgordijn zonder motor. 
 
 Rolgordijn motor: https://www.robbshop.nl/motion-accumotor-433mhz-voor-rolgordijn-robb-smarrt
 Wifi bridge: https://www.robbshop.nl/wifi-bridge-voor-motion-rolgordijnmotor
