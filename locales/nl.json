@@ -1,12 +1,13 @@
 {
     "settings": {
+        "ROBBsmart": "van ROBB Smarrt",
         "title": "Wifi bridge instellingen",
         "subtitle": "Deze app vereist een MOTION Blinds bridge in hetzelfde netwerk als Homey.",
         "keyLegend": "MOTION App sleutel",
-        "keyLocation1": "De geheime sleutel is verplicht om commando's te kunnen sturen naar de Motion Blinds wifi bridge. Deze is gegenereerd door de originele MOTION Blinds app.",
-        "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Als het 'Over MOTION' scherm verschijnt, tik dan snel vijf keer achter elkaar op het schermpje. Je krijgt dan een reminder scherm waar je de geheime sleutel kunt kopiëren.",
-        "keyLocation3": "Een geldige sleutel moet een vergelijkbaar format hebben als het volgende voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
-        "keyField": "Geheime sleutel",
+        "keyLocation1": "Een sleutel is verplicht om commando's te kunnen sturen naar de wifi bridge. Deze is gegenereerd door de originele MOTION Blinds app.",
+        "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Als het 'Over MOTION' scherm verschijnt, tik dan snel vijf keer achter elkaar op het schermpje. Je krijgt dan een reminder scherm waar je de sleutel kunt kopiëren.",
+        "keyLocation3": "Een geldige sleutel lijkt op dit voorbeeld, inclusief de mintekens: 74ae544c-d16e-4c",
+        "keyField": "Sleutel",
         "options": "Opties",
         "debugDescription": "De debug instelling alleen aanzetten als de ontwikkelaar hierom vraagt.",
         "debug": "Alle meldingen loggen voor het debuggen",
