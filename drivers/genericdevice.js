@@ -301,6 +301,10 @@ class MotionDeviceGeneric extends Homey.Device {
     if (this.getSetting('addBlockAlarm')) {
       if (!this.hasCapability('alarm_contact'))
         this.addCapability('alarm_contact');
+        if (!this.hasCapability('alarm_contact')) {
+        this.addCapability('alarm_contact');
+        this.setCapabilityOptions('alarm_contact', { "zoneActivity": false });
+      }
     } else if (this.hasCapability('alarm_contact'))
       this.removeCapability('alarm_contact');
   }
