@@ -1,7 +1,7 @@
 {
   "1.0.6": {
     "en": "• Blocking alarm no longer activates zone activity • Hints for block/unblock flow cards.",
-    "ln": "• Blokkeeralarm activeert geen zone activiteit meer • Hints voor de blokeer/deblokkeer flow kaarten."
+    "ln": "• Blokkeeralarm activeert geen zone-activiteit meer • Hints voor de blokeer/deblokkeer flow kaarten."
   },
   "1.0.5": {
     "en": "• Bolder icon lines in style with new Homey design.",
