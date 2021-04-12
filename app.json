@@ -102,7 +102,7 @@
       {
         "id": "action_BLOCK_BLIND",
         "title": {
-          "en": "Block closing blind",
+          "en": "Block blind from closing",
           "nl": "Blokkeer gordijn sluiten"
         },
         "hint": {
@@ -123,7 +123,7 @@
       {
         "id": "action_UNBLOCK_BLIND",
         "title": {
-          "en": "Unblock closing blind",
+          "en": "Unblock blind from closing",
           "nl": "Deblokkeer gordijn sluiten"
         },
         "hint": {
