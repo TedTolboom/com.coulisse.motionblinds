@@ -14,8 +14,12 @@ class MotionBlinds extends Homey.App {
 
     let blockAction = this.homey.flow.getActionCard('action_BLOCK_BLIND');
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
+    let fullyOpenCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_OPEN');
+    let fullyClosedCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_CLOSED');
     blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
     unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
+    fullyOpenCondition.registerRunListener(function(args, state)  { return this.onFullyOpenCondition(args, state); }.bind(this));
+    fullyClosedCondition.registerRunListener(function(args, state)  { return this.onFullyClosedCondition(args, state); }.bind(this));
     this.homey.settings.on('set',   function() { this.onSaveSettings(); }.bind(this));
     this.homey.settings.on('unset', function() { this.onClearSettings(); }.bind(this));
     this.onSaveSettings();
@@ -40,14 +44,26 @@ class MotionBlinds extends Homey.App {
     this.mdriver.verbose = false;
   }
 
-  async onBlockAction(args, state) {
+  onBlockAction(args, state) {
     if (args.device != undefined)
       args.device.onBlockAction(args, state);
   }
    
-  async onUnblockAction(args, state) {
+  onUnblockAction(args, state) {
     if (args.device != undefined)
       args.device.onUnblockAction(args, state);
+  }
+
+  async onFullyClosedCondition(args, state) {
+    if (args.device != undefined)
+      return args.device.onFullyClosedCondition(args, state);
+    return undefined;
+  }
+   
+  async onFullyOpenCondition(args, state) {
+    if (args.device != undefined)
+      return args.device.onFullyOpenCondition(args, state);
+    return undefined;
   }
    
   async onNewDevices() { // a new gateway is added, poll unknown devices

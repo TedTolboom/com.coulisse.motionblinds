@@ -68,6 +68,22 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
    
+  async onFullyOpenCondition(args, state) {
+    let open = this.hasCapability('windowcoverings_set')
+      ? (this.getCapabilityValue('windowcoverings_set') > 0.95) 
+      : (this.getCapabilityValue('windowcoverings_state') == 'up');
+    this.log(this.getData().mac, 'check fully Closed', open);
+    return open;
+  }
+   
+  async onFullyClosedCondition(args, state) {
+    let open = this.hasCapability('windowcoverings_set')
+      ? (this.getCapabilityValue('windowcoverings_set') < 0.05) 
+      : (this.getCapabilityValue('windowcoverings_state') == 'down');
+    this.log(this.getData().mac, 'check fully Closed', open);
+    return open;
+  }
+   
   async onCapabilityWindowcoverings_set(value, opts) {
     this.log(this.getData().mac, 'onCapabilityWindowcoverings_set', value, opts);
     this.setCapabilityPartClosed(value);

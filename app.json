@@ -97,7 +97,50 @@
         ]
       }
     ],
-    "conditions": [],
+    "conditions": [
+      {
+        "id": "condition_BLIND_FULLY_OPEN",
+        "title": {
+          "en": "The position !{{is|isn't}} fully open",
+          "nl": "De positie !{{is|is niet}} volledig open"
+        },
+        "hint": {
+          "en": "This Flow will continue if the blind is/isn't in the fully open position.",
+          "nl": "Deze flow gaat door als het gordijn wel/niet in de volledig open positie staat."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "capabilities": "windowcoverings_set"
+            }
+          }
+        ]
+      },
+      {
+        "id": "condition_BLIND_FULLY_CLOSED",
+        "title": {
+          "en": "The position !{{is|isn't}} fully closed",
+          "nl": "De positie !{{is|is niet}} volledig dicht"
+        },
+        "hint": {
+          "en": "This Flow will continue if the blind is/isn't in the fully closed position.",
+          "nl": "Deze flow gaat door als het gordijn wel/niet in de volledig gesloten positie staat."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "capabilities": "windowcoverings_set"
+            }
+          }
+        ]
+      }
+    ],
     "actions": [
       {
         "id": "action_BLOCK_BLIND",
@@ -106,8 +149,8 @@
           "nl": "Blokkeer gordijn sluiten"
         },
         "hint": {
-          "en": "Set this when a window is opened inward under the blind to prevent the blind from closing.",
-          "nl": "Zet dit aan als een raam naar binnen toe is opengezet om te voorkomen dat het gordijn sluit."
+          "en": "Set this when a window is opened inward under the blind to prevent the blind from closing. The blind's contact alarm will be turned on.",
+          "nl": "Zet dit aan als een raam naar binnen toe is opengezet om te voorkomen dat het gordijn sluit. Het contactalarm van het gordijn gaat aan."
         },
         "args": [
           {
@@ -127,8 +170,8 @@
           "nl": "Deblokkeer gordijn sluiten"
         },
         "hint": {
-          "en": "Lets the curtain close normally again when the window that was blocking the blind is closed.",
-          "nl": "Laat het gordijn weer normaal dichtgaan als het raam dat het gordijn blokkeerde wordt gesloten."
+          "en": "Lets the curtain close normally again when the window that was blocking the blind is closed. The blind's contact alarm will be turned off.",
+          "nl": "Laat het gordijn weer normaal dichtgaan als het raam dat het gordijn blokkeerde wordt gesloten. Het contactalarm van het gordijn gaat uit."
         },
         "args": [
           {

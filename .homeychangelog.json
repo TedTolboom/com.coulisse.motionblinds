@@ -1,19 +1,19 @@
 {
   "1.0.6": {
-    "en": "• Blocking alarm no longer activates zone activity • Hints for block/unblock flow cards.",
-    "ln": "• Blokkeeralarm activeert geen zone-activiteit meer • Hints voor de blokeer/deblokkeer flow kaarten."
+    "en": "• Added flow conditions for fully open/close positions • Blocking alarm no longer activates zone activity • Hints for block/unblock flow cards.",
+    "nl": "• Flow condities toegevoegd voor volledig open/dicht posities • Blokkeeralarm activeert geen zone-activiteit meer • Hints voor de blokeer/deblokkeer flow kaarten."
   },
   "1.0.5": {
     "en": "• Bolder icon lines in style with new Homey design.",
-    "ln": "• Dikkere icoonlijnen in stijl met nieuwe Homey ontwerp."
+    "nl": "• Dikkere icoonlijnen in stijl met nieuwe Homey ontwerp."
   },
   "1.0.4": {
     "en": "• Removed faulty formatting on flow cards and applied branding.",
-    "ln": "• Foutieve formattering op Flow kaarten verwijderd en branding toegepast."
+    "nl": "• Foutieve formattering op Flow kaarten verwijderd en branding toegepast."
   },
   "1.0.3": {
     "en": "• Implemented debug setting that logs all messages • A blocked blind will now allow to go to the open position from the slider as well • Small textual changes.",
-    "nl": "•  Debug instelling toegevoegd die alle berichten logt • Een geblokkeerd gordijn staat nu ook de open positie toe vanuit de schuifregelaar • Kleine tekstuele wijzigingen."
+    "nl": "• Debug instelling toegevoegd die alle berichten logt • Een geblokkeerd gordijn staat nu ook de open positie toe vanuit de schuifregelaar • Kleine tekstuele wijzigingen."
   },
   "1.0.2": {
     "en": "• Added advanced device setting for window sensor that blocks the curtain from closing, including flow cards • Added advanced device setting for maximum traveltime • Added advanced device setting if a blind is part of a remote group to reduce system load and increase performance.",
