@@ -274,13 +274,10 @@ class MotionDriver extends EventEmitter {
 
     batteryLevelToPercentage(level) {
         let voltage = level / 100;
-        let perc = 0;
-        if (voltage > 0.0 && voltage <= 9.4) // 2 cel battery pack (8.4V)
-            perc = Math.round((voltage - 6.8) * 100 / (8.4 - 6.8), 0);
-        else if (voltage > 9.4 && voltage <= 13.6) // 3 cel battery pack (12.6V)
-            perc = Math.round((voltage - 10.2) * 100 / (12.6 - 10.2), 0);
-        else if (voltage > 13.6) // 4 cel battery pack (16.8V)
-            perc = Math.round((voltage - 14.8) * 100 / (16.8 - 14.8), 0);
+        let cells = Math.round(voltage / 3.7); // estimate nr of cells, min is 3.2 and max is 4.2 per cell, will work ok for about 2 to 4 cells
+        let min = 3.4 * cells;  // minimum voltage, actual empty is 3.2, but below 3.4 this average cells usually drop very rapidly, so assume empty early rather than late. 
+        let max = 4.0 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
+        let perc = Math.round((voltage - min) * 100 / (max - min), 0); // this assumes linear, which isn't true but will do until around 3.4 volt per cell, and average is now 3.7 which is usually true for most cells.
         return Math.min(100, Math.max(perc, 0));
     }
 
