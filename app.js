@@ -11,7 +11,6 @@ class MotionBlinds extends Homey.App {
   async onInit() {
     this.mdriver = new MotionDriver(this);
     this.mdriver.on('newDevices', function() { this.onNewDevices(); }.bind(this));
-
     let blockAction = this.homey.flow.getActionCard('action_BLOCK_BLIND');
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
     let fullyOpenCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_OPEN');
@@ -29,6 +28,8 @@ class MotionBlinds extends Homey.App {
 
   onSaveSettings() {
     this.mdriver.verbose = this.homey.settings.get('debug') == true;
+    this.mdriver.logHeartbeat = this.mdriver.verbose;
+    this.mdriver.multicast = this.homey.settings.get('multicast') == true;
     let key = this.homey.settings.get('motion_key');
     if (key != null && key != undefined && key.length == 16)
       try {

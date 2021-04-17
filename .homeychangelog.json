@@ -1,4 +1,8 @@
 {
+  "1.0.7": {
+    "en": "• Added extra logging and error handling • Added debug option to only use multicast.",
+    "nl": "• Extra loginformatie en foutafhandeling toegevoegd • Debug optie om alleen multicast te gebruiken toegevoegd."
+  },
   "1.0.6": {
     "en": "• Added flow conditions for fully open/close positions • Blocking alarm no longer activates zone activity • Hints for block/unblock flow cards.",
     "nl": "• Flow condities toegevoegd voor volledig open/dicht posities • Blokkeeralarm activeert geen zone-activiteit meer • Hints voor de blokeer/deblokkeer flow kaarten."

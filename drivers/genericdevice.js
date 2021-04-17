@@ -20,7 +20,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
-    this.log(mac, 'initialized');
+    this.log(this.getName(), 'at', mac, 'initialized');
     this.checkAlarmContactCapability();
     this.onNewDevice();
   }
@@ -37,7 +37,7 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async onAdded() {
-    this.log(this.getData().mac, 'added');
+    this.log(this.getName(), 'at', this.getData().mac, 'added');
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
@@ -72,7 +72,7 @@ class MotionDeviceGeneric extends Homey.Device {
     let open = this.hasCapability('windowcoverings_set')
       ? (this.getCapabilityValue('windowcoverings_set') > 0.95) 
       : (this.getCapabilityValue('windowcoverings_state') == 'up');
-    this.log(this.getData().mac, 'check fully Closed', open);
+    this.log(this.getData().mac, 'check fully Opened', open);
     return open;
   }
    
@@ -245,7 +245,6 @@ class MotionDeviceGeneric extends Homey.Device {
       let settings = this.getSettings();
       if (settings == undefined)
         settings = { };
-        newSettings.number1 = undefined;
       if (settings.deviceTypeName == undefined || settings.deviceTypeName == '?') {
         newSettings.deviceTypeName = this.homey.app.getDeviceTypeName(this.getData().deviceType);
         if (newSettings.deviceTypeName == null || newSettings.deviceTypeName == undefined || newSettings.deviceTypeName == '?')
@@ -376,7 +375,7 @@ class MotionDeviceGeneric extends Homey.Device {
     else if (timeout < 5)
       timeout = 5;
     this.expectReportTimer = setTimeout(function() { // expect a report, if it does not come in a minute, read state by yourself
-        this.log(this.getData().mac, 'onReportTimeout ', timeout);
+        this.log(this.getData().mac, 'onReportTimeout', timeout);
         this.expectReportTimer = undefined;
         this.readDevice();
       }.bind(this), 1000 * timeout); 

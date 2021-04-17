@@ -20,18 +20,27 @@ class MotionGateway {
     }
 
     calculateAccessToken() {
-        if (this.motionDriver.key != null && this.token != null) {
-            const cipher = Crypto.createCipheriv('aes-128-ecb', this.motionDriver.key, null);
-            let buff = Buffer.concat([cipher.update(this.token), cipher.final()]);
-            let text = buff.toString('hex');
-            let wasnotready = this.accessToken == null;
-            this.accessToken = text.substring(0, 32).toUpperCase();
-			this.motionDriver.log('Accesstoken set');
-            if (wasnotready) 
-                this.motionDriver.onReady(this.mac);
-        } else if (this.accessToken != null) {
+        try {
+            if (this.motionDriver.key != null && this.token != null) {
+                if (this.verbose)
+                    this.motionDriver.log('Key = "' + this.motionDriver.key + '", Token = "' + this.token + '"');
+                const cipher = Crypto.createCipheriv('aes-128-ecb', this.motionDriver.key, null);
+                let buff = Buffer.concat([cipher.update(this.token), cipher.final()]);
+                let text = buff.toString('hex');
+                let wasnotready = this.accessToken == null;
+                this.accessToken = text.substring(0, 32).toUpperCase();
+                this.motionDriver.log('Accesstoken set');
+                if (wasnotready) 
+                    this.motionDriver.onReady(this.mac);
+            } else if (this.accessToken != null) {
+                this.accessToken = null;
+                this.motionDriver.log('Accesstoken cleared');
+                this.motionDriver.onNotReady(this.mac);
+            }
+        } catch (err) {
+            this.motionDriver.log('Error calculating Access Token for Key = "' + this.motionDriver.key + '", Token = "' + this.token + '"');
+            this.motionDriver.log(err);
             this.accessToken = null;
-			this.motionDriver.log('Accesstoken cleared');
             this.motionDriver.onNotReady(this.mac);
         }
     }
@@ -183,6 +192,7 @@ class MotionDriver extends EventEmitter {
         this.logHeartbeat = false;
         this.pollAgain = false;
         this.pollTimer = undefined;
+        this.multicast = false;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
         this.client.on('listening', function() { this.onListening() }.bind(this));
         this.client.on('error', function(error) { this.onError(error) }.bind(this));
@@ -360,20 +370,27 @@ class MotionDriver extends EventEmitter {
 
     onMessage(msg, info) {
         let message = JSON.parse(msg.toString());
-        if (this.logHeartbeat || message.msgType != 'Heartbeat')
-            this.log(this.verbose ? message : 'Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
-		if (message.mac != undefined && info != null && info != undefined && info.address != undefined && 
-		     info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
-            let gateway = this.getGateway(message.mac, message.deviceType);
-            if (gateway != undefined && gateway.setGatewayAddress(info.address))
-                this.log('Gateway adress for mac ' + message.mac + ' set to ' + info.address);
+        if (this.logHeartbeat || message.msgType != 'Heartbeat') {
+            this.log('Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
+            if (this.verbose) 
+                this.log(message);
         }
+		this.getGatewayAddress(message, info);
         if (message.msgType == 'Heartbeat')
             this.onHeartbeat(message, info);
         else if (message.msgType == 'GetDeviceListAck')
             this.onGetDeviceListAck(message, info);
         this.emit(message.msgType, message, info);
         this.registerDeviceType(message);
+    }
+
+    getGatewayAddress(message, info) {
+        if (message.mac != undefined && info != null && info != undefined && info.address != undefined &&
+            info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
+            let gateway = this.getGateway(message.mac, message.deviceType);
+            if (gateway != undefined && gateway.setGatewayAddress(info.address))
+                this.log('Gateway adress for mac ' + message.mac + ' set to ' + info.address);
+        }
     }
 
     onClose() {
@@ -443,14 +460,7 @@ class MotionDriver extends EventEmitter {
     async pollStates(registered = true, groupOnly = false) {
         this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')) + (groupOnly ? ' groupOnly' : ''));
         if (this.pollTimer == undefined) {
-            this.pollTimer = setTimeout(function() {
-                this.log('PollTimer ends, pollAgain = ' + this.pollAgain);
-                this.pollTimer = undefined;
-                if (this.pollAgain) {
-                    this.pollAgain = false;
-                    this.pollStates(registered, groupOnly);
-                }
-              }.bind(this), 60000);
+            this.pollTimer = this.getPollTimer(registered, groupOnly);
             this.pollAgain = false;
             let pollcount = 0;
             for (let entry of this.devices.values()) 
@@ -459,24 +469,9 @@ class MotionDriver extends EventEmitter {
                     (!groupOnly || entry.id.inGroup == true)) {
                         ++pollcount;
                         if (entry.id.wirelessMode == this.WirelessMode.BiDirection || entry.id.wirelessMode == this.WirelessMode.BidirectionMech) 
-                        this.send({
-                            "msgType": 'ReadDevice',
-                            "mac": entry.id.mac,
-                            "deviceType": entry.id.deviceType,
-                            "accessToken": this.getAccessTokenByID(entry.id),
-                            "msgID": this.getMessageID()
-                        });
+                        this.readDevice(entry);
                     else
-                        this.send({
-                            "msgType": 'WriteDevice',
-                            "mac": entry.id.mac,
-                            "deviceType": entry.id.deviceType,
-                            "accessToken": this.getAccessTokenByID(entry.id),
-                            "msgID": this.getMessageID(),
-                            "data": {
-                                "operation": this.Operation.StatusQuery
-                            }
-                        });
+                        this.writeStatusRequest(entry);
                     }
             this.log('polled ' + pollcount + ' devices');
         } else {
@@ -485,11 +480,47 @@ class MotionDriver extends EventEmitter {
         }
     }
 
+    getPollTimer(registered, groupOnly) {
+        return setTimeout(function () {
+            this.log('PollTimer ends, pollAgain = ' + this.pollAgain);
+            this.pollTimer = undefined;
+            if (this.pollAgain) {
+                this.pollAgain = false;
+                this.pollStates(registered, groupOnly);
+            }
+        }.bind(this), 60000);
+    }
+
+    writeStatusRequest(entry) {
+        this.send({
+            "msgType": 'WriteDevice',
+            "mac": entry.id.mac,
+            "deviceType": entry.id.deviceType,
+            "accessToken": this.getAccessTokenByID(entry.id),
+            "msgID": this.getMessageID(),
+            "data": {
+                "operation": this.Operation.StatusQuery
+            }
+        });
+    }
+
+    readDevice(entry) {
+        this.send({
+            "msgType": 'ReadDevice',
+            "mac": entry.id.mac,
+            "deviceType": entry.id.deviceType,
+            "accessToken": this.getAccessTokenByID(entry.id),
+            "msgID": this.getMessageID()
+        });
+    }
+
     async send(msg) {
         let message = JSON.stringify(msg);
         let gateway = this.getGateway(msg.mac, msg.deviceType);
-		let addr = gateway == undefined || gateway.gatewayAddress == null ? MULTICAST_ADDRESS : gateway.gatewayAddress;
-        this.log(this.verbose ? msg : 'Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
+		let addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null ? MULTICAST_ADDRESS : gateway.gatewayAddress;
+        this.log('Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
+        if (this.verbose)
+            this.log(msg);
         this.client.send(message, UDP_PORT_SEND, addr, function (error) {
             if (error) {
                 this.error(error);
