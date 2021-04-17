@@ -1,4 +1,8 @@
 {
+  "1.0.8": {
+    "en": "• Fixed battery percentages.",
+    "nl": "• Fout bij batterijpercentages hersteld."
+  },
   "1.0.7": {
     "en": "• Added extra logging and error handling • Added debug option to only use multicast.",
     "nl": "• Extra loginformatie en foutafhandeling toegevoegd • Debug optie om alleen multicast te gebruiken toegevoegd."

@@ -233,7 +233,7 @@ class MotionDeviceGeneric extends Homey.Device {
       this.setCapabilityPercentage(perc);
       this.setCapabilityTiltPercentage(angle);
       if (msg.data.batteryLevel != undefined) 
-        this.setCapabilityBattery(msg.data.batteryLevel / 10);
+        this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel));
       this.setCapabilityRSSI(msg.data.RSSI);
     }
   }

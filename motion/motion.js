@@ -272,6 +272,18 @@ class MotionDriver extends EventEmitter {
         return this.Angle.Close - Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
     }
 
+    batteryLevelToPercentage(level) {
+        let voltage = level / 100;
+        let perc = 0;
+        if (voltage > 0.0 && voltage <= 9.4) // 2 cel battery pack (8.4V)
+            return Math.round((voltage - 6.2) * 100 / (8.4 - 6.2), 0);
+        if (voltage > 9.4 && voltage <= 13.6) // 3 cel battery pack (12.6V)
+            return Math.round((voltage - 10.5) * 100 / (12.6 - 10.5), 0);
+        if (voltage > 13.6) // 4 cel battery pack (16.8V)
+            return Math.round((voltage - 14.8) * 100 / (16.8 - 14.8), 0);
+        return 0;
+    }
+
     /** use mac to find getGateway by it's mac, or add one if the deviceType is for a gateway and it isn't found yet.
      * If mac is null or undefined, it returns undefined, otherwise it returns a MotionGateway (either new or existing)
      */
