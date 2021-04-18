@@ -72,7 +72,8 @@ class MotionDeviceGeneric extends Homey.Device {
     let open = this.hasCapability('windowcoverings_set')
       ? (this.getCapabilityValue('windowcoverings_set') > 0.95) 
       : (this.getCapabilityValue('windowcoverings_state') == 'up');
-    this.log(this.getData().mac, 'check fully Opened', open);
+    if (this.mdriver.verbose)
+      this.log(this.getData().mac, 'check fully Opened', open);
     return open;
   }
    
@@ -80,7 +81,8 @@ class MotionDeviceGeneric extends Homey.Device {
     let open = this.hasCapability('windowcoverings_set')
       ? (this.getCapabilityValue('windowcoverings_set') < 0.05) 
       : (this.getCapabilityValue('windowcoverings_state') == 'down');
-    this.log(this.getData().mac, 'check fully Closed', open);
+      if (this.mdriver.verbose)
+        this.log(this.getData().mac, 'check fully Closed', open);
     return open;
   }
    
