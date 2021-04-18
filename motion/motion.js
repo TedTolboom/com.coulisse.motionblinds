@@ -394,7 +394,7 @@ class MotionDriver extends EventEmitter {
     }
 
     getGatewayAddress(message, info) {
-        if (message.mac != undefined && info != null && info != undefined && info.address != undefined &&
+        if (!this.multicast && message.mac != undefined && info != null && info != undefined && info.address != undefined &&
             info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
             let gateway = this.getGateway(message.mac, message.deviceType);
             if (gateway != undefined && gateway.setGatewayAddress(info.address))
@@ -426,8 +426,12 @@ class MotionDriver extends EventEmitter {
     onHeartbeat(msg, info) {
         let gateway = this.getGateway(msg.mac, msg.deviceType);
         gateway.setToken(msg.token);
-        if (gateway.nrDevices != msg.data.numberOfDevices) // if device count changed, get new list
+        if (gateway.nrDevices != msg.data.numberOfDevices) { // if device count changed, get new list
+            this.log('Heartbeat found ' + (msg.data.numberOfDevices - gateway.nrDevices) + ' new devices');
+            if (this.verbose && !this.logHeartbeat)
+                this.log(msg); // do log heartbeat if device count unexpected
             this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() }) 
+        }
     }
 
     async connect() {
