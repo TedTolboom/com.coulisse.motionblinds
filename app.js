@@ -69,7 +69,7 @@ class MotionBlinds extends Homey.App {
    
   async onNewDevices() { // a new gateway is added, poll unknown devices
     this.log('New devices discovered');
-    this.mdriver.pollStates(false);
+    this.mdriver.pollStates(false, false, true);
   }
   
   getDeviceTypeName(id)   { return this.homey.__('DeviceType.' + id); }

@@ -27,6 +27,10 @@
         "defaultName": "Gordijn",
         "nr": "nr"
     },
+    "tdbu": {
+        "defaultName": "Top Down Bottom Up",
+        "nr": "nr"
+    },
     "generic": {
         "defaultName": "MotionBlind",
         "nr": "nr"

@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -267,7 +267,7 @@
               "value": false,
               "label": {
                 "en": "Part of remote groep",
-                "nl": "Onderdeel van afstandsbediening-groep"
+                "nl": "Onderdeel van afstandsbedieningsgroep"
               },
               "hint": {
                 "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",
@@ -404,7 +404,7 @@
               "value": false,
               "label": {
                 "en": "Part of remote groep",
-                "nl": "Onderdeel van afstandsbediening-groep"
+                "nl": "Onderdeel van afstandsbedieningsgroep"
               },
               "hint": {
                 "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",
@@ -540,7 +540,7 @@
               "value": false,
               "label": {
                 "en": "Part of remote groep",
-                "nl": "Onderdeel van afstandsbediening-groep"
+                "nl": "Onderdeel van afstandsbedieningsgroep"
               },
               "hint": {
                 "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",

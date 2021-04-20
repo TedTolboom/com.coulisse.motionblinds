@@ -159,6 +159,7 @@ class MotionDriver extends EventEmitter {
 
     Angle = { 
         Open: 0,
+        DR_Close: 90,
         Close: 180
     }
 
@@ -262,21 +263,21 @@ class MotionDriver extends EventEmitter {
         return 1 - this.positionToPercentageClosed(pos);
     }
     
-    angleToPercentageTilt(angle) {
-        let perc = Math.round(angle) / this.Angle.Close;
+    angleToPercentageTilt(angle, max_tilt = this.Angle.Close) {
+        let perc = Math.round(angle) / max_tilt;
         return 1 - Math.min(Math.max(perc, 0), 1);
     }
 
-    percentageTiltToAngle(perc) {
-        let angle = Math.round(perc * this.Angle.Close);
-        return this.Angle.Close - Math.max(Math.min(angle, this.Angle.Close), this.Angle.Open);
+    percentageTiltToAngle(perc, max_tilt = this.Angle.Close) {
+        let angle = Math.round(perc * max_tilt);
+        return max_tilt - Math.max(Math.min(angle, max_tilt), this.Angle.Open);
     }
 
     batteryLevelToPercentage(level) {
         let voltage = level / 100;
         let cells = Math.round(voltage / 3.7); // estimate nr of cells, min is 3.2 and max is 4.2 per cell, will work ok for about 2 to 4 cells
-        let min = 3.4 * cells;  // minimum voltage, actual empty is 3.2, but below 3.4 this average cells usually drop very rapidly, so assume empty early rather than late. 
-        let max = 4.0 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
+        let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.4 this average cells usually drop very rapidly, so assume empty early rather than late. 
+        let max = 4.05 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
         let perc = Math.round((voltage - min) * 100 / (max - min), 0); // this assumes linear, which isn't true but will do until around 3.4 volt per cell, and average is now 3.7 which is usually true for most cells.
         return Math.min(100, Math.max(perc, 0));
     }
@@ -470,8 +471,9 @@ class MotionDriver extends EventEmitter {
      * if false, only unregistered devices are polled. if undefined, all devices are polled. 
      * @param groupOnly: only poll those that are set to be part of a group
      */
-    async pollStates(registered = true, groupOnly = false) {
-        this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')) + (groupOnly ? ' groupOnly' : ''));
+    async pollStates(registered = true, groupOnly = false, forceWrite = false) {
+        this.log('pollStates ' + (registered == undefined ? 'all' : (registered ? 'registered' : 'unregistered')) 
+                    + (groupOnly ? ' groupOnly' : '') + (forceWrite ? ' forceWrite' : ''));
         if (this.pollTimer == undefined) {
             this.pollTimer = this.getPollTimer(registered, groupOnly);
             this.pollAgain = false;
@@ -481,10 +483,11 @@ class MotionDriver extends EventEmitter {
                     (registered == undefined || entry.id.registered == registered) &&
                     (!groupOnly || entry.id.inGroup == true)) {
                         ++pollcount;
-                        if (entry.id.wirelessMode == this.WirelessMode.BiDirection || entry.id.wirelessMode == this.WirelessMode.BidirectionMech) 
-                        this.readDevice(entry);
-                    else
-                        this.writeStatusRequest(entry);
+                        if (forceWrite || entry.id.wirelessMode != this.WirelessMode.BiDirection && 
+                                          entry.id.wirelessMode != this.WirelessMode.BidirectionMech)
+                            this.writeStatusRequest(entry);
+                        else
+                            this.readDevice(entry);
                     }
             this.log('polled ' + pollcount + ' devices');
         } else {

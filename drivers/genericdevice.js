@@ -6,21 +6,25 @@ const MotionDriver = require('../motion/motion')
 
 class MotionDeviceGeneric extends Homey.Device {
   async onInit() {
+    this.heartbeatCount = 0;
+    this.heartbeatCountRefresh = Math.round(345 + Math.random() * 30); // refresh about 4 times a day, every device slightly different to spread load
     this.mdriver = this.homey.app.mdriver;
     let mac = this.getData().mac;
     this.expectReportTimer = undefined;
+    this.maxAngle = this.mdriver.Angle.Close;
     this.registerCapabilityListener('windowcoverings_set', this.onCapabilityWindowcoverings_set.bind(this));
     this.registerCapabilityListener('windowcoverings_tilt_set', this.onCapabilityWindowcoverings_tilt_set.bind(this));
     this.registerCapabilityListener('windowcoverings_state', this.onCapabilityWindowcoverings_state.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
     this.registerCapabilityListener('state_mb_part_closed', this.onCapabilityState_mb_part_closed.bind(this));
     this.registerCapabilityListener('alarm_contact', this.onCapabilityAlarm_contact.bind(this));
+    this.mdriver.on('Heartbeat', function(msg, info) { this.onHeartbeat(msg, info); }.bind(this)); // is per gateway, do not check mac. Should test gateway, but too much work and not really relevant
     this.mdriver.on('newDevice', function(newmac) { if (mac == newmac) this.onNewDevice(); }.bind(this));
     this.mdriver.on('Report', function(msg, info) { if (mac == msg.mac) this.onReport(msg, info); }.bind(this));
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
-    this.log(this.getName(), 'at', mac, 'initialized');
+    this.log(this.getName(), 'at', mac, 'initialized, refreshed every', this.heartbeatCountRefresh, 'heartbeat');
     this.checkAlarmContactCapability();
     this.onNewDevice();
   }
@@ -28,11 +32,11 @@ class MotionDeviceGeneric extends Homey.Device {
   onNewDevice() { // the motiondriver now knows me, so register
     if (this.mdriver.registerDevice(this.getData().mac)) { // check if set. onInit calls this too so it may already be done
       this.mdriver.setDeviceInGroup(this.getData().mac, this.getSetting('inRemoteGroup'));
-      let wirelessMode = this.getSetting('wirelessMode');
-      if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
-          this.readDevice();
-        else
-          this.statusQuery();
+      // let wirelessMode = this.getSetting('wirelessMode');
+      // if (wirelessMode == this.mdriver.WirelessMode.BiDirection || wirelessMode == this.mdriver.WirelessMode.BidirectionMech) 
+      //   this.readDevice();
+      // else
+      this.statusQuery(); // this seems to update battery, whereas read does not. This is also why evert nth heartbeat a status query is done
     }
   }
 
@@ -94,7 +98,7 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async onCapabilityWindowcoverings_tilt_set(value, opts) {
     this.log(this.getData().mac, 'onCapabilityWindowcoverings_tilt_set', value);
-    this.setPercentageTilt(value);
+    this.setPercentageTilt(value, this.maxAngle);
   }
 
   async onCapabilityState_mb_part_closed(value, opts) {
@@ -180,12 +184,57 @@ class MotionDeviceGeneric extends Homey.Device {
   setCapabilityRSSI(dBm) {
     if (dBm != undefined && this.numberChanged(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
       this.log(this.getData().mac, 'setCapabilityRSSI', dBm);
-          if (!this.hasCapability('measure_mb_rssi')) 
-            this.addCapability('measure_mb_rssi');
-          this.setCapabilityValue('measure_mb_rssi', dBm);
+      if (!this.hasCapability('measure_mb_rssi')) 
+        this.addCapability('measure_mb_rssi');
+      this.setCapabilityValue('measure_mb_rssi', dBm);
       return true;
     }
     return false;
+  }
+
+  checkTiltCapability(on) {
+    if (on) {
+      if (!this.hasCapability('windowcoverings_tilt_set'))
+        this.addCapability('windowcoverings_tilt_set')
+    } else {
+      if (this.hasCapability('windowcoverings_tilt_set'))
+        this.removeCapability('windowcoverings_tilt_set')
+    }
+  }
+
+  checkBatteryCapability(on) {
+    if (on) {
+      if (!this.hasCapability('measure_battery'))
+        this.addCapability('measure_battery');
+    } else {
+      if (this.hasCapability('measure_battery'))
+        this.removeCapability('measure_battery');
+    }
+  }
+
+  checkPartClosedCapability(on) {
+    if (on) {
+      if (!this.hasCapability('state_mb_part_closed')) 
+        this.addCapability('state_mb_part_closed');
+    } else {
+      if (this.hasCapability('state_mb_part_closed')) 
+        this.removeCapability('state_mb_part_closed');
+    }
+  }
+
+  checkSetCapability(on) {
+    if (on) {
+      if (!this.hasCapability('windowcoverings_set'))
+        this.addCapability('windowcoverings_set')
+    } else {
+      if (this.hasCapability('windowcoverings_set'))
+        this.removeCapability('windowcoverings_set')
+    }
+  }
+
+  checkBidirectionalCapability(on) {
+    this.checkPartClosedCapability(on);
+    this.checkSetCapability(on);
   }
 
   travelDirection(newperc, oldperc) {
@@ -202,40 +251,46 @@ class MotionDeviceGeneric extends Homey.Device {
     }.bind(this), 1250);
   }
 
+  setUpDownStates(msg) {
+    let state = undefined;
+    let perc = undefined;
+    let angle = undefined;
+    switch(msg.data.operation) { // beware! no difference between current and action! Do this first, because for write the others aren't there
+      case this.mdriver.Operation.Close_Down: state = 'down'; perc = 0; break;
+      case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
+      case this.mdriver.Operation.Stop:       state = 'idle'; break;
+    }
+    if (msg.data.targetPosition != undefined) { // so if targetposition specified, overrule operation and current position
+      perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition);
+      switch (msg.data.targetPosition) {
+        case this.mdriver.Position.Up_Open:    state = 'up';   break;
+        case this.mdriver.Position.Close_Down: state = 'down'; break;
+        default: state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set')); break;
+      }
+    } else if (msg.data.currentPosition != undefined) { // if currentposition received, overrule operation because then this is is not a state operation
+      perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
+      state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set'));
+      if (state != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
+        this.log(this.getData().mac, 'unexpected position change', state);
+        this.scheduleStop(); 
+      }
+    }
+    if (msg.data.targetAngle != undefined)
+      angle = this.mdriver.angleToPercentageTilt(msg.data.targetAngle, this.maxAngle);
+    else if (msg.data.currentAngle != undefined)
+      angle = this.mdriver.angleToPercentageTilt(msg.data.currentAngle, this.maxAngle);
+    this.setCapabilityState(state);
+    this.setCapabilityPercentage(perc);
+    this.setCapabilityTiltPercentage(angle);
+  }
+
   setStates(msg) {
     if (msg.data != undefined) {
-      let state = undefined;
-      let perc = undefined;
-      let angle = undefined;
-      switch(msg.data.operation) { // beware! no difference between current and action! Do this first, because for write the others aren't there
-        case this.mdriver.Operation.Close_Down: state = 'down'; perc = 0; break;
-        case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
-        case this.mdriver.Operation.Stop:       state = 'idle'; break;
-      }
-      if (msg.data.targetPosition != undefined) { // so if targetposition specified, overrule operation and current position
-        perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition);
-        switch (msg.data.targetPosition) {
-          case this.mdriver.Position.Up_Open:    state = 'up';   break;
-          case this.mdriver.Position.Close_Down: state = 'down'; break;
-          default: state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set')); break;
-        }
-      } else if (msg.data.currentPosition != undefined) { // if currentposition received, overrule operation because then this is is not a state operation
-        perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
-        state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set'));
-        if (state != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-          this.log(this.getData().mac, 'unexpected position change', state);
-          this.scheduleStop(); 
-        }
-      }
-      if (msg.data.targetAngle != undefined)
-        angle = this.mdriver.angleToPercentageTilt(msg.data.targetAngle);
-      else if (msg.data.currentAngle != undefined)
-        angle = this.mdriver.angleToPercentageTilt(msg.data.currentAngle);
-      this.setCapabilityState(state);
-      this.setCapabilityPercentage(perc);
-      this.setCapabilityTiltPercentage(angle);
+      this.setUpDownStates(msg);
       if (msg.data.batteryLevel != undefined) 
         this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel));
+      else if (msg.data.batteryLevel_T != undefined && msg.data.batteryLevel_B != undefined) // take the smaller
+        this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(Math.min(msg.data.batteryLevel_T, msg.data.batteryLevel_B)));
       this.setCapabilityRSSI(msg.data.RSSI);
     }
   }
@@ -244,24 +299,23 @@ class MotionDeviceGeneric extends Homey.Device {
     if (msg.data != undefined) {
       let save = false;
       let newSettings = {};
+      let data = this.getData();
       let settings = this.getSettings();
       if (settings == undefined)
         settings = { };
+      if (data.deviceType == this.mdriver.DeviceType.DoubleRoller)
+        this.maxAngle = this.mdriver.Angle.DR_Close;
       if (settings.deviceTypeName == undefined || settings.deviceTypeName == '?') {
-        newSettings.deviceTypeName = this.homey.app.getDeviceTypeName(this.getData().deviceType);
+        newSettings.deviceTypeName = this.homey.app.getDeviceTypeName(data.deviceType);
         if (newSettings.deviceTypeName == null || newSettings.deviceTypeName == undefined || newSettings.deviceTypeName == '?')
           newSettings.deviceTypeName = '-';
         save = true;
       }
       if (msg.data.type != undefined) {
-        if (msg.data.type == this.mdriver.BlindType.VenetianBlind || 
-            msg.data.type == this.mdriver.BlindType.ShangriLaBlind) {
-          if (!this.hasCapability('windowcoverings_tilt_set'))
-            this.addCapability('windowcoverings_tilt_set')
-        } else {
-          if (this.hasCapability('windowcoverings_tilt_set'))
-            this.removeCapability('windowcoverings_tilt_set')
-        }
+        this.checkTiltCapability(msg.data.type == this.mdriver.BlindType.VenetianBlind || 
+                                 msg.data.type == this.mdriver.BlindType.ShangriLaBlind);
+        if (msg.data.type == this.mdriver.BlindType.ShangriLaBlind)
+          this.maxAngle = this.mdriver.Angle.DR_Close;                         
         if (msg.data.type != settings.type || settings.typeName == undefined || settings.typeName == '?') { 
             newSettings.type = msg.data.type; 
             newSettings.typeName = this.homey.app.getBlindTypeName(msg.data.type);
@@ -271,13 +325,7 @@ class MotionDeviceGeneric extends Homey.Device {
         } 
       }
       if (msg.data.voltageMode != undefined) {
-        if (msg.data.voltageMode == this.mdriver.VoltageMode.DC) {
-          if (!this.hasCapability('measure_battery'))
-            this.addCapability('measure_battery');
-        } else {
-          if (this.hasCapability('measure_battery'))
-            this.removeCapability('measure_battery');
-        }
+        this.checkBatteryCapability(msg.data.voltageMode == this.mdriver.VoltageMode.DC);
         if (msg.data.voltageMode != settings.voltageMode || settings.voltageModeName == undefined || settings.voltageModeName == '?') { 
           newSettings.voltageMode = msg.data.voltageMode; 
           newSettings.voltageModeName = this.homey.app.getVoltageModeName(msg.data.voltageMode);
@@ -287,18 +335,8 @@ class MotionDeviceGeneric extends Homey.Device {
         }
       }
       if (msg.data.wirelessMode != undefined) {
-        if (msg.data.wirelessMode == this.mdriver.WirelessMode.BiDirection || 
-            msg.data.wirelessMode == this.mdriver.WirelessMode.BidirectionMech) {
-          if (!this.hasCapability('state_mb_part_closed')) 
-            this.addCapability('state_mb_part_closed');
-          if (!this.hasCapability('windowcoverings_set'))
-            this.addCapability('windowcoverings_set')
-        } else {
-          if (this.hasCapability('state_mb_part_closed')) 
-            this.removeCapability('state_mb_part_closed');
-          if (this.hasCapability('windowcoverings_set'))
-            this.removeCapability('windowcoverings_set')
-        }
+        this.checkBidirectionalCapability(msg.data.wirelessMode == this.mdriver.WirelessMode.BiDirection || 
+                                          msg.data.wirelessMode == this.mdriver.WirelessMode.BidirectionMech); 
         if (msg.data.wirelessMode != settings.wirelessMode || settings.wirelessModeName == undefined || settings.wirelessModeName == '?') { 
           newSettings.wirelessMode = msg.data.wirelessMode; 
           newSettings.wirelessModeName = this.homey.app.getWirelessModeName(msg.data.wirelessMode);
@@ -308,7 +346,7 @@ class MotionDeviceGeneric extends Homey.Device {
           }
       }
       if (save) {
-        this.log(this.getData().mac, 'Save settings ', newSettings);
+        this.log(data.mac, 'Save settings ', newSettings);
         this.setSettings(newSettings);
       } 
     }
@@ -328,8 +366,8 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async onReport(msg, info) {
     this.log(this.getData().mac, 'onReport');
-    this.setStates(msg);
     this.checkSettings(msg);
+    this.setStates(msg);
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
@@ -341,8 +379,8 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async onReadDeviceAck(msg, info) {
     this.log(this.getData().mac, 'onReadDeviceAck');
-    this.setStates(msg);
     this.checkSettings(msg);
+    this.setStates(msg);
   }
 
   async onWriteDevice(msg, info) {
@@ -355,6 +393,16 @@ class MotionDeviceGeneric extends Homey.Device {
     // this.setStates(msg, false);  don't set 'old' state, wait for result of change
     this.checkSettings(msg);
   }
+  
+  async onHeartbeat(msg, info) {
+    ++(this.heartbeatCount);
+    if (this.heartbeatCountRefresh > 0 && (this.heartbeatCount % this.heartbeatCountRefresh) == 0) {
+      this.log(this.getData().mac, 'onHeartbeat triggers statusQuery on count', this.heartbeatCount);
+      this.heartbeatCount = 0;
+      this.statusQuery();
+    }
+  }
+
 
   async readDevice() {
     let data = this.getData();
@@ -367,8 +415,7 @@ class MotionDeviceGeneric extends Homey.Device {
 		});  
   }
 
-  async writeDevice(newdata) {
-    let data = this.getData();
+  setReportTimeout() { // not always after a write the report is received. If not, then read explicitly
     if (this.expectReportTimer) 
       clearTimeout(this.expectReportTimer); // expect report later if commands follow up quickly
     let timeout = this.getSetting('maxTravelTime');
@@ -376,11 +423,16 @@ class MotionDeviceGeneric extends Homey.Device {
       timeout = 60;
     else if (timeout < 5)
       timeout = 5;
-    this.expectReportTimer = setTimeout(function() { // expect a report, if it does not come in a minute, read state by yourself
-        this.log(this.getData().mac, 'onReportTimeout', timeout);
-        this.expectReportTimer = undefined;
-        this.readDevice();
-      }.bind(this), 1000 * timeout); 
+    this.expectReportTimer = setTimeout(function () {
+      this.log(this.getData().mac, 'onReportTimeout', timeout);
+      this.expectReportTimer = undefined;
+      this.readDevice();
+    }.bind(this), 1000 * timeout);
+  }
+
+  async writeDevice(newdata) {
+    this.setReportTimeout(); 
+    let data = this.getData();
     this.mdriver.send({
 			"msgType": 'WriteDevice',
 			"mac": data.mac,
@@ -416,7 +468,7 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   setPercentageTilt(perc) {
-    let pos = this.mdriver.percentageTiltToAngle(perc);
+    let pos = this.mdriver.percentageTiltToAngle(perc, this.maxAngle);
     this.log(this.getData().mac, 'setAngle', pos);
     this.writeDevice({ "targetAngle": pos });    
   }

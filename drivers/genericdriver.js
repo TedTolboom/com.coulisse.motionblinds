@@ -31,16 +31,25 @@ class MotionDriverGeneric extends Homey.Driver {
     return unknown; 
   }
 
+  getDeviceType() {
+    return unknown;
+  }
+
+  getAvailableDevices(mdriver) {
+    return mdriver.getDevices(this.getDeviceType(), function (id) {
+      let ok = !id.registered && (this.getAllowedTypes() == undefined ||
+        id.type == undefined || this.getAllowedTypes().includes(id.type));
+      this.log('filter', ok, id);
+      return ok;
+    }.bind(this));
+  }
+
   async onPairListDevices() {
     try {
       this.log('Pairing');
       let mdriver = this.homey.app.mdriver;
       this.log('Allowed', this.getAllowedTypes());
-      let devices = mdriver.getDevices(mdriver.DeviceType.Blind, function(id) { 
-        this.log('filter', id);
-          return !id.registered && (this.getAllowedTypes() == undefined || 
-                  id.type == undefined || this.getAllowedTypes().includes(id.type));
-        }.bind(this));
+      let devices = this.getAvailableDevices(mdriver);
         this.log('Devices available at start pairing', devices);
         let pairedDriverDevices = [];
         this.getDevices().forEach(device => pairedDriverDevices.push(device.getData().mac));
