@@ -10,7 +10,7 @@
         "keyField": "Sleutel",
         "options": "Opties",
         "debugDescription": "De onderstaande instellingen alleen aanzetten als de ontwikkelaar hier om vraagt:",
-        "debug": "Alle meldingen loggen voor het debuggen",
+        "debug": "Alle berichten volledig loggen",
         "multicast": "Alleen multicast gebruiken",
         "save": "Instellingen opslaan",
         "clear": "Instellingen wissen"

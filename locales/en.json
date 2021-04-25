@@ -10,7 +10,7 @@
         "keyField": "Key",
         "options": "Options",
         "debugDescription": "Only turn the settings below on if the developer asks you to do so:",
-        "debug": "Log all messages for debugging",
+        "debug": "Fully log all messages",
         "multicast": "Only use multicast",
         "save": "Save settings",
         "clear": "Clear settings"

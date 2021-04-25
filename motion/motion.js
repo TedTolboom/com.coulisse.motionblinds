@@ -246,37 +246,47 @@ class MotionDriver extends EventEmitter {
     }
 
     percentageClosedToPosition(perc) {
+        if (perc == undefined)
+            return undefined;
         let pos = Math.round(perc * this.Position.Close_Down);
         return Math.max(Math.min(pos, this.Position.Close_Down), this.Position.Open_Up);
     }
 
     percentageOpenToPosition(perc) {
-        return this.Position.Close_Down - this.percentageClosedToPosition(perc);
+        return perc == undefined ? undefined : this.Position.Close_Down - this.percentageClosedToPosition(perc);
     }
 
     positionToPercentageClosed(pos) {
+        if (pos == undefined)
+            return undefined;
         let perc = Math.round(pos) / this.Position.Close_Down;
         return Math.min(Math.max(perc, 0), 1);
     }
 
     positionToPercentageOpen(pos) {
-        return 1 - this.positionToPercentageClosed(pos);
+        return pos == undefined ? undefined : 1 - this.positionToPercentageClosed(pos);
     }
     
     angleToPercentageTilt(angle, max_tilt = this.Angle.Close) {
+        if (angle == undefined)
+            return undefined;
         let perc = Math.round(angle) / max_tilt;
         return 1 - Math.min(Math.max(perc, 0), 1);
     }
 
     percentageTiltToAngle(perc, max_tilt = this.Angle.Close) {
+        if (angle == undefined)
+            return undefined;
         let angle = Math.round(perc * max_tilt);
         return max_tilt - Math.max(Math.min(angle, max_tilt), this.Angle.Open);
     }
 
     batteryLevelToPercentage(level) {
+        if (level == undefined)
+            return undefined;
         let voltage = level / 100;
         let cells = Math.round(voltage / 3.7); // estimate nr of cells, min is 3.2 and max is 4.2 per cell, will work ok for about 2 to 4 cells
-        let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.4 this average cells usually drop very rapidly, so assume empty early rather than late. 
+        let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.3 to 3.4 average cells usually drop very rapidly, so assume empty early rather than late. 
         let max = 4.05 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
         let perc = Math.round((voltage - min) * 100 / (max - min), 0); // this assumes linear, which isn't true but will do until around 3.4 volt per cell, and average is now 3.7 which is usually true for most cells.
         return Math.min(100, Math.max(perc, 0));
@@ -342,7 +352,7 @@ class MotionDriver extends EventEmitter {
     getDevices(type = undefined, filter = undefined) {
         let devices = [];
         for (let entry of this.devices.values()) 
-            if ((type == entry.id.deviceType || 
+            if ((type == entry.id.deviceType || type.includes(entry.id.deviceType) ||
                 ((type == undefined || type == null) && 
                     entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)) &&
                     (filter == undefined || filter(entry.id)))

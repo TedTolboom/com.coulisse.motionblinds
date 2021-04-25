@@ -13,12 +13,30 @@ class MotionBlinds extends Homey.App {
     this.mdriver.on('newDevices', function() { this.onNewDevices(); }.bind(this));
     let blockAction = this.homey.flow.getActionCard('action_BLOCK_BLIND');
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
+    let setTopStateAction = this.homey.flow.getActionCard('set_windowcoverings_state.top');
+    let setBottomStateAction = this.homey.flow.getActionCard('set_windowcoverings_state.bottom');
+    let setTopPositionAction = this.homey.flow.getActionCard('windowcoverings_set.top');
+    let setBottomPositionAction = this.homey.flow.getActionCard('windowcoverings_set.bottom');
+    let setTopBottomPositionAction = this.homey.flow.getActionCard('windowcoverings_set.top_bottom');
     let fullyOpenCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_OPEN');
     let fullyClosedCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_CLOSED');
+    let topStateIsCondition = this.homey.flow.getConditionCard('windowcoverings_state_is.top');
+    let bottomStateIsCondition = this.homey.flow.getConditionCard('windowcoverings_state_is.bottom');
+    let flowTriggerWindowcoverings_state_changed_top = this.homey.flow.getDeviceTriggerCard('windowcoverings_state_changed.top');
+    let flowTriggerWindowcoverings_state_changed_bottom = this.homey.flow.getDeviceTriggerCard('windowcoverings_state_changed.bottom');
+    setTopStateAction.registerRunListener(function(args, state)  { this.onSetTopStateAction(args, state); }.bind(this));
+    setBottomStateAction.registerRunListener(function(args, state)  { this.onSetBottomStateAction(args, state); }.bind(this));
+    setTopPositionAction.registerRunListener(function(args, state)  { this.onSetTopPositionAction(args, state); }.bind(this));
+    setBottomPositionAction.registerRunListener(function(args, state)  { this.onSetBottomPositionAction(args, state); }.bind(this));
+    setTopBottomPositionAction.registerRunListener(function(args, state)  { this.onSetTopBottomPositionAction(args, state); }.bind(this));
     blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
     unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
     fullyOpenCondition.registerRunListener(function(args, state)  { return this.onFullyOpenCondition(args, state); }.bind(this));
     fullyClosedCondition.registerRunListener(function(args, state)  { return this.onFullyClosedCondition(args, state); }.bind(this));
+    topStateIsCondition.registerRunListener(function(args, state)  { return this.onTopStateIsCondition(args, state); }.bind(this));
+    bottomStateIsCondition.registerRunListener(function(args, state)  { return this.onBottomStateIsCondition(args, state); }.bind(this));
+    flowTriggerWindowcoverings_state_changed_top.registerRunListener(async (args, state) => { return args.state === state.state; });
+    flowTriggerWindowcoverings_state_changed_bottom.registerRunListener(async (args, state) => { return args.state === state.state; });
     this.homey.settings.on('set',   function() { this.onSaveSettings(); }.bind(this));
     this.homey.settings.on('unset', function() { this.onClearSettings(); }.bind(this));
     this.onSaveSettings();
@@ -45,16 +63,58 @@ class MotionBlinds extends Homey.App {
     this.mdriver.verbose = false;
   }
 
-  onBlockAction(args, state) {
+  async onBlockAction(args, state) {
     if (args.device != undefined)
       args.device.onBlockAction(args, state);
   }
    
-  onUnblockAction(args, state) {
+  async onUnblockAction(args, state) {
     if (args.device != undefined)
       args.device.onUnblockAction(args, state);
   }
 
+  async onSetTopStateAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetTopStateAction(args, state);
+  }
+
+  async onSetBottomStateAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetBottomStateAction(args, state);
+  }
+
+  async onSetTopBottomStateAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetTopBottomStateAction(args, state);
+  }
+
+  async onSetTopPositionAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetTopPositionAction(args, state);
+  }
+
+  async onSetBottomPositionAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetBottomPositionAction(args, state);
+  }
+
+  async onSetTopBottomPositionAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetTopBottomPositionAction(args, state);
+  }
+
+  async onTopStateIsCondition(args, state) {
+    if (args.device != undefined)
+      return args.device.onTopStateIsCondition(args, state);
+    return undefined;
+  }
+   
+  async onBottomStateIsCondition(args, state) {
+    if (args.device != undefined)
+      return args.device.onBottomStateIsCondition(args, state);
+    return undefined;
+  }
+   
   async onFullyClosedCondition(args, state) {
     if (args.device != undefined)
       return args.device.onFullyClosedCondition(args, state);

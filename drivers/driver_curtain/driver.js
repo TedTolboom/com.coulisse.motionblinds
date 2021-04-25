@@ -6,11 +6,11 @@ const MotionDriverGeneric = require('../genericdriver');
 
 class MotionDriverCurtain extends MotionDriverGeneric {
 
-  getDeviceType() {
+  getAllowedDeviceTypes() {
     return this.homey.app.mdriver.DeviceType.Blind;
   }
 
-  getAllowedTypes() { 
+  getAllowedBlindTypes() { 
     let mdriver = this.homey.app.mdriver;
     return [
       mdriver.BlindType.Curtain,

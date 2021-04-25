@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -81,6 +81,10 @@
           "en": "The blind was blocked",
           "nl": "Het gordijn werd geblokkeerd"
         },
+        "titleFormatted": {
+          "en": "[[device]]The blind was blocked",
+          "nl": "[[device]]Het gordijn werd geblokkeerd"
+        },
         "hint": {
           "en": "The blind refused to close because a contact alarm was active, in order to protect the blind.",
           "nl": "Het gordijn weigerde te sluiten omdat een contactalarm actief was, om zo het gordijn te beschermen."
@@ -90,8 +94,218 @@
             "name": "device",
             "type": "device",
             "filter": {
-              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "alarm_contact"
+            }
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_state_changed.top",
+        "title": {
+          "en": "The top state changed",
+          "nl": "De bovenstatus is veranderd"
+        },
+        "titleFormatted": {
+          "en": "[[device]]The top state changed to [[state]]",
+          "nl": "[[device]]De bovenstatus is veranderd naar [[state]]"
+        },
+        "args": [
+            {
+              "name": "device",
+              "type": "device",
+              "filter": {
+                "driver_id": "driver_tdbu",
+                "capabilities": "windowcoverings_state.top"
+              }
+            },
+            {
+            "name": "state",
+            "title": {
+              "en": "Top state",
+              "nl": "Bovenstatus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_state_changed.bottom",
+        "title": {
+          "en": "The bottom state changed",
+          "nl": "De onderstatus is veranderd"
+        },
+        "titleFormatted": {
+          "en": "[[device]]The bottom state changed to [[state]]",
+          "nl": "[[device]]De onderstatus is veranderd naar [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.bottom"
+            }
+          },
+        {
+            "name": "state",
+            "title": {
+              "en": "Bottom state",
+              "nl": "Onderstatus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_set_changed.top",
+        "title": {
+          "en": "Top position changed",
+          "nl": "Bovenpositie veranderd"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Top position changed",
+          "nl": "[[device]]Bovenpositie veranderd"
+        },
+        "tokens": [
+          {
+            "name": "windowcoverings_set_top",
+            "type": "number",
+            "title": {
+              "en": "Top Position",
+              "nl": "Bovenpositie"
+            },
+            "example": 0.5
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_set.top"
+            }
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_set_changed.bottom",
+        "title": {
+          "en": "Bottom position changed",
+          "nl": "Onderpositie veranderd"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Bottom position changed",
+          "nl": "[[device]]Onderpositie veranderd"
+        },
+        "tokens": [
+          {
+            "name": "windowcoverings_set_bottom",
+            "type": "number",
+            "title": {
+              "en": "Bottom position",
+              "nl": "Onderpositie"
+            },
+            "example": 0.5
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_set.bottom"
             }
           }
         ]
@@ -104,6 +318,10 @@
           "en": "The position !{{is|isn't}} fully open",
           "nl": "De positie !{{is|is niet}} volledig open"
         },
+        "titleFormatted": {
+          "en": "[[device]]The position !{{is|isn't}} fully open",
+          "nl": "[[device]]De positie !{{is|is niet}} volledig open"
+        },
         "hint": {
           "en": "This Flow will continue if the blind is/isn't in the fully open position.",
           "nl": "Deze flow gaat door als het gordijn wel/niet in de volledig open positie staat."
@@ -113,7 +331,7 @@
             "name": "device",
             "type": "device",
             "filter": {
-              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "windowcoverings_set"
             }
           }
@@ -125,6 +343,10 @@
           "en": "The position !{{is|isn't}} fully closed",
           "nl": "De positie !{{is|is niet}} volledig dicht"
         },
+        "titleFormatted": {
+          "en": "[[device]]The position !{{is|isn't}} fully closed",
+          "nl": "[[device]]De positie !{{is|is niet}} volledig dicht"
+        },
         "hint": {
           "en": "This Flow will continue if the blind is/isn't in the fully closed position.",
           "nl": "Deze flow gaat door als het gordijn wel/niet in de volledig gesloten positie staat."
@@ -134,9 +356,155 @@
             "name": "device",
             "type": "device",
             "filter": {
-              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "windowcoverings_set"
             }
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_state_is.top",
+        "title": {
+          "en": "The top state is !{{|not}}",
+          "nl": "De bovenstatus is !{{|niet}}"
+        },
+        "titleFormatted": {
+          "en": "[[device]]The top state is !{{|not}} [[state]]",
+          "nl": "[[device]]De bovenstatus is !{{|niet}} [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.top"
+            }
+          },
+          {
+            "name": "state",
+            "title": {
+              "en": "Top state",
+              "nl": "Bovenstatus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_state_is.bottom",
+        "title": {
+          "en": "The bottom state is !{{|not}}",
+          "nl": "De onderstatus is !{{|niet}}"
+        },
+        "titleFormatted": {
+          "en": "[[device]]The bottom state is !{{|not}} [[state]]",
+          "nl": "[[device]]De onderstatus is !{{|niet}} [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.bottom"
+            }
+          },
+        {
+            "name": "state",
+            "title": {
+              "en": "Bottom state",
+              "nl": "Onderstatus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
           }
         ]
       }
@@ -148,6 +516,10 @@
           "en": "Block blind from closing",
           "nl": "Blokkeer gordijn sluiten"
         },
+        "titleFormatted": {
+          "en": "[[device]]Block blind from closing",
+          "nl": "[[device]]Blokkeer gordijn sluiten"
+        },
         "hint": {
           "en": "Set this when a window is opened inward under the blind to prevent the blind from closing. The blind's contact alarm will be turned on.",
           "nl": "Zet dit aan als een raam naar binnen toe is opengezet om te voorkomen dat het gordijn sluit. Het contactalarm van het gordijn gaat aan."
@@ -157,7 +529,7 @@
             "name": "device",
             "type": "device",
             "filter": {
-              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "alarm_contact"
             }
           }
@@ -169,6 +541,10 @@
           "en": "Unblock blind from closing",
           "nl": "Deblokkeer gordijn sluiten"
         },
+        "titleFormatted": {
+          "en": "[[device]]nblock blind from closing",
+          "nl": "[[device]]Deblokkeer gordijn sluiten"
+        },
         "hint": {
           "en": "Lets the curtain close normally again when the window that was blocking the blind is closed. The blind's contact alarm will be turned off.",
           "nl": "Laat het gordijn weer normaal dichtgaan als het raam dat het gordijn blokkeerde wordt gesloten. Het contactalarm van het gordijn gaat uit."
@@ -178,9 +554,286 @@
             "name": "device",
             "type": "device",
             "filter": {
-              "driver_id": "driver_blind|driver_venetian|driver_curtain",
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "alarm_contact"
             }
+          }
+        ]
+      },
+      {
+        "id": "set_windowcoverings_state.top",
+        "title": {
+          "en": "Set top state",
+          "nl": "Zet de bovenstatus"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Set top state to [[state]]",
+          "nl": "[[device]]Zet de bovenstatus naar [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.top"
+            }
+          },
+        {
+            "name": "state",
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "set_windowcoverings_state.bottom",
+        "title": {
+          "en": "Set bottom state",
+          "nl": "Zet de onderstatus"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Set bottom state to [[state]]",
+          "nl": "[[device]]Zet de onderstatus naar [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.bottom"
+            }
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "up",
+                "title": {
+                  "en": "Up",
+                  "nl": "Omhoog",
+                  "de": "Oben",
+                  "fr": "Haut",
+                  "it": "Alzate",
+                  "sv": "Upp",
+                  "no": "Opp",
+                  "es": "Arriba",
+                  "da": "Oppe"
+                }
+              },
+              {
+                "id": "idle",
+                "title": {
+                  "en": "Idle",
+                  "nl": "Stil",
+                  "de": "Inaktiv",
+                  "fr": "Inactif",
+                  "it": "Socchiuse",
+                  "sv": "Inaktiv",
+                  "no": "Ikke aktiv",
+                  "es": "Inactivos",
+                  "da": "Inaktiv"
+                }
+              },
+              {
+                "id": "down",
+                "title": {
+                  "en": "Down",
+                  "nl": "Omlaag",
+                  "de": "Unten",
+                  "fr": "Bas",
+                  "it": "Abbassate",
+                  "sv": "Ned",
+                  "no": "Ned",
+                  "es": "Abajo",
+                  "da": "Nede"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_set.top",
+        "title": {
+          "en": "Set the top position to",
+          "nl": "Zet de bovenpositie naar"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Set the top position to [[windowcoverings_set]]",
+          "nl": "[[device]]Zet de bovenpositie naar [[windowcoverings_set]]"
+        },
+        "hint": {
+          "en": "Change the top position to open (100%), closed (0%), or a value in between.",
+          "nl": "Verander de bovenpositie naar open (100%), gesloten (0%), of een een waarde daartussen."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_set.top"
+            }
+          },
+          {
+            "name": "windowcoverings_set",
+            "title": {
+              "en": "top position",
+              "nl": "bovenpositie"
+            },
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_set.bottom",
+        "title": {
+          "en": "Set the bottom position to",
+          "nl": "Zet de onderpositie naar"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Set the bottom position to [[windowcoverings_set]]",
+          "nl": "[[device]]Zet de onderpositie naar [[windowcoverings_set]]"
+        },
+        "hint": {
+          "en": "Change the bottom position to open (100%), closed (0%), or a value in between.",
+          "nl": "Verander de onderpositie naar open (100%), gesloten (0%), of een een waarde daartussen."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_set.bottom"
+            }
+          },
+          {
+            "name": "windowcoverings_set",
+            "title": {
+              "en": "bottom position",
+              "nl": "onderpositie"
+            },
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          }
+        ]
+      },
+      {
+        "id": "windowcoverings_set.top_bottom",
+        "title": {
+          "en": "Set the top and bottom position to",
+          "nl": "Zet de boven- en onderpositie naar"
+        },
+        "titleFormatted": {
+          "en": "[[device]]Set top position to [[windowcoverings_set_top]] and bottom position to [[windowcoverings_set_bottom]]",
+          "nl": "[[device]]Zet bovenpositie naar [[windowcoverings_set_top]] en onderpositie naar [[windowcoverings_set_bottom]]"
+        },
+        "hint": {
+          "en": "Change both the top and bottom position to open (100%), closed (0%), or a value in between. The top position must be greater than or equal to the bottom position.",
+          "nl": "Verander zowel de bovon- als de onderpositie naar open (100%), gesloten (0%), of een een waarde daartussen. De bovenpositie moet groter of gelijk zijn aan de onderpositie."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_set.top|windowcoverings_set.bottom"
+            }
+          },
+          {
+            "name": "windowcoverings_set_top",
+            "title": {
+              "en": "top position",
+              "nl": "bovenpositie"
+            },
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
+          },
+          {
+            "name": "windowcoverings_set_bottom",
+            "title": {
+              "en": "bottom position",
+              "nl": "onderpositie"
+            },
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
           }
         ]
       }
@@ -545,6 +1198,189 @@
               "hint": {
                 "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",
                 "nl": "Zet dit aan als dit gordijn er één van meer gordijnen is die allemaal tegelijk met de zelfde afstandsbediening bediend worden. Dit zorgt ervoor dat Homey alle veranderingen ziet als de afstandsbediening is gebruikt. Dit is nodig omdat vaak maar van één van de gordijnen de wijziging van de afstandsbediening doorgeeft, en de overige niet."
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Properties",
+            "nl": "Eigenschappen"
+          },
+          "children": [
+            {
+              "id": "deviceTypeName",
+              "type": "label",
+              "label": {
+                "en": "Device type",
+                "nl": "Apparaatklasse"
+              },
+              "value": "?"
+            },
+            {
+              "id": "typeName",
+              "type": "label",
+              "label": {
+                "en": "Type",
+                "nl": "Type"
+              },
+              "value": "?"
+            },
+            {
+              "id": "wirelessModeName",
+              "type": "label",
+              "label": {
+                "en": "Wireless mode",
+                "nl": "Type draadloze verbinding"
+              },
+              "value": "?"
+            },
+            {
+              "id": "voltageModeName",
+              "type": "label",
+              "label": {
+                "en": "Voltage mode",
+                "nl": "Spanningstype"
+              },
+              "value": "?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "driver_tdbu",
+      "name": {
+        "en": "Top Down Bottom Up",
+        "nl": "Top Down Bottom Up"
+      },
+      "class": "blinds",
+      "capabilities": [
+        "windowcoverings_set.bottom",
+        "windowcoverings_set.top",
+        "windowcoverings_state.bottom",
+        "windowcoverings_state.top",
+        "windowcoverings_state",
+        "measure_battery",
+        "measure_mb_rssi"
+      ],
+      "capabilitiesOptions": {
+        "windowcoverings_set.bottom": {
+          "title": {
+            "en": "Bottom position",
+            "nl": "Positie onder"
+            }
+        },
+        "windowcoverings_set.top": {
+          "title": {
+            "en": "Top position",
+            "nl": "Positie boven"
+            }
+        },
+        "windowcoverings_state.bottom": {
+          "title": {
+            "en": "Bottom state",
+            "nl": "Status onder"
+            }
+        },
+        "windowcoverings_state.top": {
+          "title": {
+            "en": "Top state",
+            "nl": "Status boven"
+            }
+        },
+        "windowcoverings_state": {
+          "title": {
+            "en": "Combined state",
+            "nl": "Combinatiestatus"
+            }
+        }
+      },
+        "energy": {
+        "batteries": ["INTERNAL"]
+      },
+      "images": {
+        "large": "/drivers/driver_tdbu/assets/images/large.png",
+        "small": "/drivers/driver_tdbu/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices", 
+          "navigation": {
+            "next": "add_my_devices" 
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices" 
+        }    
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Parameters",
+            "nl": "Parameters"
+          },
+          "children": [
+            {
+              "id": "maxTravelTime",
+              "type": "number",
+              "label": {
+                "en": "Maximum travel time",
+                "nl": "Maximale looptijd"
+              },
+              "value": 60,
+              "min": 10,
+              "max": 300,
+              "units": {
+                "en": "seconds",
+                "nl": "seconden"
+              },
+              "hint": {
+                "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
+                "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
+              }
+            },
+            {
+              "id": "inRemoteGroup",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Part of remote groep",
+                "nl": "Onderdeel van afstandsbedieningsgroep"
+              },
+              "hint": {
+                "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",
+                "nl": "Zet dit aan als dit gordijn er één van meer gordijnen is die allemaal tegelijk met de zelfde afstandsbediening bediend worden. Dit zorgt ervoor dat Homey alle veranderingen ziet als de afstandsbediening is gebruikt. Dit is nodig omdat vaak maar van één van de gordijnen de wijziging van de afstandsbediening doorgeeft, en de overige niet."
+              }
+            },
+            {
+              "id": "addBlockAlarm",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Add an alarm to block movement",
+                "nl": "Alarm toevoegen om bewegingen te blokkeren"
+              },
+              "hint": {
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go up or down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet omhoog of omlaag gaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+              }
+            },
+            {
+              "id": "linkedBars",
+              "type": "checkbox",
+              "value": true,
+              "label": {
+                "en": "Linked top/down positions",
+                "nl": "Gekoppelde boven/onderposities"
+              },
+              "hint": {
+                "en": "With the option on, both bars are linked so that if one bar would move past the other bar, both bars will move to the new position. If turned off the bar will stop when it reaches the other bar, refusing to go further.",
+                "nl": "Als deze optie aan staat zijn beide balken gekoppeld zodat als de ene balk voorbij de positie van de andere balk gaat, beide balken naar de nieuwe positie bewegen. Als de optie uit staat dan stopt de balk als deze de andere balk bereikt en weigert verder te bewegen."
               }
             }
           ]

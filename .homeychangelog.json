@@ -1,4 +1,8 @@
 {
+  "1.1.0": {
+    "en": "• Top Down Bottom Up blind support added.",
+    "nl": "• Top Down Bottom Up gordijnondersteuning toegevoegd."
+  },
   "1.0.9": {
     "en": "• Support for periodical state refresh (currently 4x a day) • Made driver more generic.",
     "nl": "• Ondersteuning voor periodieke statusverversing (nu 4x per dag) • Driver generieker gemaakt."
