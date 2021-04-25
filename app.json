@@ -332,7 +332,7 @@
             "type": "device",
             "filter": {
               "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
-              "capabilities": "windowcoverings_set"
+              "capabilities": "windowcoverings_set|windowcoverings_set.top|windowcoverings_bottom"
             }
           }
         ]
@@ -357,7 +357,7 @@
             "type": "device",
             "filter": {
               "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
-              "capabilities": "windowcoverings_set"
+              "capabilities": "windowcoverings_set|windowcoverings_set.top|windowcoverings_bottom"
             }
           }
         ]
