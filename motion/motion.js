@@ -99,7 +99,7 @@ Quickly tap the 'Motion APP about' 5 times to get the key, it should have format
 You can listen to the following events (though there should not be any imminent need):
 
 'listening' The UDP socket is now listening
-'error' An error occurred
+'senderror' An error occurred during send
 'close' Cle UPD socket was closed
 'connect' The Motion Gateway is being connected
 'disconnect' The Motion Gateway is being disconnected
@@ -194,6 +194,8 @@ class MotionDriver extends EventEmitter {
         this.pollAgain = false;
         this.pollTimer = undefined;
         this.multicast = false;
+        this.ip = undefined;
+        this.listening = false;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
         this.client.on('listening', function() { this.onListening() }.bind(this));
         this.client.on('error', function(error) { this.onError(error) }.bind(this));
@@ -221,6 +223,12 @@ class MotionDriver extends EventEmitter {
         return new Date().toISOString().replace(/[T\-\./:Z]/g, '');
     }
 
+    setIP(ip) {
+        this.ip = ip == null || ip == '' ? undefined : ip;
+        if (this.listening) 
+            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() });
+    }
+
     setAppKey(appKey) {
         if (appKey == undefined)
             appKey = null;
@@ -246,37 +254,47 @@ class MotionDriver extends EventEmitter {
     }
 
     percentageClosedToPosition(perc) {
+        if (perc == undefined)
+            return undefined;
         let pos = Math.round(perc * this.Position.Close_Down);
         return Math.max(Math.min(pos, this.Position.Close_Down), this.Position.Open_Up);
     }
 
     percentageOpenToPosition(perc) {
-        return this.Position.Close_Down - this.percentageClosedToPosition(perc);
+        return perc == undefined ? undefined : this.Position.Close_Down - this.percentageClosedToPosition(perc);
     }
 
     positionToPercentageClosed(pos) {
+        if (pos == undefined)
+            return undefined;
         let perc = Math.round(pos) / this.Position.Close_Down;
         return Math.min(Math.max(perc, 0), 1);
     }
 
     positionToPercentageOpen(pos) {
-        return 1 - this.positionToPercentageClosed(pos);
+        return pos == undefined ? undefined : 1 - this.positionToPercentageClosed(pos);
     }
     
     angleToPercentageTilt(angle, max_tilt = this.Angle.Close) {
+        if (angle == undefined)
+            return undefined;
         let perc = Math.round(angle) / max_tilt;
         return 1 - Math.min(Math.max(perc, 0), 1);
     }
 
     percentageTiltToAngle(perc, max_tilt = this.Angle.Close) {
+        if (angle == undefined)
+            return undefined;
         let angle = Math.round(perc * max_tilt);
         return max_tilt - Math.max(Math.min(angle, max_tilt), this.Angle.Open);
     }
 
     batteryLevelToPercentage(level) {
+        if (level == undefined)
+            return undefined;
         let voltage = level / 100;
         let cells = Math.round(voltage / 3.7); // estimate nr of cells, min is 3.2 and max is 4.2 per cell, will work ok for about 2 to 4 cells
-        let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.4 this average cells usually drop very rapidly, so assume empty early rather than late. 
+        let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.3 to 3.4 average cells usually drop very rapidly, so assume empty early rather than late. 
         let max = 4.05 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
         let perc = Math.round((voltage - min) * 100 / (max - min), 0); // this assumes linear, which isn't true but will do until around 3.4 volt per cell, and average is now 3.7 which is usually true for most cells.
         return Math.min(100, Math.max(perc, 0));
@@ -342,7 +360,7 @@ class MotionDriver extends EventEmitter {
     getDevices(type = undefined, filter = undefined) {
         let devices = [];
         for (let entry of this.devices.values()) 
-            if ((type == entry.id.deviceType || 
+            if ((type == entry.id.deviceType || type.includes(entry.id.deviceType) ||
                 ((type == undefined || type == null) && 
                     entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)) &&
                     (filter == undefined || filter(entry.id)))
@@ -356,7 +374,9 @@ class MotionDriver extends EventEmitter {
             this.client.setBroadcast(true);
             this.client.setMulticastTTL(128);
             this.client.addMembership(MULTICAST_ADDRESS);
+            this.listening = true;
             this.emit('listening');
+            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() });
     }
 
     onError(error) {
@@ -404,6 +424,7 @@ class MotionDriver extends EventEmitter {
     }
 
     onClose() {
+        this.listening = false;
         this.emit('close');
     }
 
@@ -436,9 +457,7 @@ class MotionDriver extends EventEmitter {
     }
 
     async connect() {
-        let id = this.getMessageID();
         this.client.bind(UDP_PORT_RECEIVE, function() {
-            this.send({ "msgType": "GetDeviceList", "msgID": id });
             this.emit('connect');
         }.bind(this))
     }
@@ -533,18 +552,23 @@ class MotionDriver extends EventEmitter {
     async send(msg) {
         let message = JSON.stringify(msg);
         let gateway = this.getGateway(msg.mac, msg.deviceType);
-		let addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null ? MULTICAST_ADDRESS : gateway.gatewayAddress;
+		let addr = this.ip;
+        if (addr == null || addr == undefined || addr == '')
+            addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null || gateway.gatewayAddress == undefined 
+                        ? MULTICAST_ADDRESS : gateway.gatewayAddress;
         this.log('Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
         if (this.verbose)
             this.log(msg);
-        this.client.send(message, UDP_PORT_SEND, addr, function (error) {
-            if (error) {
-                this.error(error);
-                this.emit('error', error);
-            } else {
-                this.emit(message.msgType, message);
-            }
-        }.bind(this));
+        this.client.send(message, UDP_PORT_SEND, addr); 
+        
+        // , function (error) {
+        //     if (error) {
+        //         this.error(error);
+        //         this.emit('senderror', error);
+        //     } else {
+        //         this.emit(message.msgType, message);
+        //     }
+        // }.bind(this));
         this.emit(msg.msgType, msg);
     }
 }

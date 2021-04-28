@@ -2,6 +2,7 @@
 
 function onHomeyReady(Homey) {
     var keyElement = document.getElementById('motion_key');
+    var ipElement = document.getElementById('motion_ip');
     var debugElement = document.getElementById('debug');
     var multicastElement = document.getElementById('multicast');
     var clearElement = document.getElementById('clear');
@@ -10,6 +11,11 @@ function onHomeyReady(Homey) {
     Homey.get('motion_key', function (err, motion_key) {
         if (err) return Homey.alert(err);
         keyElement.value = motion_key;
+    });
+
+    Homey.get('motion_ip', function (err, motion_ip) {
+        if (err) return Homey.alert(err);
+        ipElement.value = motion_ip;
     });
 
     Homey.get('debug', function (err, debug) {
@@ -26,6 +32,9 @@ function onHomeyReady(Homey) {
         Homey.set('motion_key', keyElement.value, function (err) {
             if (err) return Homey.alert(err);
         });
+        Homey.set('motion_ip', ipElement.value, function (err) {
+            if (err) return Homey.alert(err);
+        });
         Homey.set('debug', debugElement.checked, function (err) {
             if (err) return Homey.alert(err);
             });
@@ -37,6 +46,10 @@ function onHomeyReady(Homey) {
     clearElement.addEventListener('click', function (e) {
         keyElement.value = '';
         Homey.unset('motion_key', function (err) {
+            if (err) return Homey.alert(err);
+        });
+        ipElement.value = '';
+        Homey.unset('motion_ip', function (err) {
             if (err) return Homey.alert(err);
         });
         debugElement.checked = false;
