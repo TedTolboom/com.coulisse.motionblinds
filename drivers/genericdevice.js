@@ -392,7 +392,7 @@ class MotionDeviceGeneric extends Homey.Device {
       this.log('setCapabilityPercentage.top', topPerc);
       await this.setCapabilityValue('windowcoverings_set.top', topPerc);
       this.triggerTopPositionChanged(topPerc);
-    set = true;
+      set = true;
     }
     if (bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom') && 
           this.numberDifferent(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'), 0.05)) {

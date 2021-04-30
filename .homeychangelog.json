@@ -1,7 +1,7 @@
 {
   "1.1.0": {
     "en": "• Top Down Bottom Up blind support added.",
-    "nl": "• Top Down Bottom Up gordijnondersteuning toegevoegd."
+    "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd."
   },
   "1.0.9": {
     "en": "• Support for periodical state refresh (currently 4x a day) • Made driver more generic • Optional setting for bridge IP address.",
