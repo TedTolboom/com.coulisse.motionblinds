@@ -9,6 +9,7 @@
         "keyLocation3": "Een geldige sleutel heeft het volgende formaat: 74ae544c-d16e-4c",
         "keyField": "Sleutel",
         "options": "Opties",
+        "ip": "Bridge IP adres",
         "debugDescription": "De onderstaande instellingen alleen aanzetten als de ontwikkelaar hier om vraagt:",
         "debug": "Alle berichten volledig loggen",
         "multicast": "Alleen multicast gebruiken",

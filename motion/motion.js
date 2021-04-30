@@ -99,7 +99,7 @@ Quickly tap the 'Motion APP about' 5 times to get the key, it should have format
 You can listen to the following events (though there should not be any imminent need):
 
 'listening' The UDP socket is now listening
-'error' An error occurred
+'senderror' An error occurred during send
 'close' Cle UPD socket was closed
 'connect' The Motion Gateway is being connected
 'disconnect' The Motion Gateway is being disconnected
@@ -194,6 +194,8 @@ class MotionDriver extends EventEmitter {
         this.pollAgain = false;
         this.pollTimer = undefined;
         this.multicast = false;
+        this.ip = undefined;
+        this.listening = false;
         this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
         this.client.on('listening', function() { this.onListening() }.bind(this));
         this.client.on('error', function(error) { this.onError(error) }.bind(this));
@@ -219,6 +221,12 @@ class MotionDriver extends EventEmitter {
 
     getMessageID() {
         return new Date().toISOString().replace(/[T\-\./:Z]/g, '');
+    }
+
+    setIP(ip) {
+        this.ip = ip == null || ip == '' ? undefined : ip;
+        if (this.listening) 
+            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() });
     }
 
     setAppKey(appKey) {
@@ -366,7 +374,9 @@ class MotionDriver extends EventEmitter {
             this.client.setBroadcast(true);
             this.client.setMulticastTTL(128);
             this.client.addMembership(MULTICAST_ADDRESS);
+            this.listening = true;
             this.emit('listening');
+            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() });
     }
 
     onError(error) {
@@ -414,6 +424,7 @@ class MotionDriver extends EventEmitter {
     }
 
     onClose() {
+        this.listening = false;
         this.emit('close');
     }
 
@@ -446,9 +457,7 @@ class MotionDriver extends EventEmitter {
     }
 
     async connect() {
-        let id = this.getMessageID();
         this.client.bind(UDP_PORT_RECEIVE, function() {
-            this.send({ "msgType": "GetDeviceList", "msgID": id });
             this.emit('connect');
         }.bind(this))
     }
@@ -543,18 +552,23 @@ class MotionDriver extends EventEmitter {
     async send(msg) {
         let message = JSON.stringify(msg);
         let gateway = this.getGateway(msg.mac, msg.deviceType);
-		let addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null ? MULTICAST_ADDRESS : gateway.gatewayAddress;
+		let addr = this.ip;
+        if (addr == null || addr == undefined || addr == '')
+            addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null || gateway.gatewayAddress == undefined 
+                        ? MULTICAST_ADDRESS : gateway.gatewayAddress;
         this.log('Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
         if (this.verbose)
             this.log(msg);
-        this.client.send(message, UDP_PORT_SEND, addr, function (error) {
-            if (error) {
-                this.error(error);
-                this.emit('error', error);
-            } else {
-                this.emit(message.msgType, message);
-            }
-        }.bind(this));
+        this.client.send(message, UDP_PORT_SEND, addr); 
+        
+        // , function (error) {
+        //     if (error) {
+        //         this.error(error);
+        //         this.emit('senderror', error);
+        //     } else {
+        //         this.emit(message.msgType, message);
+        //     }
+        // }.bind(this));
         this.emit(msg.msgType, msg);
     }
 }

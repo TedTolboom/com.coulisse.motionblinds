@@ -4,8 +4,8 @@
     "nl": "• Top Down Bottom Up gordijnondersteuning toegevoegd."
   },
   "1.0.9": {
-    "en": "• Support for periodical state refresh (currently 4x a day) • Made driver more generic.",
-    "nl": "• Ondersteuning voor periodieke statusverversing (nu 4x per dag) • Driver generieker gemaakt."
+    "en": "• Support for periodical state refresh (currently 4x a day) • Made driver more generic • Optional setting for bridge IP address.",
+    "nl": "• Ondersteuning voor periodieke statusverversing (nu 4x per dag) • Driver generieker gemaakt • Optionele instelling voor bridge IP adres."
   },
   "1.0.8": {
     "en": "• Fixed battery percentages.",

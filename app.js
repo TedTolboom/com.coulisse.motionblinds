@@ -49,6 +49,7 @@ class MotionBlinds extends Homey.App {
     this.mdriver.logHeartbeat = this.mdriver.verbose;
     this.mdriver.multicast = this.homey.settings.get('multicast') == true;
     let key = this.homey.settings.get('motion_key');
+    this.mdriver.setIP(this.homey.settings.get('motion_ip'));
     if (key != null && key != undefined && key.length == 16)
       try {
         this.mdriver.setAppKey(key);
@@ -60,7 +61,10 @@ class MotionBlinds extends Homey.App {
 
   async onClearSettings() {
     this.mdriver.setAppKey(null);
+    this.mdriver.multicast = false;
     this.mdriver.verbose = false;
+    this.mdriver.logHeartbeat = false;
+    this.mdriver.setIP(undefined);
   }
 
   async onBlockAction(args, state) {
