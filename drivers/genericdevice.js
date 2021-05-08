@@ -172,28 +172,24 @@ class MotionDeviceGeneric extends Homey.Device {
   async onSetTopStateAction(args, state) {
     if (this.mdriver.verbose)
       this.log('onSetTopStateAction', args.state, state);
-    await this.setCapabilityValue('windowcoverings_state.top', args.state);
     await this.onCapabilityWindowcoverings_state_top(args.state, state);
   }
 
   async onSetBottomStateAction(args, state) {
     if (this.mdriver.verbose)
       this.log('onSetBottomStateAction', args.state, state);
-    await this.setCapabilityValue('windowcoverings_state.bottom', args.state);
     await this.onCapabilityWindowcoverings_state_bottom(args.state, state);
   }
 
   async onSetTopPositionAction(args, state) {
     if (this.mdriver.verbose)
       this.log('onSetTopPositionAction', args.windowcoverings_set, state);
-    await this.setCapabilityValue('windowcoverings_set.top', args.windowcoverings_set);
     await this.onCapabilityWindowcoverings_set_top(args.windowcoverings_set, state);
   }
 
   async onSetBottomPositionAction(args, state) {
     if (this.mdriver.verbose)
       this.log('onSetBottomPositionAction', args.windowcoverings_set, state);
-    await this.setCapabilityValue('windowcoverings_set.bottom', args.windowcoverings_set);
     await this.onCapabilityWindowcoverings_set_bottom(args.windowcoverings_set, state);
   }
 
@@ -204,9 +200,7 @@ class MotionDeviceGeneric extends Homey.Device {
                       ? args.windowcoverings_set_top : args.windowcoverings_set_bottom;
     if (this.mdriver.verbose)
       this.log('onSetTopBottomPositionAction', topPerc, bottomPerc, state);
-    await this.setCapabilityValue('windowcoverings_set.top', topPerc);
-    await this.setCapabilityValue('windowcoverings_set.bottom', bottomPerc);
-    await this.setPercentageOpenTopBottom(topPerc, bottomPerc);
+      await this.onCapabilityWindowcoverings_set_top_bottom(topPerc, bottomPerc, state);
   }
 
   async onCapabilityWindowcoverings_set(value, opts) {
@@ -228,6 +222,12 @@ class MotionDeviceGeneric extends Homey.Device {
     await this.setPercentageOpenTopBottom(undefined, value);
   }
 
+  async onCapabilityWindowcoverings_set_top_bottom(valueTop, valueBottom, opts) {
+    if (this.mdriver.verbose)
+      this.log('onCapabilityWindowcoverings_set.top.bottom', valueTop, valueBottom, opts);
+    await this.setPercentageOpenTopBottom(valueTop, valueBottom);
+  }
+
   async onCapabilityWindowcoverings_tilt_set(value, opts) {
     if (this.mdriver.verbose)
       this.log('onCapabilityWindowcoverings_tilt_set', value);
@@ -245,10 +245,6 @@ class MotionDeviceGeneric extends Homey.Device {
     if (value == 'idle' && this.hasCapability('windowcoverings_set.bottom')) {
       await this.stateTopBottom(value == 'idle' ? 'idle' : 'up', value, opts, false);
     } else if (this.hasCapability('windowcoverings_set.bottom')) {  // dont use up/down to prevent double up/down triggers for top and bottom bar
-      // if (this.hasCapability('windowcoverings_set.top'))
-      //   await this.setCapabilityValue('windowcoverings_set.top', 1)
-      // if (this.hasCapability('windowcoverings_set.bottom'))
-      //   await this.setCapabilityValue('windowcoverings_set.bottom', (value == 'up' ? 1 : 0));
       await this.setPercentageOpenTopBottom(1, (value == 'up' ? 1 : 0), false);
     } else {
       switch(value) {
@@ -520,17 +516,17 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async checkTopBottomStateCapabilities(sep) {
     if (sep != undefined) {
-      if (this.hasCapability('windowcoverings_state.top')) {
-        if (!sep)
-          await this.removeCapability('windowcoverings_state.top');
-      } else if (sep)
-        await this.addCapability('windowcoverings_state.top');
       if (this.hasCapability('windowcoverings_state.bottom')) {
         if (!sep)
           await this.removeCapability('windowcoverings_state.bottom');
       } else if (sep)
         await this.addCapability('windowcoverings_state.bottom');
-    }
+      if (this.hasCapability('windowcoverings_state.top')) {
+        if (!sep)
+          await this.removeCapability('windowcoverings_state.top');
+      } else if (sep)
+        await this.addCapability('windowcoverings_state.top');
+      }
   }
 
   travelDirection(newperc, oldperc, noIdle = false) {
