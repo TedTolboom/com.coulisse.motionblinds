@@ -243,13 +243,13 @@ class MotionDeviceGeneric extends Homey.Device {
     if (this.mdriver.verbose)
       this.log('onCapabilityWindowcoverings_state', value, opts);
     if (value == 'idle' && this.hasCapability('windowcoverings_set.bottom')) {
-      await this.stateTopBottom(value == 'idle' ? 'idle' : 'up', value, opts, true);
+      await this.stateTopBottom(value == 'idle' ? 'idle' : 'up', value, opts, false);
     } else if (this.hasCapability('windowcoverings_set.bottom')) {  // dont use up/down to prevent double up/down triggers for top and bottom bar
       // if (this.hasCapability('windowcoverings_set.top'))
       //   await this.setCapabilityValue('windowcoverings_set.top', 1)
       // if (this.hasCapability('windowcoverings_set.bottom'))
       //   await this.setCapabilityValue('windowcoverings_set.bottom', (value == 'up' ? 1 : 0));
-      await this.setPercentageOpenTopBottom(1, (value == 'up' ? 1 : 0), true);
+      await this.setPercentageOpenTopBottom(1, (value == 'up' ? 1 : 0), false);
     } else {
       switch(value) {
         case 'up':   await this.openUp();    break;
@@ -572,9 +572,10 @@ class MotionDeviceGeneric extends Homey.Device {
       await this.setCapabilityPercentage(perc);
   }
 
-  async setTopStates(msg) {
+  async setTopBottomStates(msg) {
     let topState = undefined;
     let topPerc = undefined;
+    let scheduleStop = false;
     switch(msg.data.operation_T) { // beware! no difference between current and action! Do this first, because for write the others aren't there
       case this.mdriver.Operation.Close_Down: topState = 'down'; topPerc = this.getCapabilityValue('windowcoverings_set.bottom'); break;
       case this.mdriver.Operation.Open_Up:    topState = 'up';   topPerc = 1; break;
@@ -588,16 +589,9 @@ class MotionDeviceGeneric extends Homey.Device {
       topState = this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top'));
       if (topState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
         this.log('unexpected top position change', topState);
-        this.scheduleStop(); 
+        scheduleStop = true;
       }
     }
-    if (topState != undefined && this.hasCapability('windowcoverings_state.top'))
-      await this.setCapabilityStateTop(topState);
-    if (topPerc != undefined && this.hasCapability('windowcoverings_set.top'))
-      await this.setCapabilityPercentageTopBottom(topPerc, undefined);
-  }
-
-  async setBottomStates(msg) {
     let bottomState = undefined;
     let bottomPerc = undefined;
     switch(msg.data.operation_B) { // beware! no difference between current and action! Do this first, because for write the others aren't there
@@ -613,13 +607,17 @@ class MotionDeviceGeneric extends Homey.Device {
       bottomState = this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'));
       if (bottomState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
         this.log('unexpected bottom position change', bottomState);
-        this.scheduleStop(); 
+        scheduleStop = true;
       }
     }
+    if (topState != undefined && this.hasCapability('windowcoverings_state.top'))
+      await this.setCapabilityStateTop(topState, bottomState == 'idle');
     if (bottomState != undefined && this.hasCapability('windowcoverings_state.bottom')) 
       await this.setCapabilityStateBottom(bottomState);
     if (bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom'))
-      await this.setCapabilityPercentageTopBottom(this.getCapabilityValue('windowcoverings_set.top'), bottomPerc);
+      await this.setCapabilityPercentageTopBottom(topPerc, bottomPerc);
+    if (scheduleStop)
+      this.scheduleStop(); 
   }
 
   async setTiltState(msg) {
@@ -634,8 +632,7 @@ class MotionDeviceGeneric extends Homey.Device {
   async setStates(msg) {
     if (msg.data != undefined) {
       await this.setUpDownStates(msg);
-      await this.setTopStates(msg);
-      await this.setBottomStates(msg);
+      await this.setTopBottomStates(msg);
       await this.setTiltState(msg);
       if (msg.data.batteryLevel != undefined) 
         await this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel));
@@ -833,13 +830,13 @@ class MotionDeviceGeneric extends Homey.Device {
         if (this.mdriver.verbose)
           this.log('setPositionTopBottom', topPos, bottomPos);
         switch (topPos) {
-          case this.mdriver.Position.Open_Up:    if (topSet) { await this.setCapabilityStateTop('up');   break; } // break inside if!
-          case this.mdriver.Position.Close_Down: if (topSet) { await this.setCapabilityStateTop('down'); break; } // break inside if!
+          case this.mdriver.Position.Open_Up:    if (topSet) { await this.setCapabilityStateTop('up', doState);   break; } // break inside if!
+          case this.mdriver.Position.Close_Down: if (topSet) { await this.setCapabilityStateTop('down', doState); break; } // break inside if!
           default: await this.setCapabilityStateTop(this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top')), doState); break;
         }
         switch (bottomPos) {
-          case this.mdriver.Position.Open_Up:    if (bottomSet) { await this.setCapabilityStateBottom('up');   break; } // break inside if!
-          case this.mdriver.Position.Close_Down: if (bottomSet) { await this.setCapabilityStateBottom('down'); break; } // break inside if!
+          case this.mdriver.Position.Open_Up:    if (bottomSet) { await this.setCapabilityStateBottom('up', doState);   break; } // break inside if!
+          case this.mdriver.Position.Close_Down: if (bottomSet) { await this.setCapabilityStateBottom('down', doState); break; } // break inside if!
           default: await this.setCapabilityStateBottom(this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom')), doState); break;
         }
         await this.setCapabilityPercentageTopBottom(topSet ? topPerc : undefined, bottomSet ? bottomPerc : undefined);
