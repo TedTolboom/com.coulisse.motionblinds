@@ -1259,8 +1259,6 @@
       "capabilities": [
         "windowcoverings_set.bottom",
         "windowcoverings_set.top",
-        "windowcoverings_state.bottom",
-        "windowcoverings_state.top",
         "windowcoverings_state",
         "measure_battery",
         "measure_mb_rssi"
@@ -1381,6 +1379,19 @@
               "hint": {
                 "en": "With the option on, both bars are linked so that if one bar would move past the other bar, both bars will move to the new position. If turned off the bar will stop when it reaches the other bar, refusing to go further.",
                 "nl": "Als deze optie aan staat zijn beide balken gekoppeld zodat als de ene balk voorbij de positie van de andere balk gaat, beide balken naar de nieuwe positie bewegen. Als de optie uit staat dan stopt de balk als deze de andere balk bereikt en weigert verder te bewegen."
+              }
+            },
+            {
+              "id": "separateTopDownButtons",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Separate buttons for Top & Bottom",
+                "nl": "Aparte knoppen voor boven en onder"
+              },
+              "hint": {
+                "en": "Add extra up/stop/down buttons for both the top and bottom bar of the curtain.",
+                "nl": "Aparte op-/stop-/neerknoppen voor zowel de boven- en onderbalk van het gordijn."
               }
             }
           ]

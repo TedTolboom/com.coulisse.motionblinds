@@ -29,7 +29,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
     this.log(this.getName(), 'at', mac, 'initialized, refreshed every', this.heartbeatCountRefresh, 'heartbeat');
-    this.checkAlarmContactCapability();
+    this.checkAlarmContactCapability(this.getSetting('addBlockAlarm'));
     this.onNewDevice();
   }
 
@@ -46,6 +46,8 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.mdriver.setDeviceInGroup(this.getData().mac, newSettings.inRemoteGroup);
+    this.checkAlarmContactCapability(newSettings.addBlockAlarm);
+    this.checkTopBottomStateCapabilities(newSettings.separateTopDownButtons);
     this.log('changed settings', newSettings);
   }
 
@@ -240,21 +242,14 @@ class MotionDeviceGeneric extends Homey.Device {
   async onCapabilityWindowcoverings_state(value, opts) {
     if (this.mdriver.verbose)
       this.log('onCapabilityWindowcoverings_state', value, opts);
-    if (this.hasCapability('windowcoverings_state.bottom') ||  // on top down bottom up, this capability is there mainly for voice commands to fully open or close on command
-        this.hasCapability('windowcoverings_set.bottom') && value == 'idle') {
-      let dn = this.getSetting('type') == this.mdriver.BlindType.DayNightBlind;
-      let topState = value == 'idle' ? 'idle' : (dn ? value : 'up');
-      let bottomState = value == 'idle' ? 'idle' : (dn ? (value == 'up' ? 'down' : 'up') : value);
-      await this.setCapabilityValue('windowcoverings_state.top', topState)
-      await this.setCapabilityValue('windowcoverings_state.bottom', bottomState);
-      await this.stateTopBottom(topState, bottomState, opts);
-    } else if (this.hasCapability('windowcoverings_set.bottom')) {
-      let dn = this.getSetting('type') == this.mdriver.BlindType.DayNightBlind;
-      let topPerc = dn ? (value == 'up' ? 1 : 0.5) : 1;
-      let bottomPerc = dn ? (value == 'up' ? 0 : 0.5) : (value == 'up' ? 1 : 0);
-      await this.setCapabilityValue('windowcoverings_set.top', topPerc)
-      await this.setCapabilityValue('windowcoverings_set.bottom', bottomPerc);
-      await this.setPercentageOpenTopBottom(topPerc, bottomPerc);
+    if (value == 'idle' && this.hasCapability('windowcoverings_set.bottom')) {
+      await this.stateTopBottom(value == 'idle' ? 'idle' : 'up', value, opts, true);
+    } else if (this.hasCapability('windowcoverings_set.bottom')) {  // dont use up/down to prevent double up/down triggers for top and bottom bar
+      // if (this.hasCapability('windowcoverings_set.top'))
+      //   await this.setCapabilityValue('windowcoverings_set.top', 1)
+      // if (this.hasCapability('windowcoverings_set.bottom'))
+      //   await this.setCapabilityValue('windowcoverings_set.bottom', (value == 'up' ? 1 : 0));
+      await this.setPercentageOpenTopBottom(1, (value == 'up' ? 1 : 0), true);
     } else {
       switch(value) {
         case 'up':   await this.openUp();    break;
@@ -287,7 +282,6 @@ class MotionDeviceGeneric extends Homey.Device {
   async onCapabilityAlarm_contact(value, opts) {
     if (this.mdriver.verbose)
       this.log('onCapabilityAlarm_contact', value, opts);
-    await this.checkAlarmContactCapability();
   }
 
   async onCapabilityMeasure_battery(value, opts) {
@@ -305,14 +299,10 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   isFullyOpen(topPerc, bottomPerc) {
-    if (this.getSetting('type') == this.mdriver.BlindType.DayNightBlind)
-      return topPerc > 0.95 && bottomPerc < 0.05;
     return topPerc > 0.95 && bottomPerc > 0.95 || topPerc < 0.05 && bottomPerc < 0.05;
   }
 
   isFullyClosed(topPerc, bottomPerc) {
-    if (this.getSetting('type') == this.mdriver.BlindType.DayNightBlind)
-      return !numberDifferent(topPerc, bottomPerc, 0.05);
     return topPerc > 0.95 && bottomPerc < 0.05;
   }
 
@@ -337,40 +327,47 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async setCapabilityState(state) {
-    if (state == 'down' && !this.hasCapability('windowcoverings_state.bottom'))
+    if (state == 'down' && !this.hasCapability('windowcoverings_set.bottom'))
       await this.setCapabilityPartClosed(0);
     if (state != undefined && this.getCapabilityValue('windowcoverings_state') != state) {
       this.log('setCapabilityState', state);
       await this.setCapabilityValue('windowcoverings_state', state);
-      return true;
     }
-    return false;
   }
 
-  async setCapabilityStateTop(state) {
-    if (state == 'up' || state == 'down')
-      await this.setCapabilityPartClosedTopBottom(state == 'up' ? 1 : this.getCapabilityValue('windowcoverings_set.bottom'), 
-                                            this.getCapabilityValue('windowcoverings_set.bottom'));
-    if (state != undefined && this.getCapabilityValue('windowcoverings_state.top') != state) {
-      this.log('setCapabilityStateTop', state);
-      await this.setCapabilityValue('windowcoverings_state.top', state);
-      this.triggerTopStateChanged(state);
-      return true;
+  async setCapabilityStateTop(state, doState = true) {
+    if (this.hasCapability('windowcoverings_state.top')) {
+      if (state == 'up' || state == 'down')
+        await this.setCapabilityPartClosedTopBottom(state == 'up' ? 1 : this.getCapabilityValue('windowcoverings_set.bottom'), 
+                                              this.getCapabilityValue('windowcoverings_set.bottom'));
+      if (state != undefined && this.getCapabilityValue('windowcoverings_state.top') != state) {
+        this.log('setCapabilityStateTop', state);
+        await this.setCapabilityValue('windowcoverings_state.top', state);
+        this.triggerTopStateChanged(state);
+        if (doState && this.hasCapability('windowcoverings_state') && this.getCapabilityValue('windowcoverings_state') != state)
+          await this.setCapabilityState(state);
+      }
+    } else if (doState && this.hasCapability('windowcoverings_state') && this.getCapabilityValue('windowcoverings_state') != state) {
+        await this.setCapabilityState(state);
     }
-    return false;
+    return state;
   }
 
-  async setCapabilityStateBottom(state) {
-    if (state == 'up' || state == 'down')
-      await this.setCapabilityPartClosedTopBottom(this.getCapabilityValue('windowcoverings_set.top'), 
-                                            state == 'up' ? this.getCapabilityValue('windowcoverings_set.top') : 0);
-    if (state != undefined && this.getCapabilityValue('windowcoverings_state.bottom') != state) {
-      this.log('setCapabilityStateBottom', state);
-      await this.setCapabilityValue('windowcoverings_state.bottom', state);
-      this.triggerBottomStateChanged(state);
-      return true;
+  async setCapabilityStateBottom(state, doState = true) {
+    if (this.hasCapability('windowcoverings_state.bottom')) {
+      if (state == 'up' || state == 'down')
+        await this.setCapabilityPartClosedTopBottom(this.getCapabilityValue('windowcoverings_set.top'), 
+                                              state == 'up' ? this.getCapabilityValue('windowcoverings_set.top') : 0);
+      if (state != undefined && this.getCapabilityValue('windowcoverings_state.bottom') != state) {
+        this.log('setCapabilityStateBottom', state);
+        await this.setCapabilityValue('windowcoverings_state.bottom', state);
+        this.triggerBottomStateChanged(state);
+        if (doState && this.hasCapability('windowcoverings_state') && this.getCapabilityValue('windowcoverings_state') != state)
+          await this.setCapabilityState(state);
+      }
+    } else if (doState && this.hasCapability('windowcoverings_state') && this.getCapabilityValue('windowcoverings_state') != state) {
+      await this.setCapabilityState(state);
     }
-    return false;
   }
 
   async setCapabilityPercentage(perc) {
@@ -379,9 +376,7 @@ class MotionDeviceGeneric extends Homey.Device {
           this.numberDifferent(perc, this.getCapabilityValue('windowcoverings_set'), 0.05)) {
       this.log('setCapabilityPercentage', perc);
       await this.setCapabilityValue('windowcoverings_set', perc);
-      return true;
     }
-    return false;
   }
 
   async setCapabilityPercentageTopBottom(topPerc, bottomPerc) {
@@ -436,60 +431,106 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async checkTiltCapability(on) {
-    if (on) {
-      if (!this.hasCapability('windowcoverings_tilt_set'))
-        await this.addCapability('windowcoverings_tilt_set')
-    } else {
-      if (this.hasCapability('windowcoverings_tilt_set'))
-        this.removeCapability('windowcoverings_tilt_set')
+    if (on != undefined) {
+      if (on) {
+        if (!this.hasCapability('windowcoverings_tilt_set'))
+          await this.addCapability('windowcoverings_tilt_set')
+      } else {
+        if (this.hasCapability('windowcoverings_tilt_set'))
+          this.removeCapability('windowcoverings_tilt_set')
+      }
     }
   }
 
   async checkBatteryCapability(on) {
-    if (on) {
-      if (!this.hasCapability('measure_battery'))
-        await this.addCapability('measure_battery');
-    } else {
-      if (this.hasCapability('measure_battery'))
-        this.removeCapability('measure_battery');
+    if (on != undefined) {
+      if (on) {
+        if (!this.hasCapability('measure_battery'))
+          await this.addCapability('measure_battery');
+      } else {
+        if (this.hasCapability('measure_battery'))
+          this.removeCapability('measure_battery');
+      }
     }
   }
 
   async checkPartClosedCapability(on) {
-    if (on) {
-      if (!this.hasCapability('state_mb_part_closed')) 
-        await this.addCapability('state_mb_part_closed');
-    } else {
-      if (this.hasCapability('state_mb_part_closed')) 
-        this.removeCapability('state_mb_part_closed');
-    }
-  }
-
-  async checkSetCapability(on) {
-    if (on) {
-      if (!this.hasCapability('windowcoverings_set'))
-        await this.addCapability('windowcoverings_set')
-    } else {
-      if (this.hasCapability('windowcoverings_set'))
-        this.removeCapability('windowcoverings_set')
-    }
-  }
-
-  async checkAlarmContactCapability() {
-    if (this.getSetting('addBlockAlarm')) {
-      if (!this.hasCapability('alarm_contact'))
-        await this.addCapability('alarm_contact');
-        if (!this.hasCapability('alarm_contact')) {
-        await this.addCapability('alarm_contact');
-        this.setCapabilityOptions('alarm_contact', { "zoneActivity": false });
+    if (on != undefined) {
+      if (on) {
+        if (!this.hasCapability('state_mb_part_closed')) 
+          await this.addCapability('state_mb_part_closed');
+      } else {
+        if (this.hasCapability('state_mb_part_closed')) 
+          this.removeCapability('state_mb_part_closed');
       }
-    } else if (this.hasCapability('alarm_contact'))
-      this.removeCapability('alarm_contact');
+    }
   }
 
-  async checkBidirectionalCapability(on) {
+  async checkSetCapability(on, type) {
+    await this.checkSimpleSetCapability(on, type);
+    await this.checkTDBUSetCapability(on, type);
+  }
+
+  async checkTDBUSetCapability(on, type) {
+    if (type != undefined && on != undefined) {
+        if (on && type == this.mdriver.BlindType.TopDownBottomUp) {
+        if (!this.hasCapability('windowcoverings_set.top'))
+          await this.addCapability('windowcoverings_set.top');
+        if (!this.hasCapability('windowcoverings_set.bottom'))
+          await this.addCapability('windowcoverings_set.bottom');
+      } else {
+        if (this.hasCapability('windowcoverings_set.top'))
+          await this.removeCapability('windowcoverings_set.top');
+        if (this.hasCapability('windowcoverings_set.bottom'))
+          await this.removeCapability('windowcoverings_set.bottom');
+      }
+    }
+  }
+
+  async checkSimpleSetCapability(on, type) {
+    if (type != undefined && on != undefined) {
+      if (on && type != this.mdriver.BlindType.TopDownBottomUp) {
+        if (!this.hasCapability('windowcoverings_set'))
+          await this.addCapability('windowcoverings_set');
+      } else {
+        if (this.hasCapability('windowcoverings_set'))
+          await this.removeCapability('windowcoverings_set');
+      }
+    }
+  }
+
+  async checkAlarmContactCapability(add) {
+    if (add != undefined) {
+      if (add) {
+        if (!this.hasCapability('alarm_contact'))
+          await this.addCapability('alarm_contact');
+          if (!this.hasCapability('alarm_contact')) {
+          await this.addCapability('alarm_contact');
+          this.setCapabilityOptions('alarm_contact', { "zoneActivity": false });
+        }
+      } else if (this.hasCapability('alarm_contact'))
+        this.removeCapability('alarm_contact');
+    }
+  }
+
+  async checkBidirectionalCapability(on, type) {
     await this.checkPartClosedCapability(on);
-    await this.checkSetCapability(on);
+    await this.checkSetCapability(on, type);
+  }
+
+  async checkTopBottomStateCapabilities(sep) {
+    if (sep != undefined) {
+      if (this.hasCapability('windowcoverings_state.top')) {
+        if (!sep)
+          await this.removeCapability('windowcoverings_state.top');
+      } else if (sep)
+        await this.addCapability('windowcoverings_state.top');
+      if (this.hasCapability('windowcoverings_state.bottom')) {
+        if (!sep)
+          await this.removeCapability('windowcoverings_state.bottom');
+      } else if (sep)
+        await this.addCapability('windowcoverings_state.bottom');
+    }
   }
 
   travelDirection(newperc, oldperc, noIdle = false) {
@@ -532,58 +573,53 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async setTopStates(msg) {
-    let state = undefined;
-    let perc = undefined;
+    let topState = undefined;
+    let topPerc = undefined;
     switch(msg.data.operation_T) { // beware! no difference between current and action! Do this first, because for write the others aren't there
-      case this.mdriver.Operation.Close_Down: state = 'down'; perc = this.getCapabilityValue('windowcoverings_set.bottom'); break;
-      case this.mdriver.Operation.Open_Up:    state = 'up';   perc = 1; break;
-      case this.mdriver.Operation.Stop:       state = 'idle'; break;
+      case this.mdriver.Operation.Close_Down: topState = 'down'; topPerc = this.getCapabilityValue('windowcoverings_set.bottom'); break;
+      case this.mdriver.Operation.Open_Up:    topState = 'up';   topPerc = 1; break;
+      case this.mdriver.Operation.Stop:       topState = 'idle'; break;
     }
     if (msg.data.targetPosition_T != undefined) { // so if targetposition specified, overrule operation and current position
-      perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition_T);
-      state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set.top'), true); 
+      topPerc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition_T);
+      topState = this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top'), true); 
     } else if (msg.data.currentPosition_T != undefined) { // if currentposition received, overrule operation because then this is is not a state operation
-      perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_T);
-      state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set.top'));
-      if (state != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-        this.log('unexpected top position change', state);
+      topPerc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_T);
+      topState = this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top'));
+      if (topState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
+        this.log('unexpected top position change', topState);
         this.scheduleStop(); 
       }
     }
-    if (state != undefined && this.hasCapability('windowcoverings_state.top'))
-      await this.setCapabilityStateTop(state);
-    if (perc != undefined && this.hasCapability('windowcoverings_set.top'))
-      await this.setCapabilityPercentageTopBottom(perc, undefined);
+    if (topState != undefined && this.hasCapability('windowcoverings_state.top'))
+      await this.setCapabilityStateTop(topState);
+    if (topPerc != undefined && this.hasCapability('windowcoverings_set.top'))
+      await this.setCapabilityPercentageTopBottom(topPerc, undefined);
   }
 
   async setBottomStates(msg) {
-    let state = undefined;
-    let perc = undefined;
+    let bottomState = undefined;
+    let bottomPerc = undefined;
     switch(msg.data.operation_B) { // beware! no difference between current and action! Do this first, because for write the others aren't there
-      case this.mdriver.Operation.Close_Down: state = 'down'; perc = 0; break;
-      case this.mdriver.Operation.Open_Up:    state = 'up';   perc = this.getCapabilityValue('windowcoverings_set.top'); break;
-      case this.mdriver.Operation.Stop:       state = 'idle'; break;
+      case this.mdriver.Operation.Close_Down: bottomState = 'down'; bottomPerc = 0; break;
+      case this.mdriver.Operation.Open_Up:    bottomState = 'up';   bottomPerc = this.getCapabilityValue('windowcoverings_set.top'); break;
+      case this.mdriver.Operation.Stop:       bottomState = 'idle'; break;
     }
     if (msg.data.targetPosition_B != undefined) { // so if targetposition specified, overrule operation and current position
-      perc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition_B);
-      state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set.bottom'), true);
+      bottomPerc = this.mdriver.positionToPercentageOpen(msg.data.targetPosition_B);
+      bottomState = this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'), true);
     } else if (msg.data.currentPosition_B != undefined) { // if currentposition received, overrule operation because then this is is not a state operation
-      perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_B);
-      state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set.bottom'));
-      if (state != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-        this.log('unexpected bottom position change', state);
+      bottomPerc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_B);
+      bottomState = this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'));
+      if (bottomState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
+        this.log('unexpected bottom position change', bottomState);
         this.scheduleStop(); 
       }
     }
-    if (state != undefined && this.hasCapability('windowcoverings_state.bottom')) 
-      await this.setCapabilityStateBottom(state);
-    if (this.hasCapability('windowcoverings_state')) {
-        if ((state == undefined || state == 'idle') && this.hasCapability('windowcoverings_state.top'))
-          state = this.getCapabilityValue('windowcoverings_state.top');
-        await this.setCapabilityState(state);
-    }
-    if (perc != undefined && this.hasCapability('windowcoverings_set.bottom'))
-      await this.setCapabilityPercentageTopBottom(this.getCapabilityValue('windowcoverings_set.top'), perc);
+    if (bottomState != undefined && this.hasCapability('windowcoverings_state.bottom')) 
+      await this.setCapabilityStateBottom(bottomState);
+    if (bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom'))
+      await this.setCapabilityPercentageTopBottom(this.getCapabilityValue('windowcoverings_set.top'), bottomPerc);
   }
 
   async setTiltState(msg) {
@@ -650,7 +686,7 @@ class MotionDeviceGeneric extends Homey.Device {
       }
       if (msg.data.wirelessMode != undefined) {
         this.checkBidirectionalCapability(msg.data.wirelessMode == this.mdriver.WirelessMode.BiDirection || 
-                                          msg.data.wirelessMode == this.mdriver.WirelessMode.BidirectionMech); 
+                                          msg.data.wirelessMode == this.mdriver.WirelessMode.BidirectionMech, msg.data.type); 
         if (msg.data.wirelessMode != settings.wirelessMode || settings.wirelessModeName == undefined || settings.wirelessModeName == '?') { 
           newSettings.wirelessMode = msg.data.wirelessMode; 
           newSettings.wirelessModeName = this.homey.app.getWirelessModeName(msg.data.wirelessMode);
@@ -759,12 +795,12 @@ class MotionDeviceGeneric extends Homey.Device {
         case this.mdriver.Position.Close_Down: await this.setCapabilityState('down'); break;    
         default: await this.setCapabilityState(this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set'))); break;
       }
-      await this.setCapabilityPercentage(perc);
+      this.setCapabilityPercentage(perc);
       this.writeDevice({ "targetPosition": pos });    
     }
   }
 
-  async setPercentageOpenTopBottom(topPerc, bottomPerc) {
+  async setPercentageOpenTopBottom(topPerc, bottomPerc, doState = true) {
     let topSet = topPerc != undefined;
     let bottomSet = bottomPerc != undefined;
     if (topPerc != undefined || bottomPerc != undefined) {
@@ -797,14 +833,14 @@ class MotionDeviceGeneric extends Homey.Device {
         if (this.mdriver.verbose)
           this.log('setPositionTopBottom', topPos, bottomPos);
         switch (topPos) {
-          case this.mdriver.Position.Open_Up:    if (topSet) { await this.setCapabilityStateTop('up');   break; } // break in if!
-          case this.mdriver.Position.Close_Down: if (topSet) { await this.setCapabilityStateTop('down'); break; } // break in if!
-          default: await this.setCapabilityStateTop(this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top'))); break;
+          case this.mdriver.Position.Open_Up:    if (topSet) { await this.setCapabilityStateTop('up');   break; } // break inside if!
+          case this.mdriver.Position.Close_Down: if (topSet) { await this.setCapabilityStateTop('down'); break; } // break inside if!
+          default: await this.setCapabilityStateTop(this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top')), doState); break;
         }
         switch (bottomPos) {
-          case this.mdriver.Position.Open_Up:    if (bottomSet) { await this.setCapabilityStateBottom('up');   break; } // break in if!
-          case this.mdriver.Position.Close_Down: if (bottomSet) { await this.setCapabilityStateBottom('down'); break; } // break in if!
-          default: await this.setCapabilityStateBottom(this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'))); break;
+          case this.mdriver.Position.Open_Up:    if (bottomSet) { await this.setCapabilityStateBottom('up');   break; } // break inside if!
+          case this.mdriver.Position.Close_Down: if (bottomSet) { await this.setCapabilityStateBottom('down'); break; } // break inside if!
+          default: await this.setCapabilityStateBottom(this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom')), doState); break;
         }
         await this.setCapabilityPercentageTopBottom(topSet ? topPerc : undefined, bottomSet ? bottomPerc : undefined);
         this.writeDevice({ "targetPosition_T": topPos, "targetPosition_B": bottomPos });    
@@ -948,7 +984,7 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
 
-  async stateTopBottom(topState, bottomState) {
+  async stateTopBottom(topState, bottomState, doState = true) {
     if (topState == 'down' && bottomState == 'up') // no clashes allowed
       topState = bottomState = 'idle';
     if (topState != 'idle' && bottomState != 'idle' && this.hasCapability('alarm_contact') && this.getCapabilityValue('alarm_contact')) {
@@ -973,8 +1009,8 @@ class MotionDeviceGeneric extends Homey.Device {
         case 'down': bottomOperation = this.mdriver.Operation.Close_Down; break;
         default:     bottomOperation = this.mdriver.Operation.Stop;       break;
       }
-      await this.setCapabilityStateTop(topState);
-      await this.setCapabilityStateBottom(bottomState);
+      await this.setCapabilityStateTop(topState, doState);
+      await this.setCapabilityStateBottom(bottomState, doState);
       this.writeDevice({ "operation_T": topOperation, "operation_B": bottomOperation });    
     }
   }
