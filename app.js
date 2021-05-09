@@ -44,15 +44,19 @@ class MotionBlinds extends Homey.App {
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);
   }
 
-  onSaveSettings() {
+  onSaveSettings(logChange = true) {
     this.mdriver.verbose = this.homey.settings.get('debug') == true;
     this.mdriver.logHeartbeat = this.mdriver.verbose;
     this.mdriver.multicast = this.homey.settings.get('multicast') == true;
     let key = this.homey.settings.get('motion_key');
     this.mdriver.setIP(this.homey.settings.get('motion_ip'));
+    if (logChange)
+      this.log("settings applied: verbose", this.mdriver.verbose, "multicast", this.mdriver.multicast, "IP", this.mdriver.ip);
     if (key != null && key != undefined && key.length == 16)
       try {
         this.mdriver.setAppKey(key);
+        if (logChange)
+          this.log('appkey set');
       } catch (error) {
         this.mdriver.setAppKey(null);
         this.error(error);
@@ -60,6 +64,7 @@ class MotionBlinds extends Homey.App {
   }
 
   async onClearSettings() {
+    this.log('settings cleared');
     this.mdriver.setAppKey(null);
     this.mdriver.multicast = false;
     this.mdriver.verbose = false;
