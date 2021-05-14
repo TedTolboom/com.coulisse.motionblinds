@@ -2,12 +2,11 @@
 'use strict';
 
 const Homey = require('homey');
-const MotionDriver = require('../motion/motion')
 
 class MotionDeviceGeneric extends Homey.Device {
   async onInit() {
-    this.heartbeatCount = 0;
-    this.heartbeatCountRefresh = Math.round(345 + Math.random() * 30); // refresh about 4 times a day, every device slightly different to spread load
+    this.heartbeatCountRefresh = Math.round(345 + Math.random() * 30); // refresh about 4 times a day, every device slightly different interval to spread load
+    this.heartbeatCount = Math.round(Math.random() * this.heartbeatCountRefresh / 2); // start at random interval too
     this.mdriver = this.homey.app.mdriver;
     this.expectReportTimer = undefined;
     this.maxAngle = this.mdriver.Angle.Close;
@@ -20,6 +19,8 @@ class MotionDeviceGeneric extends Homey.Device {
     this.registerCapabilityListener('windowcoverings_state.top', this.onCapabilityWindowcoverings_state_top.bind(this));
     this.registerCapabilityListener('windowcoverings_state.bottom', this.onCapabilityWindowcoverings_state_bottom.bind(this));
     this.registerCapabilityListener('measure_battery', this.onCapabilityMeasure_battery.bind(this));
+    this.registerCapabilityListener('measure_battery.top', this.onCapabilityMeasure_battery_Top.bind(this));
+    this.registerCapabilityListener('measure_battery.bottom', this.onCapabilityMeasure_battery_Bottom.bind(this));
     this.registerCapabilityListener('state_mb_part_closed', this.onCapabilityState_mb_part_closed.bind(this));
     this.registerCapabilityListener('alarm_contact', this.onCapabilityAlarm_contact.bind(this));
     this.mdriver.on('Heartbeat', function(msg, info) { this.onHeartbeat(msg, info); }.bind(this)); // is per gateway, do not check mac. Should test gateway, but too much work and not really worth the trouble
@@ -28,7 +29,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
-    this.log(this.getName(), 'at', mac, 'initialized, refreshed every', this.heartbeatCountRefresh, 'heartbeat');
+    this.log(this.getName(), 'at', mac, 'initialized, refreshed every', this.heartbeatCountRefresh, 'heartbeats, starting at', this.heartbeatCount);
     this.checkAlarmContactCapability(this.getSetting('addBlockAlarm'));
     this.onNewDevice();
   }
@@ -48,6 +49,7 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.setDeviceInGroup(this.getData().mac, newSettings.inRemoteGroup);
     this.checkAlarmContactCapability(newSettings.addBlockAlarm);
     this.checkTopBottomStateCapabilities(newSettings.separateTopDownButtons);
+    this.checkBatteryCapability(true, this.getData().deviceType, newSettings.separateBatteryStates);
     this.log('changed settings', newSettings);
   }
 
@@ -286,6 +288,18 @@ class MotionDeviceGeneric extends Homey.Device {
     await this.setCapabilityValue('measure_battery', value);
   }
 
+  async onCapabilityMeasure_battery_Top(value, opts) {
+    if (this.mdriver.verbose)
+      this.log('onCapabilityMeasure_battery_Top', value, opts);
+    await this.setCapabilityValue('measure_battery.top', value);
+  }
+
+  async onCapabilityMeasure_battery_Bottom(value, opts) {
+    if (this.mdriver.verbose)
+      this.log('onCapabilityMeasure_battery_bottom', value, opts);
+    await this.setCapabilityValue('measure_battery.bottom', value);
+  }
+
   numberDifferent(newval, oldval, treshold) {
     if (oldval == undefined || oldval == null)
       return (newval != null && newval != undefined);
@@ -415,6 +429,25 @@ class MotionDeviceGeneric extends Homey.Device {
     return false;
   }
 
+  async setCapabilityBatteryTopBottom(topPerc, bottomPerc) {
+    let set = false
+    if (topPerc != undefined && this.hasCapability('measure_battery.top') && 
+          this.numberDifferent(topPerc, this.getCapabilityValue('measure_battery.top'), 0.5)) {
+      this.log('setCapabilityBatteryTop', topPerc);
+      await this.setCapabilityValue('measure_battery.top', topPerc);
+      set = true;
+    }
+    if (bottomPerc != undefined && this.hasCapability('measure_battery.bottom') && 
+          this.numberDifferent(bottomPerc, this.getCapabilityValue('measure_battery.bottom'), 0.5)) {
+      this.log('setCapabilityBatteryBottom', bottomPerc);
+      await this.setCapabilityValue('measure_battery.bottom', bottomPerc);
+      set = true;
+    }
+    if (topPerc != undefined && bottomPerc != undefined)
+      set = this.setCapabilityBattery(Math.min(topPerc, bottomPerc));
+    return set;
+  }
+
   async setCapabilityRSSI(dBm) {
     if (dBm != undefined && this.numberDifferent(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
       this.log('setCapabilityRSSI', dBm);
@@ -438,14 +471,31 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
 
-  async checkBatteryCapability(on) {
+  async checkBatteryCapability(on, type, sep) {
     if (on != undefined) {
       if (on) {
         if (!this.hasCapability('measure_battery'))
           await this.addCapability('measure_battery');
+      } else if (this.hasCapability('measure_battery'))
+        this.removeCapability('measure_battery');
+    }
+    if (sep != undefined) {
+      if (sep) {
+        if (sep == true && type == this.mdriver.BlindType.TopDownBottomUp || 
+              this.hasCapability('windowcoverings_set.top')) {
+          if (!this.hasCapability('measure_battery.bottom'))
+            await this.addCapability('measure_battery.bottom');
+            if (!this.hasCapability('measure_battery.top'))
+            await this.addCapability('measure_battery.top');
+        } 
       } else {
-        if (this.hasCapability('measure_battery'))
-          this.removeCapability('measure_battery');
+        if (sep == true && type == this.mdriver.BlindType.TopDownBottomUp || 
+              this.hasCapability('windowcoverings_set.top')) {
+          if (this.hasCapability('measure_battery.bottom'))
+            await this.removeCapability('measure_battery.bottom');
+            if (this.hasCapability('measure_battery.top'))
+            await this.removeCapability('measure_battery.top');
+          } 
       }
     }
   }
@@ -470,15 +520,15 @@ class MotionDeviceGeneric extends Homey.Device {
   async checkTDBUSetCapability(on, type) {
     if (type != undefined && on != undefined) {
         if (on && type == this.mdriver.BlindType.TopDownBottomUp) {
-        if (!this.hasCapability('windowcoverings_set.top'))
-          await this.addCapability('windowcoverings_set.top');
         if (!this.hasCapability('windowcoverings_set.bottom'))
           await this.addCapability('windowcoverings_set.bottom');
+          if (!this.hasCapability('windowcoverings_set.top'))
+          await this.addCapability('windowcoverings_set.top');
       } else {
-        if (this.hasCapability('windowcoverings_set.top'))
-          await this.removeCapability('windowcoverings_set.top');
         if (this.hasCapability('windowcoverings_set.bottom'))
           await this.removeCapability('windowcoverings_set.bottom');
+          if (this.hasCapability('windowcoverings_set.top'))
+          await this.removeCapability('windowcoverings_set.top');
       }
     }
   }
@@ -633,7 +683,8 @@ class MotionDeviceGeneric extends Homey.Device {
       if (msg.data.batteryLevel != undefined) 
         await this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel));
       else if (msg.data.batteryLevel_T != undefined && msg.data.batteryLevel_B != undefined) // take the smaller
-        await this.setCapabilityBattery(this.mdriver.batteryLevelToPercentage(Math.min(msg.data.batteryLevel_T, msg.data.batteryLevel_B)));
+        await this.setCapabilityBatteryTopBottom(this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel_T), 
+                                                 this.mdriver.batteryLevelToPercentage(msg.data.batteryLevel_B));
       await this.setCapabilityRSSI(msg.data.RSSI);
     }
   }
@@ -668,7 +719,7 @@ class MotionDeviceGeneric extends Homey.Device {
         } 
       }
       if (msg.data.voltageMode != undefined) {
-        this.checkBatteryCapability(msg.data.voltageMode == this.mdriver.VoltageMode.DC);
+        this.checkBatteryCapability(msg.data.voltageMode == this.mdriver.VoltageMode.DC, msg.data.type, settings.separateBatteryStates);
         if (msg.data.voltageMode != settings.voltageMode || settings.voltageModeName == undefined || settings.voltageModeName == '?') { 
           newSettings.voltageMode = msg.data.voltageMode; 
           newSettings.voltageModeName = this.homey.app.getVoltageModeName(msg.data.voltageMode);

@@ -1261,6 +1261,8 @@
         "windowcoverings_set.top",
         "windowcoverings_state",
         "measure_battery",
+        "measure_battery.bottom",
+        "measure_battery.top",
         "measure_mb_rssi"
       ],
       "capabilitiesOptions": {
@@ -1293,10 +1295,28 @@
             "en": "Combined state",
             "nl": "Combinatiestatus"
             }
+        },
+        "measure_battery.bottom": {
+          "title": {
+            "en": "Bottom battery",
+            "nl": "Accuniveau onder"
+            }
+        },
+        "measure_battery.top": {
+          "title": {
+            "en": "Top battery",
+            "nl": "Accuniveau boven"
+            }
+        },
+        "measure_battery": {
+          "title": {
+            "en": "Lowest battery",
+            "nl": "Laagste accuniveau"
+            }
         }
       },
         "energy": {
-        "batteries": ["INTERNAL"]
+        "batteries": ["INTERNAL", "INTERNAL"]
       },
       "images": {
         "large": "/drivers/driver_tdbu/assets/images/large.png",
@@ -1392,6 +1412,19 @@
               "hint": {
                 "en": "Add extra up/stop/down buttons for both the top and bottom bar of the curtain.",
                 "nl": "Aparte op-/stop-/neerknoppen voor zowel de boven- en onderbalk van het gordijn."
+              }
+            },
+            {
+              "id": "separateBatteryStates",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Separate battery states for Top & Bottom battery",
+                "nl": "Aparte accuniveaus voor boven en onder"
+              },
+              "hint": {
+                "en": "Add extra battery states and graphs for the motor of the top and bottom bar of the curtain, in addition to the combined battery state that always shows the lowest value.",
+                "nl": "Aparte accustatus en grafieken bijhouden voor motor van de boven- en onderbalk van het gordijn, naat het gecombineerde accuniveau dat altijd de laagste waarde laat zien."
               }
             }
           ]
