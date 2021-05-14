@@ -1424,7 +1424,7 @@
               },
               "hint": {
                 "en": "Add extra battery states and graphs for the motor of the top and bottom bar of the curtain, in addition to the combined battery state that always shows the lowest value.",
-                "nl": "Aparte accustatus en grafieken bijhouden voor motor van de boven- en onderbalk van het gordijn, naat het gecombineerde accuniveau dat altijd de laagste waarde laat zien."
+                "nl": "Aparte accustatus en grafieken bijhouden voor motor van de boven- en onderbalk van het gordijn, naast het gecombineerde accuniveau dat altijd de laagste waarde laat zien."
               }
             }
           ]
