@@ -373,7 +373,11 @@ class MotionDriver extends EventEmitter {
             this.log('Listening using ' + address.family + ' on ' + address.address + ":" + address.port + ' ' + (this.key == null ? ' without' : 'with') + ' key');
             this.client.setBroadcast(true);
             this.client.setMulticastTTL(128);
-            this.client.addMembership(MULTICAST_ADDRESS);
+            try { // log ENODEV error (seen it happen once) and other. Can do without multicast in a lot of cases, so log and continue
+                this.client.addMembership(MULTICAST_ADDRESS);
+            } catch (error) {
+                this.error(error);
+            } 
             this.listening = true;
             this.emit('listening');
             this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() });

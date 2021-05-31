@@ -3,6 +3,10 @@
     "en": "• Top Down Bottom Up blind support added.",
     "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd."
   },
+  "1.0.10": {
+    "en": "• Fixed a crash while adding membership to Socket.",
+    "nl": "• Crash opgelost bij het toevoegen van een Membership op het Socket."
+  },
   "1.0.9": {
     "en": "• Support for periodical state refresh (currently 4x a day) • Made driver more generic • Optional setting for bridge IP address.",
     "nl": "• Ondersteuning voor periodieke statusverversing (nu 4x per dag) • Driver generieker gemaakt • Optionele instelling voor bridge IP adres."
