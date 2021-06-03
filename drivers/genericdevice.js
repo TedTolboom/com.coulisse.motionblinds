@@ -608,7 +608,7 @@ class MotionDeviceGeneric extends Homey.Device {
       perc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition);
       state = this.travelDirection(perc, this.getCapabilityValue('windowcoverings_set'));
       if (state != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-        this.log('unexpected position change', state);
+        this.log('unexpected state change', state);
         this.scheduleStop(); 
       }
     }
@@ -634,7 +634,7 @@ class MotionDeviceGeneric extends Homey.Device {
       topPerc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_T);
       topState = this.travelDirection(topPerc, this.getCapabilityValue('windowcoverings_set.top'));
       if (topState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-        this.log('unexpected top position change', topState);
+        this.log('unexpected top state change', topState);
         scheduleStop = true;
       }
     }
@@ -652,14 +652,19 @@ class MotionDeviceGeneric extends Homey.Device {
       bottomPerc = this.mdriver.positionToPercentageOpen(msg.data.currentPosition_B);
       bottomState = this.travelDirection(bottomPerc, this.getCapabilityValue('windowcoverings_set.bottom'));
       if (bottomState != 'idle') { // this is a state report, not a state change, yet it is different from what we know, usually from remote. Signal the change, and force stop a little later.
-        this.log('unexpected bottom position change', bottomState);
+        this.log('unexpected bottom state change', bottomState);
         scheduleStop = true;
       }
     }
     if (topState != undefined && this.hasCapability('windowcoverings_state.top'))
       await this.setCapabilityStateTop(topState, bottomState == 'idle');
-    if (bottomState != undefined && this.hasCapability('windowcoverings_state.bottom')) 
-      await this.setCapabilityStateBottom(bottomState);
+    if (bottomState != undefined) {
+      if (this.hasCapability('windowcoverings_state.bottom'))
+        await this.setCapabilityStateBottom(bottomState);
+        if (this.hasCapability('windowcoverings_state'))
+          await this.setCapabilityState(bottomState);
+    } else if (topState != undefined && this.hasCapability('windowcoverings_state'))
+        await this.setCapabilityState(topState == 'up' ? 'down' : topState);
     if (bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom'))
       await this.setCapabilityPercentageTopBottom(topPerc, bottomPerc);
     if (scheduleStop)
@@ -1044,9 +1049,13 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async statusQuery() {
-    if (this.mdriver.verbose)
-      this.log('statusQuery');
-    this.writeDevice({ "operation": this.mdriver.Operation.StatusQuery });    
+    this.log('statusQuery');
+    if (this.hasCapability('windowcoverings_set.top') && this.hasCapability('windowcoverings_set.bottom')) {
+      this.readDevice();
+      this.writeDevice({ "operation_T": this.mdriver.Operation.StatusQuery,   // does not seem to work for TDBU
+                         "operation_B": this.mdriver.Operation.StatusQuery }); 
+    } else
+      this.writeDevice({ "operation": this.mdriver.Operation.StatusQuery });    
   }
 }
 

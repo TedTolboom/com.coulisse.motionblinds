@@ -531,16 +531,30 @@ class MotionDriver extends EventEmitter {
     }
 
     writeStatusRequest(entry) {
-        this.send({
-            "msgType": 'WriteDevice',
-            "mac": entry.id.mac,
-            "deviceType": entry.id.deviceType,
-            "accessToken": this.getAccessTokenByID(entry.id),
-            "msgID": this.getMessageID(),
-            "data": {
-                "operation": this.Operation.StatusQuery
-            }
-        });
+        if (entry.id.deviceType == this.DeviceType.TopDownBottomUp) {
+            this.readDevice(entry);
+            // this.send({   // does not seem to work for TDBU
+            //     "msgType": 'WriteDevice',
+            //     "mac": entry.id.mac,
+            //     "deviceType": entry.id.deviceType,
+            //     "accessToken": this.getAccessTokenByID(entry.id),
+            //     "msgID": this.getMessageID(),
+            //     "data": {
+            //         "operation_T": this.Operation.StatusQuery,
+            //         "operation_B": this.Operation.StatusQuery
+            //     }
+            // });
+        } else
+            this.send({
+                "msgType": 'WriteDevice',
+                "mac": entry.id.mac,
+                "deviceType": entry.id.deviceType,
+                "accessToken": this.getAccessTokenByID(entry.id),
+                "msgID": this.getMessageID(),
+                "data": {
+                    "operation": this.Operation.StatusQuery
+                }
+            });
     }
 
     readDevice(entry) {
