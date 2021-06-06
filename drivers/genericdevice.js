@@ -1053,8 +1053,8 @@ class MotionDeviceGeneric extends Homey.Device {
     this.log('statusQuery');
     if (this.hasCapability('windowcoverings_set.top') && this.hasCapability('windowcoverings_set.bottom')) {
       this.readDevice();
-      this.writeDevice({ "operation_T": this.mdriver.Operation.StatusQuery,   // does not seem to work for TDBU
-                         "operation_B": this.mdriver.Operation.StatusQuery }); 
+      // this.writeDevice({ "operation_T": this.mdriver.Operation.StatusQuery,   // does not seem to work for TDBU
+      //                    "operation_B": this.mdriver.Operation.StatusQuery }); 
     } else
       this.writeDevice({ "operation": this.mdriver.Operation.StatusQuery });    
   }
