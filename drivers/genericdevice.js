@@ -665,7 +665,8 @@ class MotionDeviceGeneric extends Homey.Device {
           await this.setCapabilityState(bottomState);
     } else if (topState != undefined && this.hasCapability('windowcoverings_state'))
         await this.setCapabilityState(topState);
-    if (bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom'))
+    if (topPerc != undefined && this.hasCapability('windowcoverings_set.top') ||
+        bottomPerc != undefined && this.hasCapability('windowcoverings_set.bottom'))
       await this.setCapabilityPercentageTopBottom(topPerc, bottomPerc);
     if (scheduleStop)
       this.scheduleStop(); 
