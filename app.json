@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -96,6 +96,30 @@
             "filter": {
               "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
               "capabilities": "alarm_contact"
+            }
+          }
+        ]
+      },
+      {
+        "id": "trigger_BLIND_UNEXPECTED_REPORT",
+        "title": {
+          "en": "The blind position changed ",
+          "nl": "Het gordijn werd geblokkeerd"
+        },
+        "titleFormatted": {
+          "en": "[[device]]The blind was operated by an exteral command",
+          "nl": "[[device]]Het gordijn werd bediend door een extern commando"
+        },
+        "hint": {
+          "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motion Blinds app.",
+          "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motion Blinds app."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu"
             }
           }
         ]
@@ -713,8 +737,8 @@
           "nl": "[[device]]Zet de bovenpositie naar [[windowcoverings_set]]"
         },
         "hint": {
-          "en": "Change the top position to open (100%), closed (0%), or a value in between.",
-          "nl": "Verander de bovenpositie naar open (100%), gesloten (0%), of een een waarde daartussen."
+          "en": "Change the top position to the highest position (100%), lowest position (0%) or a value in between.",
+          "nl": "Verander de bovenpositie naar de hoogste positie (100%), laagste positie (0%) of een een waarde daartussen."
         },
         "args": [
           {
@@ -753,8 +777,8 @@
           "nl": "[[device]]Zet de onderpositie naar [[windowcoverings_set]]"
         },
         "hint": {
-          "en": "Change the bottom position to open (100%), closed (0%), or a value in between.",
-          "nl": "Verander de onderpositie naar open (100%), gesloten (0%), of een een waarde daartussen."
+          "en": "Change the bottom position to the highest position (100%), lowest position (0%) or a value in between.",
+          "nl": "Verander de onderpositie naar de hoogste positie (100%), laagste positie (0%) of een een waarde daartussen."
         },
         "args": [
           {
@@ -793,8 +817,8 @@
           "nl": "[[device]]Zet bovenpositie naar [[windowcoverings_set_top]] en onderpositie naar [[windowcoverings_set_bottom]]"
         },
         "hint": {
-          "en": "Change both the top and bottom position to open (100%), closed (0%), or a value in between. The top position must be greater than or equal to the bottom position.",
-          "nl": "Verander zowel de bovon- als de onderpositie naar open (100%), gesloten (0%), of een een waarde daartussen. De bovenpositie moet groter of gelijk zijn aan de onderpositie."
+          "en": "Change both the top and bottom position to the highest position (100%), lowest position (0%) or a value in between. The top position must be greater than or equal to the bottom position.",
+          "nl": "Verander zowel de boven- als de onderpositie naar de hoogste positie (100%), laagste positie (0%) of een een waarde daartussen. De bovenpositie moet groter of gelijk zijn aan de onderpositie."
         },
         "args": [
           {

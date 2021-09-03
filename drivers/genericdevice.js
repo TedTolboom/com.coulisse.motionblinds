@@ -71,6 +71,15 @@ class MotionDeviceGeneric extends Homey.Device {
     });
   }
 
+  async triggerUnexpectedReport(tokens = {}, state = {}) {
+    let device = this; 
+    this.driver.ready().then(() => { 
+      if (device.mdriver.verbose)
+        device.log('triggerUnexpectedReport', tokens, state);
+      device.driver.triggerUnexpectedReportFlow(device, tokens, state); 
+    });
+  }
+
   async triggerTopStateChanged(value, tokens = {}, state = {}) {
     if (value != undefined) {
       let device = this;
@@ -759,9 +768,12 @@ class MotionDeviceGeneric extends Homey.Device {
     if (this.expectReportTimer != undefined) {  // got the report as expected, don't force read state by the timer
       clearTimeout(this.expectReportTimer);
       this.expectReportTimer = undefined;
-    } else if (this.getSetting('inRemoteGroup')) { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, if it is part of a group, poll them all
-      this.log('unexpected Report triggered poll');
-      this.mdriver.pollStates(true, true);
+    } else {
+      this.triggerUnexpectedReport();
+      if (this.getSetting('inRemoteGroup')) { // if a report cones in unannounced, it is often due to a remote. Bad news is, if a remote is tied to several blinds, only one reports. So, if it is part of a group, poll them all
+        this.log('unexpected Report triggered poll');
+        this.mdriver.pollStates(true, true);
+      }
     }
   }
 
@@ -1051,10 +1063,10 @@ class MotionDeviceGeneric extends Homey.Device {
 
   async statusQuery() {
     this.log('statusQuery');
+
     if (this.hasCapability('windowcoverings_set.top') && this.hasCapability('windowcoverings_set.bottom')) {
-      this.readDevice();
-      // this.writeDevice({ "operation_T": this.mdriver.Operation.StatusQuery,   // does not seem to work for TDBU
-      //                    "operation_B": this.mdriver.Operation.StatusQuery }); 
+    //   this.readDevice();      // although write status query does not seem to work: try anyway and let timeout fix it if reports does not come as expected.
+      this.writeDevice({ "operation_T": this.mdriver.Operation.StatusQuery, "operation_B": this.mdriver.Operation.StatusQuery }); 
     } else
       this.writeDevice({ "operation": this.mdriver.Operation.StatusQuery });    
   }

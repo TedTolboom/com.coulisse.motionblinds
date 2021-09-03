@@ -7,6 +7,7 @@ const MotionDriver = require('../motion/motion');
 class MotionDriverGeneric extends Homey.Driver {
   async onInit() {
     this.flowTriggerBlocked = this.homey.flow.getDeviceTriggerCard('trigger_BLIND_BLOCKED');
+    this.flowTriggerUnexpectedReport = this.homey.flow.getDeviceTriggerCard('trigger_BLIND_UNEXPECTED_REPORT');
     this.flowTriggerWindowcoverings_state_changed_top = this.homey.flow.getDeviceTriggerCard('windowcoverings_state_changed.top');
     this.flowTriggerWindowcoverings_state_changed_bottom = this.homey.flow.getDeviceTriggerCard('windowcoverings_state_changed.bottom');
     this.flowTriggerWindowcoverings_set_changed_top = this.homey.flow.getDeviceTriggerCard('windowcoverings_set_changed.top');
@@ -16,6 +17,12 @@ class MotionDriverGeneric extends Homey.Driver {
 
   triggerBlockedFlow(device, tokens, state) {
     this.flowTriggerBlocked.trigger(device, tokens, state)
+      .then(this.log)
+      .catch(this.error);
+  }
+
+  triggerUnexpectedReportFlow(device, tokens, state) {
+    this.flowTriggerUnexpectedReport.trigger(device, tokens, state)
       .then(this.log)
       .catch(this.error);
   }

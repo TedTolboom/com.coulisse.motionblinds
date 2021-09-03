@@ -1,4 +1,8 @@
 {
+  "1.1.1": {
+    "en": "• Added exprimental flow trigger for blinds that are operated by an exteral command.",
+    "nl": "• Experimentele flow triiger toegevoegd voor gordijnen die door een extern commando worden bediend."
+  },
   "1.1.0": {
     "en": "• Top Down Bottom Up blind support added.",
     "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd."

@@ -532,8 +532,8 @@ class MotionDriver extends EventEmitter {
 
     writeStatusRequest(entry) {
         if (entry.id.deviceType == this.DeviceType.TopDownBottomUp) {
-            this.readDevice(entry);
-            // this.send({   // does not seem to work for TDBU
+            this.readDevice(entry); // Statusquery does not seem to work for TDBU. However it is preferred as it seems to update batterystatus, wheres read seems not to
+            // this.send({  
             //     "msgType": 'WriteDevice',
             //     "mac": entry.id.mac,
             //     "deviceType": entry.id.deviceType,
