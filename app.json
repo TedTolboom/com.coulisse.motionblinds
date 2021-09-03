@@ -81,7 +81,7 @@
           "en": "The blind was blocked",
           "nl": "Het gordijn werd geblokkeerd"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The blind was blocked",
           "nl": "[[device]]Het gordijn werd geblokkeerd"
         },
@@ -106,7 +106,7 @@
           "en": "The blind was operated by an exteral command",
           "nl": "Het gordijn werd bediend door een extern commando"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The blind was operated by an exteral command",
           "nl": "[[device]]Het gordijn werd bediend door een extern commando"
         },
@@ -130,7 +130,7 @@
           "en": "The top state changed",
           "nl": "De bovenstatus is veranderd"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The top state changed to [[state]]",
           "nl": "[[device]]De bovenstatus is veranderd naar [[state]]"
         },
@@ -203,7 +203,7 @@
           "en": "The bottom state changed",
           "nl": "De onderstatus is veranderd"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The bottom state changed to [[state]]",
           "nl": "[[device]]De onderstatus is veranderd naar [[state]]"
         },
@@ -276,7 +276,7 @@
           "en": "Top position changed",
           "nl": "Bovenpositie veranderd"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Top position changed",
           "nl": "[[device]]Bovenpositie veranderd"
         },
@@ -308,7 +308,7 @@
           "en": "Bottom position changed",
           "nl": "Onderpositie veranderd"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Bottom position changed",
           "nl": "[[device]]Onderpositie veranderd"
         },
@@ -342,7 +342,7 @@
           "en": "The position !{{is|isn't}} fully open",
           "nl": "De positie !{{is|is niet}} volledig open"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The position !{{is|isn't}} fully open",
           "nl": "[[device]]De positie !{{is|is niet}} volledig open"
         },
@@ -367,7 +367,7 @@
           "en": "The position !{{is|isn't}} fully closed",
           "nl": "De positie !{{is|is niet}} volledig dicht"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The position !{{is|isn't}} fully closed",
           "nl": "[[device]]De positie !{{is|is niet}} volledig dicht"
         },
@@ -392,7 +392,7 @@
           "en": "The top state is !{{|not}}",
           "nl": "De bovenstatus is !{{|niet}}"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The top state is !{{|not}} [[state]]",
           "nl": "[[device]]De bovenstatus is !{{|niet}} [[state]]"
         },
@@ -465,7 +465,7 @@
           "en": "The bottom state is !{{|not}}",
           "nl": "De onderstatus is !{{|niet}}"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]The bottom state is !{{|not}} [[state]]",
           "nl": "[[device]]De onderstatus is !{{|niet}} [[state]]"
         },
@@ -540,7 +540,7 @@
           "en": "Block blind from closing",
           "nl": "Blokkeer gordijn sluiten"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Block blind from closing",
           "nl": "[[device]]Blokkeer gordijn sluiten"
         },
@@ -565,7 +565,7 @@
           "en": "Unblock blind from closing",
           "nl": "Deblokkeer gordijn sluiten"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]nblock blind from closing",
           "nl": "[[device]]Deblokkeer gordijn sluiten"
         },
@@ -590,7 +590,7 @@
           "en": "Set top state",
           "nl": "Zet de bovenstatus"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Set top state to [[state]]",
           "nl": "[[device]]Zet de bovenstatus naar [[state]]"
         },
@@ -663,7 +663,7 @@
           "en": "Set bottom state",
           "nl": "Zet de onderstatus"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Set bottom state to [[state]]",
           "nl": "[[device]]Zet de onderstatus naar [[state]]"
         },
@@ -732,7 +732,7 @@
           "en": "Set the top position to",
           "nl": "Zet de bovenpositie naar"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Set the top position to [[windowcoverings_set]]",
           "nl": "[[device]]Zet de bovenpositie naar [[windowcoverings_set]]"
         },
@@ -772,7 +772,7 @@
           "en": "Set the bottom position to",
           "nl": "Zet de onderpositie naar"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Set the bottom position to [[windowcoverings_set]]",
           "nl": "[[device]]Zet de onderpositie naar [[windowcoverings_set]]"
         },
@@ -812,7 +812,7 @@
           "en": "Set the top and bottom position to",
           "nl": "Zet de boven- en onderpositie naar"
         },
-        "titleFormatted": {
+        "_titleFormatted": {
           "en": "[[device]]Set top position to [[windowcoverings_set_top]] and bottom position to [[windowcoverings_set_bottom]]",
           "nl": "[[device]]Zet bovenpositie naar [[windowcoverings_set_top]] en onderpositie naar [[windowcoverings_set_bottom]]"
         },
