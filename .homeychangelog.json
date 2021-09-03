@@ -1,11 +1,15 @@
 {
+  "1.1.2": {
+    "en": "• Top Down Bottom Up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motion Blinds mobile app.",
+    "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motion Blinds mobiele app."
+  },
   "1.1.1": {
-    "en": "• Added exprimental flow trigger for blinds that are operated by an exteral command.",
-    "nl": "• Experimentele flow triiger toegevoegd voor gordijnen die door een extern commando worden bediend."
+    "en": "• Added experimental flow trigger for blinds that are operated by an exteral command such as a remote or the official Motion Blinds mobile app.",
+    "nl": "• Experimentele flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motion Blinds mobiele app."
   },
   "1.1.0": {
-    "en": "• Top Down Bottom Up blind support added.",
-    "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd."
+    "en": "• Experimental Top Down Bottom Up blind support added.",
+    "nl": "• Experimentele Top Down Bottom Up gordijn-ondersteuning toegevoegd."
   },
   "1.0.10": {
     "en": "• Fixed a crash while adding membership to Socket.",

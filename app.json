@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -103,8 +103,8 @@
       {
         "id": "trigger_BLIND_UNEXPECTED_REPORT",
         "title": {
-          "en": "The blind position changed ",
-          "nl": "Het gordijn werd geblokkeerd"
+          "en": "The blind was operated by an exteral command",
+          "nl": "Het gordijn werd bediend door een extern commando"
         },
         "titleFormatted": {
           "en": "[[device]]The blind was operated by an exteral command",
