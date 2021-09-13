@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -135,15 +135,15 @@
           "nl": "[[device]]De bovenstatus is veranderd naar [[state]]"
         },
         "args": [
-            {
-              "name": "device",
-              "type": "device",
-              "filter": {
-                "driver_id": "driver_tdbu",
-                "capabilities": "windowcoverings_state.top"
-              }
-            },
-            {
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_tdbu",
+              "capabilities": "windowcoverings_state.top"
+            }
+          },
+          {
             "name": "state",
             "title": {
               "en": "Top state",
@@ -216,7 +216,7 @@
               "capabilities": "windowcoverings_state.bottom"
             }
           },
-        {
+          {
             "name": "state",
             "title": {
               "en": "Bottom state",
@@ -478,7 +478,7 @@
               "capabilities": "windowcoverings_state.bottom"
             }
           },
-        {
+          {
             "name": "state",
             "title": {
               "en": "Bottom state",
@@ -603,7 +603,7 @@
               "capabilities": "windowcoverings_state.top"
             }
           },
-        {
+          {
             "name": "state",
             "title": {
               "en": "State",
@@ -879,7 +879,9 @@
         "measure_mb_rssi"
       ],
       "energy": {
-        "batteries": ["INTERNAL"]
+        "batteries": [
+          "INTERNAL"
+        ]
       },
       "images": {
         "large": "/drivers/driver_blind/assets/images/large.png",
@@ -888,15 +890,15 @@
       "pair": [
         {
           "id": "list_devices",
-          "template": "list_devices", 
+          "template": "list_devices",
           "navigation": {
-            "next": "add_my_devices" 
+            "next": "add_my_devices"
           }
         },
         {
           "id": "add_my_devices",
-          "template": "add_devices" 
-        }    
+          "template": "add_devices"
+        }
       ],
       "settings": [
         {
@@ -1016,7 +1018,9 @@
         "measure_mb_rssi"
       ],
       "energy": {
-        "batteries": ["INTERNAL"]
+        "batteries": [
+          "INTERNAL"
+        ]
       },
       "images": {
         "large": "/drivers/driver_venetian/assets/images/large.png",
@@ -1025,15 +1029,15 @@
       "pair": [
         {
           "id": "list_devices",
-          "template": "list_devices", 
+          "template": "list_devices",
           "navigation": {
-            "next": "add_my_devices" 
+            "next": "add_my_devices"
           }
         },
         {
           "id": "add_my_devices",
-          "template": "add_devices" 
-        }    
+          "template": "add_devices"
+        }
       ],
       "settings": [
         {
@@ -1152,7 +1156,9 @@
         "measure_mb_rssi"
       ],
       "energy": {
-        "batteries": ["INTERNAL"]
+        "batteries": [
+          "INTERNAL"
+        ]
       },
       "images": {
         "large": "/drivers/driver_curtain/assets/images/large.png",
@@ -1161,15 +1167,15 @@
       "pair": [
         {
           "id": "list_devices",
-          "template": "list_devices", 
+          "template": "list_devices",
           "navigation": {
-            "next": "add_my_devices" 
+            "next": "add_my_devices"
           }
         },
         {
           "id": "add_my_devices",
-          "template": "add_devices" 
-        }    
+          "template": "add_devices"
+        }
       ],
       "settings": [
         {
@@ -1196,7 +1202,7 @@
               "hint": {
                 "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
                 "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
-              }            
+              }
             },
             {
               "id": "addBlockAlarm",
@@ -1294,53 +1300,56 @@
           "title": {
             "en": "Bottom position",
             "nl": "Positie onder"
-            }
+          }
         },
         "windowcoverings_set.top": {
           "title": {
             "en": "Top position",
             "nl": "Positie boven"
-            }
+          }
         },
         "windowcoverings_state.bottom": {
           "title": {
             "en": "Bottom state",
             "nl": "Status onder"
-            }
+          }
         },
         "windowcoverings_state.top": {
           "title": {
             "en": "Top state",
             "nl": "Status boven"
-            }
+          }
         },
         "windowcoverings_state": {
           "title": {
             "en": "Combined state",
             "nl": "Combinatiestatus"
-            }
+          }
         },
         "measure_battery.bottom": {
           "title": {
             "en": "Bottom battery",
             "nl": "Accuniveau onder"
-            }
+          }
         },
         "measure_battery.top": {
           "title": {
             "en": "Top battery",
             "nl": "Accuniveau boven"
-            }
+          }
         },
         "measure_battery": {
           "title": {
             "en": "Lowest battery",
             "nl": "Laagste accuniveau"
-            }
+          }
         }
       },
-        "energy": {
-        "batteries": ["INTERNAL", "INTERNAL"]
+      "energy": {
+        "batteries": [
+          "INTERNAL",
+          "INTERNAL"
+        ]
       },
       "images": {
         "large": "/drivers/driver_tdbu/assets/images/large.png",
@@ -1349,15 +1358,15 @@
       "pair": [
         {
           "id": "list_devices",
-          "template": "list_devices", 
+          "template": "list_devices",
           "navigation": {
-            "next": "add_my_devices" 
+            "next": "add_my_devices"
           }
         },
         {
           "id": "add_my_devices",
-          "template": "add_devices" 
-        }    
+          "template": "add_devices"
+        }
       ],
       "settings": [
         {
