@@ -722,8 +722,10 @@ class MotionDeviceGeneric extends Homey.Device {
       }
       if (msg.data.type != undefined) {
         this.checkTiltCapability(msg.data.type == this.mdriver.BlindType.VenetianBlind || 
-                                 msg.data.type == this.mdriver.BlindType.ShangriLaBlind);
-        if (msg.data.type == this.mdriver.BlindType.ShangriLaBlind)
+                                 msg.data.type == this.mdriver.BlindType.ShangriLaBlind || 
+                                 msg.data.type == this.mdriver.BlindType.DoubleRoller);
+        if (msg.data.type == this.mdriver.BlindType.ShangriLaBlind || 
+            msg.data.type == this.mdriver.BlindType.DoubleRoller)
           this.maxAngle = this.mdriver.Angle.DR_Close;                         
         if (msg.data.type != settings.type || settings.typeName == undefined || settings.typeName == '?') { 
             newSettings.type = msg.data.type; 

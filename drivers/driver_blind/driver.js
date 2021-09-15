@@ -9,7 +9,7 @@ class MotionDriverBlind extends MotionDriverGeneric {
   getAllowedDeviceTypes() {
     let mdriver = this.homey.app.mdriver;
     return [ 
-//      mdriver.DeviceType.DoubleRoller,
+      // mdriver.DeviceType.DoubleRoller,
       mdriver.DeviceType.Blind
     ];
   }
@@ -25,7 +25,7 @@ class MotionDriverBlind extends MotionDriverGeneric {
       mdriver.BlindType.Awning,
       mdriver.BlindType.DayNightBlind,
       mdriver.BlindType.DimmingBlind,
-      mdriver.BlindType.DoubleRoller, 
+      // mdriver.BlindType.DoubleRoller, 
       mdriver.BlindType.Switch
     ]; 
   }

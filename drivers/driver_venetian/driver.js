@@ -7,15 +7,20 @@ const MotionDriverGeneric = require('../genericdriver');
 class MotionDriverVenetian extends MotionDriverGeneric {
 
   getAllowedDeviceTypes() {
-    return this.homey.app.mdriver.DeviceType.Blind;
+    let mdriver = this.homey.app.mdriver;
+    return [ 
+      mdriver.DeviceType.DoubleRoller,
+      mdriver.DeviceType.Blind
+    ];
   }
 
   getAllowedBlindTypes() { 
     let mdriver = this.homey.app.mdriver;
     return [
       mdriver.BlindType.VenetianBlind,
-      mdriver.BlindType.ShangriLaBlind
-  ]; 
+      mdriver.BlindType.ShangriLaBlind,
+      mdriver.BlindType.DoubleRoller
+   ]; 
   }
 
   getDefaultName() {

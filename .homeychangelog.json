@@ -1,4 +1,12 @@
 {
+  "1.1.5": {
+    "en": "• Added tilt for double roller blinds.",
+    "nl": "• Kantelen toegevoegd voor duo rolgordijnen."
+  },
+  "1.1.4": {
+    "en": "• Added fix for pairing double roller blinds.",
+    "nl": "• Oplossing voor het pairen van duo rolgordijnen."
+  },
   "1.1.2": {
     "en": "• Top Down Bottom Up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motion Blinds mobile app.",
     "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motion Blinds mobiele app."
