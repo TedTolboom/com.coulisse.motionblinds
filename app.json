@@ -878,6 +878,14 @@
         "measure_battery",
         "measure_mb_rssi"
       ],
+      "capabilitiesOptions": {
+        "windowcoverings_tilt_set": {
+          "title": {
+            "en": "Tilt",
+            "nl": "Kanteling"
+          }
+        }
+      },
       "energy": {
         "batteries": [
           "INTERNAL"
@@ -1017,6 +1025,14 @@
         "measure_battery",
         "measure_mb_rssi"
       ],
+      "capabilitiesOptions": {
+        "windowcoverings_tilt_set": {
+          "title": {
+            "en": "Tilt",
+            "nl": "Kanteling"
+          }
+        }
+      },
       "energy": {
         "batteries": [
           "INTERNAL"
@@ -1155,6 +1171,14 @@
         "measure_battery",
         "measure_mb_rssi"
       ],
+      "capabilitiesOptions": {
+        "windowcoverings_tilt_set": {
+          "title": {
+            "en": "Tilt",
+            "nl": "Kanteling"
+          }
+        }
+      },
       "energy": {
         "batteries": [
           "INTERNAL"
@@ -1296,6 +1320,12 @@
         "measure_mb_rssi"
       ],
       "capabilitiesOptions": {
+        "windowcoverings_tilt_set": {
+          "title": {
+            "en": "Tilt",
+            "nl": "Kanteling"
+          }
+        },
         "windowcoverings_set.bottom": {
           "title": {
             "en": "Bottom position",

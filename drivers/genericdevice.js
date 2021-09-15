@@ -917,7 +917,7 @@ class MotionDeviceGeneric extends Homey.Device {
     let pos = this.mdriver.percentageTiltToAngle(perc, this.maxAngle);
     if (this.mdriver.verbose)
       this.log('setAngle', pos);
-    await this.setPercentageTilt(perc);
+    await this.setCapabilityTiltPercentage(perc);
     this.writeDevice({ "targetAngle": pos });    
   }
 

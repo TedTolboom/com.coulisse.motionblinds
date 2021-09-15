@@ -283,7 +283,7 @@ class MotionDriver extends EventEmitter {
     }
 
     percentageTiltToAngle(perc, max_tilt = this.Angle.Close) {
-        if (angle == undefined)
+        if (perc == undefined)
             return undefined;
         let angle = Math.round(perc * max_tilt);
         return max_tilt - Math.max(Math.min(angle, max_tilt), this.Angle.Open);
