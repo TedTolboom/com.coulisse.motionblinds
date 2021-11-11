@@ -360,7 +360,7 @@ class MotionDriver extends EventEmitter {
     getDevices(type = undefined, filter = undefined) {
         let devices = [];
         for (let entry of this.devices.values()) 
-            if ((type == entry.id.deviceType || type.includes(entry.id.deviceType) ||
+            if ((type == entry.id.deviceType || type != undefined && type != null && type.includes(entry.id.deviceType) ||
                 ((type == undefined || type == null) && 
                     entry.id.deviceType != this.DeviceType.Gateway && entry.id.deviceType != this.DeviceType.ChildGateway)) &&
                     (filter == undefined || filter(entry.id)))

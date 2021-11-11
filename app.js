@@ -18,6 +18,7 @@ class MotionBlinds extends Homey.App {
     let setTopPositionAction = this.homey.flow.getActionCard('windowcoverings_set.top');
     let setBottomPositionAction = this.homey.flow.getActionCard('windowcoverings_set.bottom');
     let setTopBottomPositionAction = this.homey.flow.getActionCard('windowcoverings_set.top_bottom');
+    let setTiltAction = this.homey.flow.getActionCard('action_windowcoverings_tilt_set');
     let fullyOpenCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_OPEN');
     let fullyClosedCondition = this.homey.flow.getConditionCard('condition_BLIND_FULLY_CLOSED');
     let topStateIsCondition = this.homey.flow.getConditionCard('windowcoverings_state_is.top');
@@ -29,6 +30,7 @@ class MotionBlinds extends Homey.App {
     setTopPositionAction.registerRunListener(function(args, state)  { this.onSetTopPositionAction(args, state); }.bind(this));
     setBottomPositionAction.registerRunListener(function(args, state)  { this.onSetBottomPositionAction(args, state); }.bind(this));
     setTopBottomPositionAction.registerRunListener(function(args, state)  { this.onSetTopBottomPositionAction(args, state); }.bind(this));
+    setTiltAction.registerRunListener(function(args, state)  { this.onSetTiltAction(args, state); }.bind(this));
     blockAction.registerRunListener(function(args, state)  { this.onBlockAction(args, state); }.bind(this));
     unblockAction.registerRunListener(function(args, state)  { this.onUnblockAction(args, state); }.bind(this));
     fullyOpenCondition.registerRunListener(function(args, state)  { return this.onFullyOpenCondition(args, state); }.bind(this));
@@ -72,6 +74,11 @@ class MotionBlinds extends Homey.App {
     this.mdriver.setIP(undefined);
   }
 
+  async onSetTiltAction(args, state) {
+    if (args.device != undefined)
+      args.device.onSetTiltAction(args, state);
+  }
+   
   async onBlockAction(args, state) {
     if (args.device != undefined)
       args.device.onBlockAction(args, state);

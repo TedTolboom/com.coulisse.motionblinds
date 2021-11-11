@@ -164,6 +164,14 @@ class MotionDeviceGeneric extends Homey.Device {
     return open;
   }
    
+  async onSetTiltAction(args, state) {
+    if (this.hasCapability('windowcoverings_tilt_set')) {
+      if (this.mdriver.verbose)
+        this.log('onSetTiltAction', args.tilt, state);
+      await this.onCapabilityWindowcoverings_tilt_set(args.tilt, state);
+      }
+  }
+   
   async onBlockAction(args, state) {
     if (this.hasCapability('alarm_contact') && !this.getCapabilityValue('alarm_contact')) {
       if (this.mdriver.verbose)

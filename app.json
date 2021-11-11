@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -723,6 +723,42 @@
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        "id": "action_windowcoverings_tilt_set",
+        "title": {
+          "en": "Set the tilt to",
+          "nl": "Zet de kanteling naar"
+        },
+        "_titleFormatted": {
+          "en": "[[device]]Set the tilt to [[tilt]]",
+          "nl": "[[device]]Zet de kanteling naar [[tilt]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": {
+              "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
+              "capabilities": "windowcoverings_tilt_set"
+            }
+          },
+          {
+            "name": "tilt",
+            "title": {
+              "en": "tilt position",
+              "nl": "kanteling positie"
+            },
+            "type": "range",
+            "min": 0,
+            "max": 1,
+            "step": 0.01,
+            "value": 0.5,
+            "label": "%",
+            "labelMultiplier": 100,
+            "labelDecimals": 0
           }
         ]
       },
