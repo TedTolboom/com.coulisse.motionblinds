@@ -1,7 +1,7 @@
 {
   "1.1.8": {
-    "en": "• Support for Kwantum window coverings.",
-    "nl": "• Ondersteuning voor Kwantum raamdecoratie."
+    "en": "• Support for Kwantum window coverings • Prevent crash when heartbeat message has no data element.",
+    "nl": "• Ondersteuning voor Kwantum raamdecoratie • Voorkom crash als het heartbeat bericht geen data element heeft."
   },
   "1.1.7": {
     "en": "• Added tilt action card.",

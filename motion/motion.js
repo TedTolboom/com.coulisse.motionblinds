@@ -452,7 +452,7 @@ class MotionDriver extends EventEmitter {
     onHeartbeat(msg, info) {
         let gateway = this.getGateway(msg.mac, msg.deviceType);
         gateway.setToken(msg.token);
-        if (gateway.nrDevices != msg.data.numberOfDevices) { // if device count changed, get new list
+        if (msg.data != undefined && gateway.nrDevices != msg.data.numberOfDevices) { // if device count changed, get new list
             this.log('Heartbeat found ' + (msg.data.numberOfDevices - gateway.nrDevices) + ' new devices');
             if (this.verbose && !this.logHeartbeat)
                 this.log(msg); // do log heartbeat if device count unexpected
