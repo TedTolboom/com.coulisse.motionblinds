@@ -14,6 +14,4 @@ Om te zorgen dat Homey commando's naar de bridge kan sturen is een sleutel nodig
 
 BESCHIKBAARHEID
 
-ROBB Smarrt is een kwaliteits-huismerk van ROBBshop.nl. Het omvat diverse MOTION Blinds producten, waaronder een MOTION motor die toegepast kan worden in bijna elk rolgordijn. Haal eenvoudigweg de oude kettingbediening eraf en steek de oplaadbare motor in de oorspronkelijke rolgordijnbuis. Het rolgordijn kan dan opgehangen worden met de meegeleverde beugels. Het eindresultaat is vrijwel niet te onderscheiden van een normaal rolgordijn zonder motor. 
-
-De rolgordijn motor, Wifi bridge en optionele afstandsbediening die je nodig hebt om te beginnen zijn verkrijgbaar bij ROBBshop.nl
+Motion producten worden ontwikkeld door Coulisse en kunnen gevonden worden in raambekleding van diverse fabrikanten over de hele wereld. ROBBshop heeft een Doe-Het-Zelf kit om een normaal rolgordijn in een Motion aangedreven slim gordijn te veranderen. Je kunt ook Motion bediening krijgen in producten van Zonnelux, BSL raambekleding, Kwantum, Hornbach en vele anderen. Je kunt ook een winkel in de buurt vinden op de motionblinds website.

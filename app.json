@@ -1,10 +1,10 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
-  "homepage": "https://www.robbshop.nl/merken/robb-smarrt",
+  "homepage": "https://motionblinds.com/",
   "homeyCommunityTopicId": 45608,
   "support": "https://community.athom.com/t/app-motion-blinds/45608",
   "source": "https://github.com/EDelsman/com.coulisse.motionblinds",
@@ -16,8 +16,8 @@
     "nl": "Motion Blinds"
   },
   "description": {
-    "en": "Smart window coverings by ROBB Smarrt.",
-    "nl": "Slimme raamdecoratie van ROBB Smarrt."
+    "en": "Smart window coverings by Coulisse. Available from ROBBshop, Kwantum, Hornbach and many others.",
+    "nl": "Slimme raamdecoratie van Coulisse. Verkrijgbaar bij ROBBshop, Kwantum, Hornbach en vele anderen."
   },
   "category": [
     "appliances"

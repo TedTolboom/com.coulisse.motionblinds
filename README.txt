@@ -14,6 +14,4 @@ In order for Homey to be allowed to send commands to the bridge, it needs a key.
 
 AVAILABILITY
 
-ROBB Smarrt is a quality home brand of ROBBshop.nl. It features various MOTION Blinds products, among which is a MOTION motor that can be applied to almost any existing rollerblind. Simply remove the original chain control, insert the rechargeable motor in the original rollerblind tube and mount the blind using the provided materials. The end result is almost impossible to differentiate from a normal, non-motorized rollerblind.
-
-The rollerblind motor, Wifi bridge and optional remote you need to get started are available from ROBBshop.nl
+Motion products are developed by Coulisse and can be found in window coverings from various other manufacturers across the world. ROBBshopfeatures a DIY kit to convert a normal rollerblind into a Motion powered smart blind. You can also find Motion controls in products from Zonnelux, BSL raambekleding, Kwantum, Hornbach and many others. You can find a store near you at the motionblinds website.
