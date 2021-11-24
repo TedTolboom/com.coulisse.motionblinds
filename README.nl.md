@@ -9,6 +9,9 @@ Om je MOTION apparaten te verbinden met Homey moet je een MOTION WIFI bridge in 
 
 Om te zorgen dat Homey commando's naar de bridge kan sturen is een sleutel nodig. Deze sleutel moet ingesteld worden in de instellingen van de Homey MOTION app. Daar vind je ook de instructies hoe je aan deze sleutel kunt komen.
 
+### EVE MOTIONBLINDS
+De nieuwe Eve MotionBlinds productlijn wordt ook ondersteund door deze app, mits je ze via de WIFI bridge aansluit omdat er op dit moment nog geen Matter ondersteuning voor Homey is.
+
 ### BESCHIKBAARHEID
-[Motion](https://motionblinds.com/nl/) producten worden ontwikkeld door [Coulisse](https://coulisse.com/) en kunnen gevonden worden in raambekleding van diverse fabrikanten over de hele wereld. [ROBBshop](https://www.robbshop.nl/) heeft een Doe-Het-Zelf kit om een normaal rolgordijn in een Motion aangedreven slim gordijn te veranderen. Je kunt ook Motion bediening krijgen in producten van [Zonnelux](https://www.zonnelux.nl/), [BSL raambekleding](https://www.bsl-raambekleding.nl/), [Kwantum](https://www.kwantum.nl/), [Hornbach](https://www.hornbach.nl/) en vele anderen. Je kunt ook een winkel in de buurt vinden op [https://motionblinds.com/nl/winkels/](https://motionblinds.com/nl/winkels/).
+[Motion](https://motionblinds.com/nl/) producten worden ontwikkeld door [Coulisse](https://coulisse.com/) en kunnen gevonden worden in raambekleding van diverse fabrikanten over de hele wereld. [ROBBshop](https://www.robbshop.nl/) heeft een Doe-Het-Zelf kit om een normaal rolgordijn in een Motion aangedreven slim gordijn te veranderen. Je kunt ook Motion bediening krijgen in producten van [Zonnelux](https://www.zonnelux.nl/), [BSL raambekleding](https://www.bsl-raambekleding.nl/), [Smartblinds.nl](https://www.smartblinds.nl/), [Kwantum](https://www.kwantum.nl/), [Hornbach](https://www.hornbach.nl/) en vele anderen. Je kunt ook een winkel in de buurt vinden op [https://motionblinds.com/nl/winkels/](https://motionblinds.com/nl/winkels/).
 

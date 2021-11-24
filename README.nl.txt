@@ -12,6 +12,10 @@ Om je MOTION apparaten te verbinden met Homey moet je een MOTION WIFI bridge in 
 
 Om te zorgen dat Homey commando's naar de bridge kan sturen is een sleutel nodig. Deze sleutel moet ingesteld worden in de instellingen van de Homey MOTION app. Daar vind je ook de instructies hoe je aan deze sleutel kunt komen.
 
+EVE MOTIONBLINDS
+
+De nieuwe Eve MotionBlinds productlijn wordt ook ondersteund door deze app, mits je ze via de WIFI bridge aansluit omdat er op dit moment nog geen Matter ondersteuning voor Homey is.
+
 BESCHIKBAARHEID
 
-Motion producten worden ontwikkeld door Coulisse en kunnen gevonden worden in raambekleding van diverse fabrikanten over de hele wereld. ROBBshop heeft een Doe-Het-Zelf kit om een normaal rolgordijn in een Motion aangedreven slim gordijn te veranderen. Je kunt ook Motion bediening krijgen in producten van Zonnelux, BSL raambekleding, Kwantum, Hornbach en vele anderen. Je kunt ook een winkel in de buurt vinden op de motionblinds website.
+Motion producten worden ontwikkeld door Coulisse en kunnen gevonden worden in raambekleding van diverse fabrikanten over de hele wereld. ROBBshop heeft een Doe-Het-Zelf kit om een normaal rolgordijn in een Motion aangedreven slim gordijn te veranderen. Je kunt ook Motion bediening krijgen in producten van Zonnelux, BSL raambekleding, Smartblinds.nl, Kwantum, Hornbach en vele anderen. Je kunt ook een winkel in de buurt vinden op de motionblinds website.

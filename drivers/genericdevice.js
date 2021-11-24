@@ -37,7 +37,7 @@ class MotionDeviceGeneric extends Homey.Device {
   onNewDevice() { // the motiondriver now knows me, so register
     if (this.mdriver.registerDevice(this.getData().mac)) { // check if set. onInit calls this too so it may already be done
       this.mdriver.setDeviceInGroup(this.getData().mac, this.getSetting('inRemoteGroup'));
-      this.statusQuery(); // this seems to update battery, whereas read does not. This is also why evert nth heartbeat a status query is done
+      this.statusQuery(); 
     }
   }
 
@@ -744,7 +744,9 @@ class MotionDeviceGeneric extends Homey.Device {
         } 
       }
       if (msg.data.voltageMode != undefined) {
-        this.checkBatteryCapability(msg.data.voltageMode == this.mdriver.VoltageMode.DC, msg.data.type, settings.separateBatteryStates);
+        let hasbattery = msg.data.voltageMode == this.mdriver.VoltageMode.DC || 
+                          msg.data.batteryLevel != undefined && msg.data.batteryLevel > 300 && msg.data.batteryLevel < 1660;
+        this.checkBatteryCapability(hasbattery, msg.data.type, settings.separateBatteryStates);
         if (msg.data.voltageMode != settings.voltageMode || settings.voltageModeName == undefined || settings.voltageModeName == '?') { 
           newSettings.voltageMode = msg.data.voltageMode; 
           newSettings.voltageModeName = this.homey.app.getVoltageModeName(msg.data.voltageMode);
@@ -752,7 +754,9 @@ class MotionDeviceGeneric extends Homey.Device {
             newSettings.voltageModeName = '-';
         save = true; 
         }
-      }
+      } else if (msg.data.batteryLevel != undefined)
+        this.checkBatteryCapability(msg.data.batteryLevel > 300 && msg.data.batteryLevel < 1660, msg.data.type, settings.separateBatteryStates);
+
       if (msg.data.wirelessMode != undefined) {
         this.checkBidirectionalCapability(msg.data.wirelessMode == this.mdriver.WirelessMode.BiDirection || 
                                           msg.data.wirelessMode == this.mdriver.WirelessMode.BidirectionMech, msg.data.type); 
@@ -1071,7 +1075,7 @@ class MotionDeviceGeneric extends Homey.Device {
     }
   }
 
-  async statusQuery() {
+  async statusQuery() { // status query operation seems to update battery, whereas readDevice does not. This is also why evert nth heartbeat a status query is done
     this.log('statusQuery');
 
     if (this.hasCapability('windowcoverings_set.top') && this.hasCapability('windowcoverings_set.bottom')) {

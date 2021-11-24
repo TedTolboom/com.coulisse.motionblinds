@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -16,8 +16,8 @@
     "nl": "Motion Blinds"
   },
   "description": {
-    "en": "Smart window coverings by Coulisse. Available from ROBBshop, Kwantum, Hornbach and many others.",
-    "nl": "Slimme raamdecoratie van Coulisse. Verkrijgbaar bij ROBBshop, Kwantum, Hornbach en vele anderen."
+    "en": "Smart window coverings by Coulisse. Available from ROBBshop, Smartblinds.nl, Kwantum, Hornbach and many others.",
+    "nl": "Slimme raamdecoratie van Coulisse. Verkrijgbaar bij ROBBshop, Smartblinds.nl, Kwantum, Hornbach en vele anderen."
   },
   "category": [
     "appliances"
