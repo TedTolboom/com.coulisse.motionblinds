@@ -1,8 +1,12 @@
 {
+  "1.2.1": {
+    "en": "• Added logging for opened/(partially)closed",
+    "nl": "• Log toegevoegd voor geopend/(Gedeeltelijk)gesloten."
+  }, 
   "1.2.0": {
     "en": "• Support for Kwantum window coverings (using bridge) • Support for Eve Motionblinds (using bridge).",
     "nl": "• Ondersteuning voor Kwantum raamdecoratie (via bridge) • Support for Eve Motionblinds (via bridge)."
-  },  
+  },   
   "1.1.9": {
     "en": "• Enable battery power capability for devices that report AC power as well as battery level, as some devices misreport voltage mode.",
     "nl": "• Batterijniveau tonen voor gordijnen die zowel netstroom als batterijnveau aangeven, omdat sommige gordijnen het stroomtype verkeerd doorgeven."

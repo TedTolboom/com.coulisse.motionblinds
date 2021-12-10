@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -63,13 +63,21 @@
       "type": "boolean",
       "title": {
         "en": "(Partially) closed",
-        "nl": "(Deels) dicht"
+        "nl": "(Gedeeltelijk) dicht"
       },
       "uiQuickAction": true,
       "uiComponent": null,
       "getable": true,
       "setable": false,
-      "insights": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "(Partially) closed",
+        "nl": "(Gedeeltelijk) dicht"
+      },
+      "insightsTitleFalse": {
+        "en": "Open",
+        "nl": "Open"
+      },
       "preventtag": true
     }
   },
@@ -920,6 +928,22 @@
             "en": "Tilt",
             "nl": "Kanteling"
           }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          }, 
+          "zoneActivity": false,
+          "icon": "/assets/hand.svg",
+          "insightsTitleTrue": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "insightsTitleFalse": {
+            "en": "Unblocked",
+            "nl": "Vrij"
+          }
         }
       },
       "energy": {
@@ -1067,6 +1091,22 @@
             "en": "Tilt",
             "nl": "Kanteling"
           }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "zoneActivity": false,
+          "icon": "/assets/hand.svg",
+          "insightsTitleTrue": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "insightsTitleFalse": {
+            "en": "Unblocked",
+            "nl": "Vrij"
+          }
         }
       },
       "energy": {
@@ -1212,6 +1252,22 @@
           "title": {
             "en": "Tilt",
             "nl": "Kanteling"
+          }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "zoneActivity": false,
+          "icon": "/assets/hand.svg",
+          "insightsTitleTrue": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "insightsTitleFalse": {
+            "en": "Unblocked",
+            "nl": "Vrij"
           }
         }
       },
@@ -1368,6 +1424,7 @@
             "nl": "Positie onder"
           }
         },
+        "zoneActivity": false,
         "windowcoverings_set.top": {
           "title": {
             "en": "Top position",
@@ -1408,6 +1465,21 @@
           "title": {
             "en": "Lowest battery",
             "nl": "Laagste accuniveau"
+          }
+        },
+        "alarm_contact": {
+          "title": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "icon": "/assets/hand.svg",
+          "insightsTitleTrue": {
+            "en": "Blocked",
+            "nl": "Geblokkeerd"
+          },
+          "insightsTitleFalse": {
+            "en": "Unblocked",
+            "nl": "Vrij"
           }
         }
       },
