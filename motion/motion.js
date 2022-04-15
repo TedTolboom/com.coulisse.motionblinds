@@ -403,19 +403,23 @@ class MotionDriver extends EventEmitter {
     }
 
     onMessage(msg, info) {
-        let message = JSON.parse(msg.toString());
-        if (this.logHeartbeat || message.msgType != 'Heartbeat') {
-            this.log('Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
-            if (this.verbose) 
-                this.log(message);
+        try {
+            let message = JSON.parse(msg.toString());
+            if (this.logHeartbeat || message.msgType != 'Heartbeat') {
+                this.log('Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
+                if (this.verbose) 
+                    this.log(message);
+            }
+            this.getGatewayAddress(message, info);
+            if (message.msgType == 'Heartbeat')
+                this.onHeartbeat(message, info);
+            else if (message.msgType == 'GetDeviceListAck')
+                this.onGetDeviceListAck(message, info);
+            this.emit(message.msgType, message, info);
+            this.registerDeviceType(message);
+        } catch (error) {
+            this.error(error);
         }
-		this.getGatewayAddress(message, info);
-        if (message.msgType == 'Heartbeat')
-            this.onHeartbeat(message, info);
-        else if (message.msgType == 'GetDeviceListAck')
-            this.onGetDeviceListAck(message, info);
-        this.emit(message.msgType, message, info);
-        this.registerDeviceType(message);
     }
 
     getGatewayAddress(message, info) {

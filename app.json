@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -72,11 +72,11 @@
       "insights": true,
       "insightsTitleTrue": {
         "en": "(Partially) closed",
-        "nl": "(Gedeeltelijk) dicht"
+        "nl": "(Gedeeltelijk) gesloten"
       },
       "insightsTitleFalse": {
-        "en": "Open",
-        "nl": "Open"
+        "en": "Opened",
+        "nl": "Geopend"
       },
       "preventtag": true
     }

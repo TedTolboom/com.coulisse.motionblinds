@@ -1,6 +1,10 @@
 {
+  "1.2.2": {
+    "en": "• Tested against node.js 16 update for Homey 7.4.0 firmware and higher • Tested against Motion Bridge firmware update A1.0.5_B0.1.5 • Exception handling added for receiving malformed messages.",
+    "nl": "• Getest met node.js 16 update voor Homey 7.4.0 firmware en hoger •  • Getest met Motion Bridge firmware update A1.0.5_B0.1.5 • Foutafhandeling toegevoegd bij het ontvangen van misvormde berichten."
+  },
   "1.2.1": {
-    "en": "• Added logging for opened/(partially)closed",
+    "en": "• Added logging for opened/(partially)closed.",
     "nl": "• Log toegevoegd voor geopend/(Gedeeltelijk)gesloten."
   }, 
   "1.2.0": {
