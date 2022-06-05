@@ -29,6 +29,8 @@ class MotionDeviceGeneric extends Homey.Device {
     this.mdriver.on('ReadDeviceAck', function(msg, info) { if (mac == msg.mac) this.onReadDeviceAck(msg, info); }.bind(this));
     this.mdriver.on('WriteDevice', function(msg, info) { if (mac == msg.mac) this.onWriteDevice(msg, info); }.bind(this));
     this.mdriver.on('WriteDeviceAck', function(msg, info) { if (mac == msg.mac) this.onWriteDeviceAck(msg, info); }.bind(this));
+    if (this.hasCapability('measure_mb_rssi')) 
+      this.removeCapability('measure_mb_rssi');
     this.log(this.getName(), 'at', mac, 'initialized, refreshed every', this.heartbeatCountRefresh, 'heartbeats, starting at', this.heartbeatCount);
     this.checkAlarmContactCapability(this.getSetting('addBlockAlarm'));
     this.onNewDevice();
@@ -466,14 +468,19 @@ class MotionDeviceGeneric extends Homey.Device {
   }
 
   async setCapabilityRSSI(dBm) {
-    if (dBm != undefined && this.numberDifferent(dBm, this.getCapabilityValue('measure_mb_rssi'), 0.5)) {
-      this.log('setCapabilityRSSI', dBm);
-      if (!this.hasCapability('measure_mb_rssi')) 
-        await this.addCapability('measure_mb_rssi');
-      await this.setCapabilityValue('measure_mb_rssi', dBm);
-      return true;
+    try {
+      if (dBm != undefined && this.numberDifferent(dBm, this.getCapabilityValue('measure_rf_rssi'), 0.5)) {
+        this.log('setCapabilityRSSI', dBm);
+        if (!this.hasCapability('measure_rf_rssi')) 
+          await this.addCapability('measure_rf_rssi');
+        await this.setCapabilityValue('measure_rf_rssi', dBm);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      this.error(e);
+      return false;
     }
-    return false;
   }
 
   async checkTiltCapability(on) {

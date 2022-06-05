@@ -1,4 +1,8 @@
 {
+  "1.2.4": {
+    "en": "• Fixed range exception on RSSI capability.",
+    "nl": "• Interne fout op limiet voor RSSI eigenschap opgelost."
+  },
   "1.2.3": {
     "en": "• Tested against node.js 16 update for Homey 7.4.0 firmware and higher • Tested against Motion Bridge firmware update A1.0.5_B0.1.5.",
     "nl": "• Getest met node.js 16 update voor Homey 7.4.0 firmware en hoger • Getest met Motion Bridge firmware update A1.0.5_B0.1.5."

@@ -1,6 +1,6 @@
 {
   "id": "com.coulisse.motionblinds",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#2F9C94",
@@ -39,7 +39,7 @@
     }
   },
   "capabilities": {
-    "measure_mb_rssi": {
+    "measure_rf_rssi": {
       "type": "number",
       "title": {
         "en": "Signal strenth",
@@ -54,7 +54,7 @@
         "en": "dBm",
         "nl": "dBm"
       },
-      "min": -100,
+      "min": -255,
       "max": 0,
       "step": 1,
       "decimals": 0
@@ -920,7 +920,7 @@
         "windowcoverings_set",
         "alarm_contact",
         "measure_battery",
-        "measure_mb_rssi"
+        "measure_rf_rssi"
       ],
       "capabilitiesOptions": {
         "windowcoverings_tilt_set": {
@@ -1083,7 +1083,7 @@
         "windowcoverings_tilt_set",
         "alarm_contact",
         "measure_battery",
-        "measure_mb_rssi"
+        "measure_rf_rssi"
       ],
       "capabilitiesOptions": {
         "windowcoverings_tilt_set": {
@@ -1245,7 +1245,7 @@
         "windowcoverings_set",
         "alarm_contact",
         "measure_battery",
-        "measure_mb_rssi"
+        "measure_rf_rssi"
       ],
       "capabilitiesOptions": {
         "windowcoverings_tilt_set": {
@@ -1409,7 +1409,7 @@
         "measure_battery",
         "measure_battery.bottom",
         "measure_battery.top",
-        "measure_mb_rssi"
+        "measure_rf_rssi"
       ],
       "capabilitiesOptions": {
         "windowcoverings_tilt_set": {
