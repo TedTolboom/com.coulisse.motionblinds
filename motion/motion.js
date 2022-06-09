@@ -194,13 +194,12 @@ class MotionDriver extends EventEmitter {
         this.pollAgain = false;
         this.pollTimer = undefined;
         this.multicast = false;
+        this.multisocket = false;
         this.ip = undefined;
         this.listening = false;
-        this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
-        this.client.on('listening', function() { this.onListening() }.bind(this));
-        this.client.on('error', function(error) { this.onError(error) }.bind(this));
-        this.client.on('message', function(msg, info) { this.onMessage(msg, info) }.bind(this));
-        this.client.on('close', function() { this.onClose() }.bind(this));
+        this.setMaxListeners(50);
+        this.client = null;
+        this.server = null;
         process.on('SIGTERM', function() { this.disconnect() }.bind(this));
     }
 
@@ -350,10 +349,8 @@ class MotionDriver extends EventEmitter {
 
     isRegisteredDevice(mac) { 
         let item = this.devices.get(mac);
-        if (item != undefined) {
+        if (item != undefined)
             return item.id.registered;
-            return true;
-        } 
         return false;
     }
 
@@ -385,13 +382,7 @@ class MotionDriver extends EventEmitter {
 
     onError(error) {
         this.error(error);
-//        this.client.close(function () {
-//            this.token = null;
-//            this.accessToken = null;
-//            this.deviceList = null;
-//			this.gatewayAddress = null;
-//            this.emit('error', error);
-//        })
+        this.emit('onError', error);
     }
 
     onReady(mac) {
@@ -442,6 +433,8 @@ class MotionDriver extends EventEmitter {
         gateway.setToken(msg.token); 
         if (msg.data != undefined) {
             gateway.nrDevices = msg.data.length - 1; // the first is the gateway itself, so count one less. Remember, so on heartbeat we can see devices added
+            if (this.getMaxListeners() < gateway.nrDevices)
+                this.setMaxListeners(gateway.nrDevices);
             for (let device of msg.data) 
                 if (this.devices.get(device.mac) == undefined) {
                     this.devices.set(device.mac, new MotionDevice(device.mac, device.deviceType, gateway));
@@ -465,19 +458,47 @@ class MotionDriver extends EventEmitter {
     }
 
     async connect() {
-        this.client.bind(UDP_PORT_RECEIVE, function() {
+        if (this.multisocket) {
+            this.server = UDP.createSocket({ type: 'udp4', reuseAddr: true });
+            this.server.on('error', function(error) { this.onError(error) }.bind(this));
+            this.server.on('message', function(msg, info) { this.onMessage(msg, info) }.bind(this));
+            this.server.on('close', function() { this.onClose() }.bind(this));
+            // this.server.bind(UDP_PORT_RECEIVE, "192.168.2.50", function() {
+            //     this.emit('connectServer');
+            // }.bind(this));
+            }
+        this.client = UDP.createSocket({ type: 'udp4', reuseAddr: true });
+        this.client.on('listening', function() { this.onListening() }.bind(this));
+        this.client.on('error', function(error) { this.onError(error) }.bind(this));
+        this.client.on('message', function(msg, info) { this.onMessage(msg, info) }.bind(this));
+        this.client.on('close', function() { this.onClose() }.bind(this));
+
+        this.client.bind(UDP_PORT_RECEIVE, this.multisocket ? MULTICAST_ADDRESS : undefined, function() {
             this.emit('connect');
-        }.bind(this))
+        }.bind(this));
     }
 
     async disconnect() {
-        this.client.close(function () {
-            this.token = null;
-            this.accessToken = null;
-            this.deviceList = null;
-            this.gatewayAddress = null;
-            this.emit('disconnect');
-        }.bind(this))
+        if (this.server != null) {
+            this.server.close(function () {
+                this.server = null;
+                this.token = null;
+                this.accessToken = null;
+                this.deviceList = null;
+                this.gatewayAddress = null;
+                this.emit('disconnect');
+            }.bind(this));
+        }
+        if (this.client != null) {
+            this.client.close(function () {
+                this.client = null;
+                this.token = null;
+                this.accessToken = null;
+                this.deviceList = null;
+                this.gatewayAddress = null;
+                this.emit('disconnect');
+            }.bind(this));
+        }
     }
 
     /**
@@ -486,7 +507,7 @@ class MotionDriver extends EventEmitter {
      * @returns boolean if accesstoken is ready
      */
     isReady(mac) {
-        let gateway = this.getGateway(mac, '02000001');
+        let gateway = this.getGateway(mac, this.DeviceType.Gateway);
         return gateway != undefined && gateway.isReady();
     }
 
@@ -574,23 +595,20 @@ class MotionDriver extends EventEmitter {
     async send(msg) {
         let message = JSON.stringify(msg);
         let gateway = this.getGateway(msg.mac, msg.deviceType);
-		let addr = this.ip;
+		let addr = this.multicast ? null : this.ip;
         if (addr == null || addr == undefined || addr == '')
             addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null || gateway.gatewayAddress == undefined 
                         ? MULTICAST_ADDRESS : gateway.gatewayAddress;
         this.log('Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
         if (this.verbose)
             this.log(msg);
-        this.client.send(message, UDP_PORT_SEND, addr); 
-        
-        // , function (error) {
-        //     if (error) {
-        //         this.error(error);
-        //         this.emit('senderror', error);
-        //     } else {
-        //         this.emit(message.msgType, message);
-        //     }
-        // }.bind(this));
+        let dgram = this.server == null ? this.client : this.server;
+        dgram.send(message, UDP_PORT_SEND, addr, function (error, bytes) {
+            if (error) {
+                this.error(error);
+                this.emit('sendError', error);
+            }
+        }.bind(this));
         this.emit(msg.msgType, msg);
     }
 }

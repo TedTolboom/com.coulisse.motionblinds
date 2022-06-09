@@ -39,7 +39,7 @@ class MotionBlinds extends Homey.App {
     bottomStateIsCondition.registerRunListener(function(args, state)  { return this.onBottomStateIsCondition(args, state); }.bind(this));
     flowTriggerWindowcoverings_state_changed_top.registerRunListener(async (args, state) => { return args.state === state.state; });
     flowTriggerWindowcoverings_state_changed_bottom.registerRunListener(async (args, state) => { return args.state === state.state; });
-    this.homey.settings.on('set',   function() { this.onSaveSettings(); }.bind(this));
+    this.homey.settings.on('set', function() { this.onSaveSettings(); }.bind(this));
     this.homey.settings.on('unset', function() { this.onClearSettings(); }.bind(this));
     this.onSaveSettings();
     this.mdriver.connect();
@@ -50,10 +50,11 @@ class MotionBlinds extends Homey.App {
     this.mdriver.verbose = this.homey.settings.get('debug') == true;
     this.mdriver.logHeartbeat = this.mdriver.verbose;
     this.mdriver.multicast = this.homey.settings.get('multicast') == true;
+    this.mdriver.multisocket = this.homey.settings.get('multisocket') == true;
     let key = this.homey.settings.get('motion_key');
     this.mdriver.setIP(this.homey.settings.get('motion_ip'));
     if (logChange)
-      this.log("settings applied: verbose", this.mdriver.verbose, "multicast", this.mdriver.multicast, "IP", this.mdriver.ip);
+      this.log("settings applied: verbose", this.mdriver.verbose, "multicast", this.mdriver.multicast, "multisocket", this.mdriver.multisocket, "IP", this.mdriver.ip);
     if (key != null && key != undefined && key.length == 16)
       try {
         this.mdriver.setAppKey(key);

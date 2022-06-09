@@ -11,6 +11,7 @@
         "debug": "Alle berichten volledig loggen",
         "multicast": "Alleen multicast gebruiken",
         "save": "Instellingen opslaan",
+        "multisocket": "Gebruik apart verzendsocket",
         "clear": "Instellingen wissen"
     },
     "blind": {

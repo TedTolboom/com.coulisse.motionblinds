@@ -1,4 +1,8 @@
 {
+  "1.2.5": {
+    "en": "• New setting for separate send/receive sockets.",
+    "nl": "• Extra instelling voor gescheiden verzend-/ontvangsockets."
+  },
   "1.2.4": {
     "en": "• Fixed range exception on RSSI capability.",
     "nl": "• Interne fout op limiet voor RSSI eigenschap opgelost."

@@ -5,6 +5,7 @@ function onHomeyReady(Homey) {
     var ipElement = document.getElementById('motion_ip');
     var debugElement = document.getElementById('debug');
     var multicastElement = document.getElementById('multicast');
+    var multisocketElement = document.getElementById('multisocket');
     var clearElement = document.getElementById('clear');
     var saveElement = document.getElementById('save');
   
@@ -28,6 +29,11 @@ function onHomeyReady(Homey) {
         multicastElement.checked = multicast;
     });
 
+    Homey.get('multisocket', function (err, multisocket) {
+        if (err) return Homey.alert(err);
+        multisocketElement.checked = multisocket;
+    });
+
     saveElement.addEventListener('click', function (e) {
         Homey.set('motion_key', keyElement.value, function (err) {
             if (err) return Homey.alert(err);
@@ -39,6 +45,9 @@ function onHomeyReady(Homey) {
             if (err) return Homey.alert(err);
             });
         Homey.set('multicast', multicastElement.checked, function (err) {
+            if (err) return Homey.alert(err);
+            });
+        Homey.set('multisocket', multisocketElement.checked, function (err) {
             if (err) return Homey.alert(err);
             });
         });
@@ -58,6 +67,10 @@ function onHomeyReady(Homey) {
         });
         debugElement.multicast = false;
         Homey.unset('multicast', function (err) {
+            if (err) return Homey.alert(err);
+        });
+        debugElement.multisocket = false;
+        Homey.unset('multisocket', function (err) {
             if (err) return Homey.alert(err);
         });
     });
