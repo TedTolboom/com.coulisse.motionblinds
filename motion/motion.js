@@ -417,7 +417,7 @@ class MotionDriver extends EventEmitter {
         if (!this.multicast && message.mac != undefined && info != null && info != undefined && info.address != undefined &&
             info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
             let gateway = this.getGateway(message.mac, message.deviceType);
-            if (gateway != undefined && gateway.setGatewayAddress(info.address))
+            if (gateway != undefined && gateway.setGatewayAddress(info.address)) 
                 this.log('Gateway adress for mac ' + message.mac + ' set to ' + info.address);
         }
     }
@@ -453,7 +453,7 @@ class MotionDriver extends EventEmitter {
             this.log('Heartbeat found ' + (msg.data.numberOfDevices - gateway.nrDevices) + ' new devices');
             if (this.verbose && !this.logHeartbeat)
                 this.log(msg); // do log heartbeat if device count unexpected
-            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() }) 
+            this.send({ "msgType": "GetDeviceList", "msgID": this.getMessageID() }, info == null ? null : info.address);
         }
     }
 
@@ -592,10 +592,11 @@ class MotionDriver extends EventEmitter {
         });
     }
 
-    async send(msg) {
+    async send(msg, addr = null) {
         let message = JSON.stringify(msg);
         let gateway = this.getGateway(msg.mac, msg.deviceType);
-		let addr = this.multicast ? null : this.ip;
+        if ((addr == null || addr == undefined) && !this.multicast)
+            addr = this.ip;
         if (addr == null || addr == undefined || addr == '')
             addr = this.multicast || gateway == undefined || gateway.gatewayAddress == null || gateway.gatewayAddress == undefined 
                         ? MULTICAST_ADDRESS : gateway.gatewayAddress;

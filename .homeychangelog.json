@@ -1,4 +1,8 @@
 {
+  "1.2.6": {
+    "en": "• Fixed a small bug where set IP would not always be used.",
+    "nl": "• Fout opgelost waarbij ingesteld IP adres niet altijd werd gebruikt."
+  },
   "1.2.5": {
     "en": "• New setting for separate send/receive sockets.",
     "nl": "• Extra instelling voor gescheiden verzend-/ontvangsockets."
