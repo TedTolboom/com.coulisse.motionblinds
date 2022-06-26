@@ -9,7 +9,7 @@ class MotionBlinds extends Homey.App {
   mdriver = null;
 
   async onInit() {
-    this.mdriver = new MotionDriver(this);
+    this.mdriver = new MotionDriver(this, this.homey.clock.getTimezone());
     this.mdriver.on('newDevices', function() { this.onNewDevices(); }.bind(this));
     let blockAction = this.homey.flow.getActionCard('action_BLOCK_BLIND');
     let unblockAction = this.homey.flow.getActionCard('action_UNBLOCK_BLIND');
@@ -41,6 +41,8 @@ class MotionBlinds extends Homey.App {
     flowTriggerWindowcoverings_state_changed_bottom.registerRunListener(async (args, state) => { return args.state === state.state; });
     this.homey.settings.on('set', function() { this.onSaveSettings(); }.bind(this));
     this.homey.settings.on('unset', function() { this.onClearSettings(); }.bind(this));
+    this.homey.clock.addListener('timezone', function(timezone) { 
+      this.mdriver.setTomezone(timezone == undefined || timezone == null ? this.homey.clock.getTimezone() : timezone)}.bind(this));
     this.onSaveSettings();
     this.mdriver.connect();
     this.log(`${Homey.manifest.id} - ${Homey.manifest.version} started...`);

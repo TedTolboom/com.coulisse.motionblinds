@@ -1,4 +1,8 @@
 {
+  "1.2.7": {
+    "en": "• Improved logging • Try to use local time for the message ID and check if it is always incremented.",
+    "nl": "• Betere logging • Probeer local time te gebruiken voor het berichtID en controleer of het altijd oploopt."
+  },
   "1.2.6": {
     "en": "• Fixed a small bug where set IP would not always be used.",
     "nl": "• Fout opgelost waarbij ingesteld IP adres niet altijd werd gebruikt."

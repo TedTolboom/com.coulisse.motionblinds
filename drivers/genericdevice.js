@@ -830,7 +830,7 @@ class MotionDeviceGeneric extends Homey.Device {
 			"msgType": 'ReadDevice',
 			"mac": data.mac,
 			"deviceType": data.deviceType,
-			"accessToken": this.mdriver.getAccessTokenByID(data),
+			"accessToken": this.mdriver.getAccessToken(data.mac, data.deviceType),
 			"msgID": this.mdriver.getMessageID()
 		});  
   }
@@ -858,7 +858,7 @@ class MotionDeviceGeneric extends Homey.Device {
 			"msgType": 'WriteDevice',
 			"mac": data.mac,
 			"deviceType": data.deviceType,
-			"accessToken": this.mdriver.getAccessTokenByID(data),
+			"accessToken": this.mdriver.getAccessToken(data.mac, data.deviceType),
 			"msgID": this.mdriver.getMessageID(),
       "data": newdata
 		});  

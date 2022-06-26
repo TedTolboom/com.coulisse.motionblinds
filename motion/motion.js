@@ -11,25 +11,25 @@ const UDP_PORT_RECEIVE  = 32101;
 class MotionGateway {
     constructor(mdriver, mac) {
         this.motionDriver = mdriver;
-        this.key = mdriver.key;
         this.mac = mac;
         this.gatewayAddress = null;
         this.accessToken = null;
         this.token = null;
         this.nrDevices = 0;
+        this.key = mdriver.key;
     }
 
     calculateAccessToken() {
         try {
-            if (this.motionDriver.key != null && this.token != null) {
-                if (this.verbose)
-                    this.motionDriver.log('Key = "' + this.motionDriver.key + '", Token = "' + this.token + '"');
-                const cipher = Crypto.createCipheriv('aes-128-ecb', this.motionDriver.key, null);
+            if (this.key != null && this.token != null) {
+                if (this.motionDriver.verbose)
+                    this.motionDriver.log('Key = "' + this.key + '", Token = "' + this.token + '"');
+                const cipher = Crypto.createCipheriv('aes-128-ecb', this.key, null);
                 let buff = Buffer.concat([cipher.update(this.token), cipher.final()]);
                 let text = buff.toString('hex');
                 let wasnotready = this.accessToken == null;
                 this.accessToken = text.substring(0, 32).toUpperCase();
-                this.motionDriver.log('Accesstoken set');
+                this.motionDriver.log('Accesstoken set'+ (this.motionDriver.verbose ? ' to "' + this.accessToken + '"' : ''));
                 if (wasnotready) 
                     this.motionDriver.onReady(this.mac);
             } else if (this.accessToken != null) {
@@ -38,7 +38,7 @@ class MotionGateway {
                 this.motionDriver.onNotReady(this.mac);
             }
         } catch (err) {
-            this.motionDriver.log('Error calculating Access Token for Key = "' + this.motionDriver.key + '", Token = "' + this.token + '"');
+            this.motionDriver.log('Error calculating Access Token for Key = "' + this.key + '", Token = "' + this.token + '"');
             this.motionDriver.log(err);
             this.accessToken = null;
             this.motionDriver.onNotReady(this.mac);
@@ -48,7 +48,7 @@ class MotionGateway {
     setToken(newToken) {
         if (newToken == undefined)
             newToken = null;
-        if (newToken != this.token) {
+        if (newToken != null && newToken != this.token) {
             this.token = newToken;
             this.calculateAccessToken();
         }
@@ -183,9 +183,10 @@ class MotionDriver extends EventEmitter {
         Others: 3
     }
     
-    constructor(motionapp = null) { 
+    constructor(motionapp = null, timezone = null) { 
         super();
         this.app = motionapp; // using external reference somehow works better than Homey.app, which is undefined when this initialises?
+        this.timezone = timezone;
         this.key = null;
         this.devices = new Map();
         this.logging = true;
@@ -200,6 +201,7 @@ class MotionDriver extends EventEmitter {
         this.setMaxListeners(50);
         this.client = null;
         this.server = null;
+        this.lastMessageID = null;
         process.on('SIGTERM', function() { this.disconnect() }.bind(this));
     }
 
@@ -218,8 +220,52 @@ class MotionDriver extends EventEmitter {
             console.error(msg);
     }
 
+    settimezone(timezone) {
+        this.log('Timezone changed to ' + timezone);
+        this.timezone = timezone;
+    }
+
+    checkMessageID(message) {
+        try {
+            if (message != null && message != undefined && message.msgID != null && message.msgID != undefined) {
+                let id = BigInt(message.msgID);
+                if (id > this.lastMessageID) {
+                    if (this.verbose)
+                        this.log('incremented messageID from ' + this.lastMessageID + ' to ' + id);
+                    this.lastMessageID = id;
+                    }
+            }
+        } catch (error) {
+            this.log(error);
+        }
+    }
+
     getMessageID() {
-        return new Date().toISOString().replace(/[T\-\./:Z]/g, '');
+        let id = new Date().toISOString().replace(/[T\-\./:Z]/g, '');
+        if (this.timezone != null && this.timezone != undefined) 
+            try { // homey has UTC clock and no proper means to get right timezone :-(
+                let nowid = new Date().toLocaleString('sv', { timeZone: this.timezone} ).replace(/[T\- \./:Z]/g, '');
+                if (nowid.length < id.length)
+                    nowid = nowid + id.substring(nowid.length);
+                if (/^\d+$/.test(nowid))
+                    id = nowid;
+            } catch (error) { // if this does not provide a suitable answer, proceed with old implementation
+                this.log(error);
+            }
+        try {
+            let msgid = BigInt(id);
+            if (this.lastMessageID != null && this.lastMessageID != undefined && this.lastMessageID >= msgid) {
+                msgid = this.lastMessageID + BigInt(1);
+                id = msgid.toString();
+                if (this.verbose)
+                if (this.verbose)
+                    this.log('incremented messageID from ' + this.lastMessageID + ' to ' + id);
+            }
+            this.lastMessageID = msgid;
+            } catch (error) {
+            this.log(error);
+        }
+        return id;
     }
 
     setIP(ip) {
@@ -246,10 +292,6 @@ class MotionDriver extends EventEmitter {
             if (entry.gateway.isReady()) 
                 return entry.gateway.accessToken;        
         return undefined;
-    }
-
-    getAccessTokenByID(id) {
-        return this.getAccessToken(id.mac, id.deviceType);
     }
 
     percentageClosedToPosition(perc) {
@@ -396,27 +438,39 @@ class MotionDriver extends EventEmitter {
     onMessage(msg, info) {
         try {
             let message = JSON.parse(msg.toString());
-            if (this.logHeartbeat || message.msgType != 'Heartbeat') {
-                this.log('Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
-                if (this.verbose) 
-                    this.log(message);
-            }
-            this.getGatewayAddress(message, info);
-            if (message.msgType == 'Heartbeat')
-                this.onHeartbeat(message, info);
-            else if (message.msgType == 'GetDeviceListAck')
-                this.onGetDeviceListAck(message, info);
-            this.emit(message.msgType, message, info);
-            this.registerDeviceType(message);
+            if (message == null || message == undefined) {
+                this.error("Received message that parsed to nothing:");
+                this.error(msg);
+            } else {
+                if (this.logHeartbeat || message.msgType != 'Heartbeat') {
+                    this.log('Received ' + message.msgType + ' from ' + info.address + ' for ' + message.mac + '-' + message.deviceType);
+                    if (this.verbose) 
+                        this.log(message);
+                } 
+                if (message.actionResult != undefined && message.actionResult != null && !this.verbose)
+                    this.log(message.actionResult);
+                let gateway = this.getGateway(message.mac, message.deviceType);
+                gateway.setToken(message.token); 
+                this.getGatewayAddress(message, info, gateway);
+                this.checkMessageID(message);
+                if (message.msgType == 'Heartbeat')
+                    this.onHeartbeat(message, info, gateway);
+                else if (message.msgType == 'GetDeviceListAck')
+                    this.onGetDeviceListAck(message, info, gateway);
+                this.registerDeviceType(message);
+                this.emit(message.msgType, message, info);
+                if (message.actionResult != undefined && message.actionResult != null && 
+                    message.msgType == 'WriteDeviceAck'  &&  (msg.data == undefined || msg.data == null)) // write failed
+                    this.readDevice(message.mac, message.deviceType);
+        }
         } catch (error) {
             this.error(error);
         }
     }
 
-    getGatewayAddress(message, info) {
+    getGatewayAddress(message, info, gateway) {
         if (!this.multicast && message.mac != undefined && info != null && info != undefined && info.address != undefined &&
             info.address != null && info.address != '0.0.0.0' && info.address != MULTICAST_ADDRESS) {
-            let gateway = this.getGateway(message.mac, message.deviceType);
             if (gateway != undefined && gateway.setGatewayAddress(info.address)) 
                 this.log('Gateway adress for mac ' + message.mac + ' set to ' + info.address);
         }
@@ -427,10 +481,8 @@ class MotionDriver extends EventEmitter {
         this.emit('close');
     }
 
-    onGetDeviceListAck(msg, info) {
-        let gateway = this.getGateway(msg.mac, msg.deviceType);
+    onGetDeviceListAck(msg, info, gateway) {
         let added = false;
-        gateway.setToken(msg.token); 
         if (msg.data != undefined) {
             gateway.nrDevices = msg.data.length - 1; // the first is the gateway itself, so count one less. Remember, so on heartbeat we can see devices added
             if (this.getMaxListeners() < gateway.nrDevices)
@@ -446,9 +498,7 @@ class MotionDriver extends EventEmitter {
             this.emit('newDevices');
     }
     
-    onHeartbeat(msg, info) {
-        let gateway = this.getGateway(msg.mac, msg.deviceType);
-        gateway.setToken(msg.token);
+    onHeartbeat(msg, info, gateway) {
         if (msg.data != undefined && gateway.nrDevices != msg.data.numberOfDevices) { // if device count changed, get new list
             this.log('Heartbeat found ' + (msg.data.numberOfDevices - gateway.nrDevices) + ' new devices');
             if (this.verbose && !this.logHeartbeat)
@@ -533,9 +583,9 @@ class MotionDriver extends EventEmitter {
                         ++pollcount;
                         if (forceWrite || entry.id.wirelessMode != this.WirelessMode.BiDirection && 
                                           entry.id.wirelessMode != this.WirelessMode.BidirectionMech)
-                            this.writeStatusRequest(entry);
+                            this.writeStatusRequest(entry.id.mac, entry.id.deviceType);
                         else
-                            this.readDevice(entry);
+                            this.readDevice(entry.id.mac, entry.id.deviceType);
                     }
             this.log('polled ' + pollcount + ' devices');
         } else {
@@ -555,14 +605,14 @@ class MotionDriver extends EventEmitter {
         }.bind(this), 60000);
     }
 
-    writeStatusRequest(entry) {
-        if (entry.id.deviceType == this.DeviceType.TopDownBottomUp) {
-            this.readDevice(entry); // Statusquery does not seem to work for TDBU. However it is preferred as it seems to update batterystatus, wheres read seems not to
+    writeStatusRequest(mac, deviceType) {
+        if (deviceType == this.DeviceType.TopDownBottomUp) {
+            this.readDevice(mac, deviceType); // Statusquery does not seem to work for TDBU. However it is preferred as it seems to update batterystatus, wheres read seems not to
             // this.send({  
             //     "msgType": 'WriteDevice',
-            //     "mac": entry.id.mac,
-            //     "deviceType": entry.id.deviceType,
-            //     "accessToken": this.getAccessTokenByID(entry.id),
+            //     "mac": mac,
+            //     "deviceType": deviceType,
+            //     "accessToken": this.getAccessToken(mac, deviceType),
             //     "msgID": this.getMessageID(),
             //     "data": {
             //         "operation_T": this.Operation.StatusQuery,
@@ -572,9 +622,9 @@ class MotionDriver extends EventEmitter {
         } else
             this.send({
                 "msgType": 'WriteDevice',
-                "mac": entry.id.mac,
-                "deviceType": entry.id.deviceType,
-                "accessToken": this.getAccessTokenByID(entry.id),
+                "mac": mac,
+                "deviceType": deviceType,
+                "accessToken": this.getAccessToken(mac, deviceType),
                 "msgID": this.getMessageID(),
                 "data": {
                     "operation": this.Operation.StatusQuery
@@ -582,12 +632,12 @@ class MotionDriver extends EventEmitter {
             });
     }
 
-    readDevice(entry) {
+    readDevice(mac, deviceType) {
         this.send({
             "msgType": 'ReadDevice',
-            "mac": entry.id.mac,
-            "deviceType": entry.id.deviceType,
-            "accessToken": this.getAccessTokenByID(entry.id),
+            "mac": mac,
+            "deviceType": deviceType,
+            "accessToken": this.getAccessToken(mac, deviceType),
             "msgID": this.getMessageID()
         });
     }
@@ -603,7 +653,7 @@ class MotionDriver extends EventEmitter {
         this.log('Sending ' + msg.msgType + ' to ' + addr + ' for ' + msg.mac + '-' + msg.deviceType);
         if (this.verbose)
             this.log(msg);
-        let dgram = this.server == null ? this.client : this.server;
+        let dgram = this.server == null || addr == MULTICAST_ADDRESS ? this.client : this.server;
         dgram.send(message, UDP_PORT_SEND, addr, function (error, bytes) {
             if (error) {
                 this.error(error);
