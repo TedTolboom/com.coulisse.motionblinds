@@ -1,3 +1,5 @@
+### ATTENTION This branch is no longer maintained. see [fork by TedTolboom](https://github.com/TedTolboom/com.coulisse.motionblinds) for the latest release.
+
 ### DISCOVER MOTION BLINDS
 MOTION Blinds is a ground-breaking window covering automation solution that makes motorized blinds available to everyone. The blinds are super easy to install and can be operated from anywhere, in any way. Discover the endless options to find the solution that fits your requirements.
 
