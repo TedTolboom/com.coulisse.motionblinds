@@ -52,16 +52,16 @@
     "nl": "• Oplossing voor het pairen van duo rolgordijnen."
   },
   "1.1.2": {
-    "en": "• Top Down Bottom Up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motionblinds mobile app.",
-    "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motionblinds mobiele app."
+    "en": "• Top-down bottom-up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motionblinds mobile app.",
+    "nl": "• Top-down bottom-up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motionblinds mobiele app."
   },
   "1.1.1": {
     "en": "• Added experimental flow trigger for blinds that are operated by an exteral command such as a remote or the official Motionblinds mobile app.",
     "nl": "• Experimentele flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motionblinds mobiele app."
   },
   "1.1.0": {
-    "en": "• Experimental Top Down Bottom Up blind support added.",
-    "nl": "• Experimentele Top Down Bottom Up gordijn-ondersteuning toegevoegd."
+    "en": "• Experimental top-down bottom-up blind support added.",
+    "nl": "• Experimentele top-down bottom-up gordijn-ondersteuning toegevoegd."
   },
   "1.0.10": {
     "en": "• Fixed a crash while adding membership to Socket.",

@@ -1398,8 +1398,8 @@
     {
       "id": "driver_tdbu",
       "name": {
-        "en": "Top Down Bottom Up",
-        "nl": "Top Down Bottom Up"
+        "en": "Top-down bottom-up",
+        "nl": "Top-down bottom-up"
       },
       "class": "blinds",
       "capabilities": [
@@ -1564,8 +1564,8 @@
               "type": "checkbox",
               "value": true,
               "label": {
-                "en": "Linked top/down positions",
-                "nl": "Gekoppelde boven/onderposities"
+                "en": "Linked top and bottom position",
+                "nl": "Gekoppelde boven- en onderpositie"
               },
               "hint": {
                 "en": "With the option on, both bars are linked so that if one bar would move past the other bar, both bars will move to the new position. If turned off the bar will stop when it reaches the other bar, refusing to go further.",
@@ -1577,7 +1577,7 @@
               "type": "checkbox",
               "value": false,
               "label": {
-                "en": "Separate buttons for Top & Bottom",
+                "en": "Separate buttons for top & bottom",
                 "nl": "Aparte knoppen voor boven en onder"
               },
               "hint": {
@@ -1590,7 +1590,7 @@
               "type": "checkbox",
               "value": false,
               "label": {
-                "en": "Separate battery states for Top & Bottom battery",
+                "en": "Separate battery states for top & bottom battery",
                 "nl": "Aparte accuniveaus voor boven en onder"
               },
               "hint": {

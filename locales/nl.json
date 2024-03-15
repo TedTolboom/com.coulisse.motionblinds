@@ -27,7 +27,7 @@
         "nr": "nr"
     },
     "tdbu": {
-        "defaultName": "Top Down Bottom Up",
+        "defaultName": "Top-down bottom-up",
         "nr": "nr"
     },
     "generic": {
@@ -38,7 +38,7 @@
         "02000001": "Bridge",
         "02000002": "Sub-bridge", 
         "10000000": "Raambekleding", 
-        "10000001": "Top/down bottom/up gordijn", 
+        "10000001": "Top-down bottom-up gordijn", 
         "10000002": "Dubbel rolgordijn"
     },
     "BlindType": {
@@ -50,7 +50,7 @@
         "6": "Rolluik",
         "7": "Rolhek",
         "8": "Knikarmscherm",
-        "9": "Top/down bottom/up gordijn",
+        "9": "Top-down bottom-up gordijn",
         "10": "Dag-/nachtgordijn",
         "11": "Verduistergordijn",
         "12": "Gordijn",

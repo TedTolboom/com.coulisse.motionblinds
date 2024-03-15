@@ -27,7 +27,7 @@
         "nr": "nr"
     },
     "tdbu": {
-        "defaultName": "Top Down Bottom Up",
+        "defaultName": "Top-down bottom-up",
         "nr": "nr"
     },
     "generic": {
@@ -38,7 +38,7 @@
         "02000001": "Bridge",
         "02000002": "Child bridge", 
         "10000000": "Blind", 
-        "10000001": "Top/down bottom/up", 
+        "10000001": "Top-down bottom-up", 
         "10000002": "Double roller"
     },
     "BlindType": {
@@ -50,7 +50,7 @@
         "6": "Roller shutter",
         "7": "Roller gate",
         "8": "Awning",
-        "9": "Top/down bottom/up",
+        "9": "Top-down bottom-up",
         "10": "Day/night blind",
         "11": "Dimming blind",
         "12": "Curtain",
