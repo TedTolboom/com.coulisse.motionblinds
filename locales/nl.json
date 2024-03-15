@@ -1,7 +1,7 @@
 {
     "settings": {
-        "keyLegend": "Wifi bridge instellingen",
-        "keyLocation1": "Deze app vereist een MOTION wifi Bridge in hetzelfde netwerk als Homey. Een sleutel is verplicht om commando's naar deze bridge te kunnen sturen. Deze wordt gegenereerd door de originele MOTION Blinds app.",
+        "keyLegend": "Wi-Fi bridge instellingen",
+        "keyLocation1": "Deze app vereist een Motionblinds Wi-Fi Bridge in hetzelfde netwerk als Homey. Een sleutel is verplicht om commando's naar deze bridge te kunnen sturen. Deze wordt gegenereerd door de originele Motionblinds app.",
         "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Tik dan snel vijf keer achter elkaar op dit schermpje. Hier krijg je de sleutel.",
         "keyLocation3": "Een geldige sleutel heeft het volgende formaat: 74ae544c-d16e-4c",
         "keyField": "Sleutel",
@@ -31,7 +31,7 @@
         "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind",
+        "defaultName": "Motionblind",
         "nr": "nr"
     },
     "DeviceType": {
