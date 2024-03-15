@@ -18,4 +18,4 @@ The new Eve Motionblinds product line is also supported by this app, provided yo
 
 AVAILABILITY
 
-Motionblinds products are developed by Coulisse and can be found in window coverings from various other manufacturers across the world. ROBBshop features a DIY kit to convert a normal rollerblind into a Motionblinds powered smart blind. You can also find Motionblinds controls in products from Zonnelux, BSL raambekleding, Smartblinds.nl, Kwantum, Hornbach and many others. You can find a store near you at the Motionblinds website.
+Motionblinds products are developed by Coulisse and can be found in window coverings from various other manufacturers across the world. ROBBshop features a DIY kit to convert a normal roller blind into a Motionblinds powered smart blind. You can also find Motionblinds controls in products from Zonnelux, BSL raambekleding, Smartblinds.nl, Kwantum, Hornbach and many others. You can find a store near you at the Motionblinds website.
