@@ -94,15 +94,15 @@ class MotionDevice {
 /*
 This driver provides access to the Motionblinds Wi-Fi Gateways that are in your local network.
 Use the connect method to open communication with the gateways. The key provided can be retrieved from the Motionblinds app: 
-Quickly tap the 'Motion APP about' 5 times to get the key, it should have format of the following example: 74ae544c-d16e-4c
+Quickly tap 5 times on the 'About MOTION' screen in the settings to get the key, it should have format of the following example: 74ae544c-d16e-4c
 
 You can listen to the following events (though there should not be any imminent need):
 
 'listening' The UDP socket is now listening
 'senderror' An error occurred during send
 'close' Cle UPD socket was closed
-'connect' The Motion Gateway is being connected
-'disconnect' The Motion Gateway is being disconnected
+'connect' The Motionblinds Gateway is being connected
+'disconnect' The Motionblinds Gateway is being disconnected
 'ready' The accesstoken is calculated for the gateway with the given mac, so you can write to its devices and/or get device states.
 'notReady' The accesstoken for the gateway with the given mac is no longer available (e.g. due to close or key reset)
 'newDevice' the device with the given mac is added

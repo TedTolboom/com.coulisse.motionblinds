@@ -119,8 +119,8 @@
           "nl": "[[device]]Het gordijn werd bediend door een extern commando"
         },
         "hint": {
-          "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motion Blinds app.",
-          "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motion Blinds app."
+          "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motionblinds app.",
+          "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motionblinds app."
         },
         "args": [
           {
@@ -1329,8 +1329,8 @@
                 "nl": "Alarm toevoegen om openen te blokkeren"
               },
               "hint": {
-                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
-                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motionblinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is. Mogelijk moet de Motionblinds app opnieuw gestart worden na het veranderen of effectief te worden."
               }
             },
             {
@@ -1555,8 +1555,8 @@
                 "nl": "Alarm toevoegen om bewegingen te blokkeren"
               },
               "hint": {
-                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
-                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet omlaag gaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motionblinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet omlaag gaat als het raam open is. Mogelijk moet de Motionblinds app opnieuw gestart worden na het veranderen of effectief te worden."
               }
             },
             {
