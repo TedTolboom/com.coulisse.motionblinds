@@ -5,7 +5,7 @@ const Homey = require('homey');
 const MotionDriver = require('./motion/motion')
 
 
-class MotionblindsApp extends Homey.App {
+class Motionblinds extends Homey.App {
   mdriver = null;
 
   async onInit() {
@@ -161,5 +161,5 @@ class MotionblindsApp extends Homey.App {
   getWirelessModeName(id) { return this.homey.__('WirelessMode.' + id); }
 }
 
-module.exports = MotionblindsApp;
+module.exports = Motionblinds;
 
