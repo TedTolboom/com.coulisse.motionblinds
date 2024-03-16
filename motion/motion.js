@@ -1,4 +1,4 @@
-// Support for MOTION Blinds by Coulisse, by Edwin Delsman
+// Support for Motionblinds by Coulisse, by Edwin Delsman
 
 const Crypto = require('crypto');
 const UDP = require('dgram');
@@ -92,17 +92,17 @@ class MotionDevice {
 }
 
 /*
-This driver provides access to the Motion Wifi Gateways that are in your local network.
-Use the connect method to open communication with the gateways. The key provided can be retrieved from the Motion App: 
-Quickly tap the 'Motion APP about' 5 times to get the key, it should have format of the following example: 74ae544c-d16e-4c
+This driver provides access to the Motionblinds Wi-Fi Gateways that are in your local network.
+Use the connect method to open communication with the gateways. The key provided can be retrieved from the Motionblinds app: 
+Quickly tap 5 times on the 'About MOTION' screen in the settings to get the key, it should have format of the following example: 74ae544c-d16e-4c
 
 You can listen to the following events (though there should not be any imminent need):
 
 'listening' The UDP socket is now listening
 'senderror' An error occurred during send
 'close' Cle UPD socket was closed
-'connect' The Motion Gateway is being connected
-'disconnect' The Motion Gateway is being disconnected
+'connect' The Motionblinds Gateway is being connected
+'disconnect' The Motionblinds Gateway is being disconnected
 'ready' The accesstoken is calculated for the gateway with the given mac, so you can write to its devices and/or get device states.
 'notReady' The accesstoken for the gateway with the given mac is no longer available (e.g. due to close or key reset)
 'newDevice' the device with the given mac is added
@@ -336,7 +336,7 @@ class MotionDriver extends EventEmitter {
         let voltage = level / 100;
         let cells = Math.round(voltage / 3.7); // estimate nr of cells, min is 3.2 and max is 4.2 per cell, will work ok for about 2 to 4 cells
         let min = 3.35 * cells;  // minimum voltage, actual empty is 3.2, but below 3.3 to 3.4 average cells usually drop very rapidly, so assume empty early rather than late. 
-        let max = 4.05 * cells; // maximum voltage when fully charged. Should be 4.2 but Motion blinds seem to be charged less, which prolongs life. Also one expects to charge to full.
+        let max = 4.05 * cells; // maximum voltage when fully charged. Should be 4.2 but Motionblinds seem to be charged less, which prolongs life. Also one expects to charge to full.
         let perc = Math.round((voltage - min) * 100 / (max - min), 0); // this assumes linear, which isn't true but will do until around 3.4 volt per cell, and average is now 3.7 which is usually true for most cells.
         return Math.min(100, Math.max(perc, 0));
     }

@@ -1,11 +1,11 @@
-// Support for MOTION Blinds by Coulisse, by Edwin Delsman
+// Support for Motionblinds by Coulisse, by Edwin Delsman
 'use strict';
 
 const Homey = require('homey');
 const MotionDriver = require('./motion/motion')
 
 
-class MotionBlinds extends Homey.App {
+class Motionblinds extends Homey.App {
   mdriver = null;
 
   async onInit() {
@@ -161,5 +161,5 @@ class MotionBlinds extends Homey.App {
   getWirelessModeName(id) { return this.homey.__('WirelessMode.' + id); }
 }
 
-module.exports = MotionBlinds;
+module.exports = Motionblinds;
 

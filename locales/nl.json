@@ -1,17 +1,17 @@
 {
     "settings": {
-        "keyLegend": "Wifi bridge instellingen",
-        "keyLocation1": "Deze app vereist een MOTION wifi Bridge in hetzelfde netwerk als Homey. Een sleutel is verplicht om commando's naar deze bridge te kunnen sturen. Deze wordt gegenereerd door de originele MOTION Blinds app.",
-        "keyLocation2": "Om de sleutel te krijgen open je de app op je telefoon of tablet. Kies het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en kies 'Over MOTION'. Tik dan snel vijf keer achter elkaar op dit schermpje. Hier krijg je de sleutel.",
+        "keyLegend": "Wi-Fi bridge instellingen",
+        "keyLocation1": "Deze app vereist een Motionblinds Wi-Fi bridge op hetzelfde netwerk als Homey. Een sleutel is verplicht om commando's naar de bridge te kunnen sturen. Deze sleutel kan gegenereerd worden met de Motionblinds app.",
+        "keyLocation2": "Om de sleutel te verkrijgen open je de Motionblinds app op je telefoon of tablet. Klik op het menu met de drie puntjes rechts bovenin, kies Instellingen, scroll naar beneden en ga naar 'Over MOTION'. Tik vervolgens vijf keer snel achter elkaar op het scherm, waarna je je sleutel zult verkrijgen.",
         "keyLocation3": "Een geldige sleutel heeft het volgende formaat: 74ae544c-d16e-4c",
         "keyField": "Sleutel",
         "options": "Opties",
-        "ip": "Bridge IP adres (optioneel in meeste gevallen)",
-        "debugDescription": "Deze instellingen alleen aanzetten op verzoek van de ontwikkelaar:",
-        "debug": "Alle berichten volledig loggen",
+        "ip": "Bridge IP-adres (optioneel in meeste gevallen)",
+        "debugDescription": "Deze instellingen alleen aanzetten op verzoek van de ontwikkelaar: ",
+        "debug": "Alle berichten loggen",
         "multicast": "Alleen multicast gebruiken",
+        "multisocket": "Apart verzendsocket gebruiken",
         "save": "Instellingen opslaan",
-        "multisocket": "Gebruik apart verzendsocket",
         "clear": "Instellingen wissen"
     },
     "blind": {
@@ -27,18 +27,18 @@
         "nr": "nr"
     },
     "tdbu": {
-        "defaultName": "Top Down Bottom Up",
+        "defaultName": "Top-down bottom-up",
         "nr": "nr"
     },
     "generic": {
-        "defaultName": "MotionBlind",
+        "defaultName": "Motionblind",
         "nr": "nr"
     },
     "DeviceType": {
         "02000001": "Bridge",
         "02000002": "Sub-bridge", 
         "10000000": "Raambekleding", 
-        "10000001": "Top/down bottom/up gordijn", 
+        "10000001": "Top-down bottom-up gordijn", 
         "10000002": "Dubbel rolgordijn"
     },
     "BlindType": {
@@ -50,7 +50,7 @@
         "6": "Rolluik",
         "7": "Rolhek",
         "8": "Knikarmscherm",
-        "9": "Top/down bottom/up gordijn",
+        "9": "Top-down bottom-up gordijn",
         "10": "Dag-/nachtgordijn",
         "11": "Verduistergordijn",
         "12": "Gordijn",
@@ -87,7 +87,7 @@
     "WirelessMode": {
         "0": "Eenrichting",
         "1": "Tweerichting",
-        "2": "Tweerichting (mechannische limieten)",
+        "2": "Tweerichting (mechanische limieten)",
         "3": "Anderen"
     }
 }

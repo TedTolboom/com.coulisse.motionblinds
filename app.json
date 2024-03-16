@@ -3,7 +3,7 @@
   "version": "1.2.7",
   "compatibility": ">=5.0.0",
   "sdk": 3,
-  "brandColor": "#2F9C94",
+  "brandColor": "#BCB1A9",
   "homepage": "https://motionblinds.com/",
   "homeyCommunityTopicId": 45608,
   "support": "https://community.athom.com/t/app-motion-blinds/45608",
@@ -12,8 +12,8 @@
     "url": "https://community.athom.com/t/app-motion-blinds/45608"
   },
   "name": {
-    "en": "Motion Blinds",
-    "nl": "Motion Blinds"
+    "en": "Motionblinds",
+    "nl": "Motionblinds"
   },
   "description": {
     "en": "Smart window coverings by Coulisse. Available from ROBBshop, Smartblinds.nl, Kwantum, Hornbach and many others.",
@@ -119,8 +119,8 @@
           "nl": "[[device]]Het gordijn werd bediend door een extern commando"
         },
         "hint": {
-          "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motion Blinds app.",
-          "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motion Blinds app."
+          "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motionblinds app.",
+          "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motionblinds app."
         },
         "args": [
           {
@@ -1073,7 +1073,7 @@
     {
       "id": "driver_venetian",
       "name": {
-        "en": "Venetian Blind",
+        "en": "Venetian blind",
         "nl": "Jaloezieën"
       },
       "class": "blinds",
@@ -1329,8 +1329,8 @@
                 "nl": "Alarm toevoegen om openen te blokkeren"
               },
               "hint": {
-                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
-                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motionblinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is. Mogelijk moet de Motionblinds app opnieuw gestart worden na het veranderen of effectief te worden."
               }
             },
             {
@@ -1398,8 +1398,8 @@
     {
       "id": "driver_tdbu",
       "name": {
-        "en": "Top Down Bottom Up",
-        "nl": "Top Down Bottom Up"
+        "en": "Top-down bottom-up",
+        "nl": "Top-down bottom-up"
       },
       "class": "blinds",
       "capabilities": [
@@ -1555,8 +1555,8 @@
                 "nl": "Alarm toevoegen om bewegingen te blokkeren"
               },
               "hint": {
-                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motion Blinds app after the change for it to take effect.",
-                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet omlaag gaat als het raam open is. Mogelijk moet de Motion Blinds app opnieuw gestart worden na het veranderen of effectief te worden."
+                "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open. You may meed to restart the Motionblinds app after the change for it to take effect.",
+                "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet omlaag gaat als het raam open is. Mogelijk moet de Motionblinds app opnieuw gestart worden na het veranderen of effectief te worden."
               }
             },
             {
@@ -1564,8 +1564,8 @@
               "type": "checkbox",
               "value": true,
               "label": {
-                "en": "Linked top/down positions",
-                "nl": "Gekoppelde boven/onderposities"
+                "en": "Linked top and bottom position",
+                "nl": "Gekoppelde boven- en onderpositie"
               },
               "hint": {
                 "en": "With the option on, both bars are linked so that if one bar would move past the other bar, both bars will move to the new position. If turned off the bar will stop when it reaches the other bar, refusing to go further.",
@@ -1577,7 +1577,7 @@
               "type": "checkbox",
               "value": false,
               "label": {
-                "en": "Separate buttons for Top & Bottom",
+                "en": "Separate buttons for top & bottom",
                 "nl": "Aparte knoppen voor boven en onder"
               },
               "hint": {
@@ -1590,7 +1590,7 @@
               "type": "checkbox",
               "value": false,
               "label": {
-                "en": "Separate battery states for Top & Bottom battery",
+                "en": "Separate battery states for top & bottom battery",
                 "nl": "Aparte accuniveaus voor boven en onder"
               },
               "hint": {

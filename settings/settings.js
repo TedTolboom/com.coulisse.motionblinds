@@ -1,4 +1,4 @@
-// Support for MOTION Blinds by Coulisse, by Edwin Delsman
+// Support for Motionblinds by Coulisse, by Edwin Delsman
 
 function onHomeyReady(Homey) {
     var keyElement = document.getElementById('motion_key');
