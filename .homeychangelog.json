@@ -16,8 +16,8 @@
     "nl": "• Interne fout op limiet voor RSSI eigenschap opgelost."
   },
   "1.2.3": {
-    "en": "• Tested against node.js 16 update for Homey 7.4.0 firmware and higher • Tested against Motion Bridge firmware update A1.0.5_B0.1.5.",
-    "nl": "• Getest met node.js 16 update voor Homey 7.4.0 firmware en hoger • Getest met Motion Bridge firmware update A1.0.5_B0.1.5."
+    "en": "• Tested against node.js 16 update for Homey 7.4.0 firmware and higher • Tested against Motionblinds bridge firmware update A1.0.5_B0.1.5.",
+    "nl": "• Getest met node.js 16 update voor Homey 7.4.0 firmware en hoger • Getest met Motionblinds bridge firmware update A1.0.5_B0.1.5."
   },
   "1.2.2": {
     "en": "• Exception handling added for receiving malformed messages.",
@@ -26,11 +26,11 @@
   "1.2.1": {
     "en": "• Added logging for opened/(partially)closed.",
     "nl": "• Log toegevoegd voor geopend/(Gedeeltelijk)gesloten."
-  }, 
+  },
   "1.2.0": {
     "en": "• Support for Kwantum window coverings (using bridge) • Support for Eve Motionblinds (using bridge).",
     "nl": "• Ondersteuning voor Kwantum raamdecoratie (via bridge) • Support for Eve Motionblinds (via bridge)."
-  },   
+  },
   "1.1.9": {
     "en": "• Enable battery power capability for devices that report AC power as well as battery level, as some devices misreport voltage mode.",
     "nl": "• Batterijniveau tonen voor gordijnen die zowel netstroom als batterijnveau aangeven, omdat sommige gordijnen het stroomtype verkeerd doorgeven."
@@ -52,16 +52,16 @@
     "nl": "• Oplossing voor het pairen van duo rolgordijnen."
   },
   "1.1.2": {
-    "en": "• Top Down Bottom Up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motion Blinds mobile app.",
-    "nl": "• Top Down Bottom Up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motion Blinds mobiele app."
+    "en": "• Top-down bottom-up blind support added • Added flow trigger for blinds that are operated by an exteral command such as a remote or the official Motionblinds mobile app.",
+    "nl": "• Top-down bottom-up gordijn-ondersteuning toegevoegd • Flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motionblinds mobiele app."
   },
   "1.1.1": {
-    "en": "• Added experimental flow trigger for blinds that are operated by an exteral command such as a remote or the official Motion Blinds mobile app.",
-    "nl": "• Experimentele flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motion Blinds mobiele app."
+    "en": "• Added experimental flow trigger for blinds that are operated by an exteral command such as a remote or the official Motionblinds mobile app.",
+    "nl": "• Experimentele flow trigger toegevoegd voor gordijnen die door een extern commando worden bediend zoals een afstandsbediening of de officiele Motionblinds mobiele app."
   },
   "1.1.0": {
-    "en": "• Experimental Top Down Bottom Up blind support added.",
-    "nl": "• Experimentele Top Down Bottom Up gordijn-ondersteuning toegevoegd."
+    "en": "• Experimental top-down bottom-up blind support added.",
+    "nl": "• Experimentele top-down bottom-up gordijn-ondersteuning toegevoegd."
   },
   "1.0.10": {
     "en": "• Fixed a crash while adding membership to Socket.",
@@ -106,5 +106,8 @@
   "1.0.0": {
     "en": "• Initial version",
     "nl": "• Initiële versie"
+  },
+  "1.3.0": {
+    "en": "Updated MotionBlinds branding"
   }
 }

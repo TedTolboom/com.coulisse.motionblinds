@@ -1,0 +1,32 @@
+{
+  "id": "windowcoverings_set_changed.top",
+  "title": {
+    "en": "Top position changed",
+    "nl": "Bovenpositie veranderd"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]Top position changed",
+    "nl": "[[device]]Bovenpositie veranderd"
+  },
+  "tokens": [
+    {
+      "name": "windowcoverings_set_top",
+      "type": "number",
+      "title": {
+        "en": "Top Position",
+        "nl": "Bovenpositie"
+      },
+      "example": 0.5
+    }
+  ],
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_set.top"
+      }
+    }
+  ]
+}

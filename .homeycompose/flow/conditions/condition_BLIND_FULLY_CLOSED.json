@@ -1,0 +1,25 @@
+{
+  "id": "condition_BLIND_FULLY_CLOSED",
+  "title": {
+    "en": "The position !{{is|isn't}} fully closed",
+    "nl": "De positie !{{is|is niet}} volledig dicht"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]The position !{{is|isn't}} fully closed",
+    "nl": "[[device]]De positie !{{is|is niet}} volledig dicht"
+  },
+  "hint": {
+    "en": "This Flow will continue if the blind is/isn't in the fully closed position.",
+    "nl": "Deze flow gaat door als het gordijn wel/niet in de volledig gesloten positie staat."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
+        "capabilities": "windowcoverings_set|windowcoverings_set.top|windowcoverings_bottom"
+      }
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "name": {
+    "en": "Venetian blind",
+    "nl": "Jaloezieën"
+  },
+  "class": "blinds",
+  "capabilities": [
+    "windowcoverings_state",
+    "windowcoverings_set",
+    "windowcoverings_tilt_set",
+    "alarm_contact",
+    "measure_battery",
+    "measure_rf_rssi"
+  ],
+  "capabilitiesOptions": {
+    "windowcoverings_tilt_set": {
+      "title": {
+        "en": "Tilt",
+        "nl": "Kanteling"
+      }
+    },
+    "alarm_contact": {
+      "title": {
+        "en": "Blocked",
+        "nl": "Geblokkeerd"
+      },
+      "zoneActivity": false,
+      "icon": "/assets/hand.svg",
+      "insightsTitleTrue": {
+        "en": "Blocked",
+        "nl": "Geblokkeerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Unblocked",
+        "nl": "Gedeblokkeerd"
+      }
+    }
+  },
+  "energy": {
+    "batteries": [
+      "INTERNAL"
+    ]
+  },
+  "images": {
+    "large": "/drivers/driver_venetian/assets/images/large.png",
+    "small": "/drivers/driver_venetian/assets/images/small.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_my_devices"
+      }
+    },
+    {
+      "id": "add_my_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Parameters",
+        "nl": "Parameters"
+      },
+      "children": [
+        {
+          "id": "maxTravelTime",
+          "type": "number",
+          "label": {
+            "en": "Maximum travel time",
+            "nl": "Maximale looptijd"
+          },
+          "value": 60,
+          "min": 10,
+          "max": 300,
+          "units": {
+            "en": "seconds",
+            "nl": "seconden"
+          },
+          "hint": {
+            "en": "The maximum number of seconds that it takes to completely open or close. If the state of the device is not reported within this timeframe, the status will be actively retrieved. Add 5 seconds to be sure, so the state won't be retrieved too soon or unneeded.",
+            "nl": "Het maximum aantal seconden dat het duurt om volledig te openen of te sluiten. Als de status van het gordijn niet binnen deze tijd binnenkomt wordt de status actief opgehaald. Voeg 5 seconden toe voor de zekerheid, zodat de status niet te vroeg of onnodig wordt opgehaald."
+          }
+        },
+        {
+          "id": "addBlockAlarm",
+          "type": "checkbox",
+          "value": false,
+          "label": {
+            "en": "Add an alarm to block opening",
+            "nl": "Alarm toevoegen om openen te blokkeren"
+          },
+          "hint": {
+            "en": "Enable this to add a contact alarm to the blind. Then use flows to copy the alarm state from a window sensor, so the blind won't go down when the window is open.",
+            "nl": "Zet dit aan als om een contactalarm toe te voegen aan dit gordijn. Gebruik vervolgens flows om de alarmstatus van een raansensor over te nemen, zodat het gordijn niet opengaat als het raam open is."
+          }
+        },
+        {
+          "id": "inRemoteGroup",
+          "type": "checkbox",
+          "value": false,
+          "label": {
+            "en": "Part of remote groep",
+            "nl": "Onderdeel van afstandsbedieningsgroep"
+          },
+          "hint": {
+            "en": "If this blind is one of multiple devices controlled by the same remote at the same time, turn this on. This makes sure that when the remote changes the blinds, Homey will see all the changes. This is needed because often only one of the blinds will report the change from the remote, and the others won't.",
+            "nl": "Zet dit aan als dit gordijn er één van meer gordijnen is die allemaal tegelijk met de zelfde afstandsbediening bediend worden. Dit zorgt ervoor dat Homey alle veranderingen ziet als de afstandsbediening is gebruikt. Dit is nodig omdat vaak maar van één van de gordijnen de wijziging van de afstandsbediening doorgeeft, en de overige niet."
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Properties",
+        "nl": "Eigenschappen"
+      },
+      "children": [
+        {
+          "id": "deviceTypeName",
+          "type": "label",
+          "label": {
+            "en": "Device type",
+            "nl": "Apparaatklasse"
+          },
+          "value": "?"
+        },
+        {
+          "id": "typeName",
+          "type": "label",
+          "label": {
+            "en": "Type",
+            "nl": "Type"
+          },
+          "value": "?"
+        },
+        {
+          "id": "wirelessModeName",
+          "type": "label",
+          "label": {
+            "en": "Wireless mode",
+            "nl": "Type draadloze verbinding"
+          },
+          "value": "?"
+        },
+        {
+          "id": "voltageModeName",
+          "type": "label",
+          "label": {
+            "en": "Voltage mode",
+            "nl": "Spanningstype"
+          },
+          "value": "?"
+        }
+      ]
+    }
+  ]
+}

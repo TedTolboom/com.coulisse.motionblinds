@@ -1,0 +1,24 @@
+{
+  "id": "trigger_BLIND_UNEXPECTED_REPORT",
+  "title": {
+    "en": "The blind was operated by an exteral command",
+    "nl": "Het gordijn werd bediend door een extern commando"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]The blind was operated by an exteral command",
+    "nl": "[[device]]Het gordijn werd bediend door een extern commando"
+  },
+  "hint": {
+    "en": "The blind reported it's state whithout Homey sending a command. Usually this means it was operated by a remote or the original Motionblinds app.",
+    "nl": "Het gordijn stuurde een status op zonder dat Homey een opdracht heeft gestuurd. Meestal betekent dit dat het gordijn werd bediend door een afstandsbediening of de originele Motionblinds app."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu"
+      }
+    }
+  ]
+}

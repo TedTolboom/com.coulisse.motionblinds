@@ -1,0 +1,73 @@
+{
+  "id": "windowcoverings_state_changed.top",
+  "title": {
+    "en": "The top state changed",
+    "nl": "De bovenstatus is veranderd"
+  },
+  "titleFormatted": {
+    "en": "The top state changed to [[state]]",
+    "nl": "De bovenstatus is veranderd naar [[state]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_state.top"
+      }
+    },
+    {
+      "name": "state",
+      "title": {
+        "en": "Top state",
+        "nl": "Bovenstatus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "up",
+          "title": {
+            "en": "Up",
+            "nl": "Omhoog",
+            "de": "Oben",
+            "fr": "Haut",
+            "it": "Alzate",
+            "sv": "Upp",
+            "no": "Opp",
+            "es": "Arriba",
+            "da": "Oppe"
+          }
+        },
+        {
+          "id": "idle",
+          "title": {
+            "en": "Idle",
+            "nl": "Stil",
+            "de": "Inaktiv",
+            "fr": "Inactif",
+            "it": "Socchiuse",
+            "sv": "Inaktiv",
+            "no": "Ikke aktiv",
+            "es": "Inactivos",
+            "da": "Inaktiv"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down",
+            "nl": "Omlaag",
+            "de": "Unten",
+            "fr": "Bas",
+            "it": "Abbassate",
+            "sv": "Ned",
+            "no": "Ned",
+            "es": "Abajo",
+            "da": "Nede"
+          }
+        }
+      ]
+    }
+  ]
+}

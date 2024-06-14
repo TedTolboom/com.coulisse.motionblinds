@@ -1,0 +1,55 @@
+{
+  "id": "windowcoverings_set.top_bottom",
+  "title": {
+    "en": "Set the top and bottom position to",
+    "nl": "Zet de boven- en onderpositie naar"
+  },
+  "titleFormatted": {
+    "en": "Set top position to [[windowcoverings_set_top]] and bottom position to [[windowcoverings_set_bottom]]",
+    "nl": "Zet bovenpositie naar [[windowcoverings_set_top]] en onderpositie naar [[windowcoverings_set_bottom]]"
+  },
+  "hint": {
+    "en": "Change both the top and bottom position to the highest position (100%), lowest position (0%) or a value in between. The top position must be greater than or equal to the bottom position.",
+    "nl": "Verander zowel de boven- als de onderpositie naar de hoogste positie (100%), laagste positie (0%) of een een waarde daartussen. De bovenpositie moet groter of gelijk zijn aan de onderpositie."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_set.top|windowcoverings_set.bottom"
+      }
+    },
+    {
+      "name": "windowcoverings_set_top",
+      "title": {
+        "en": "top position",
+        "nl": "bovenpositie"
+      },
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0
+    },
+    {
+      "name": "windowcoverings_set_bottom",
+      "title": {
+        "en": "bottom position",
+        "nl": "onderpositie"
+      },
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0
+    }
+  ]
+}

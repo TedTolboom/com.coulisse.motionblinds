@@ -1,0 +1,25 @@
+{
+  "id": "action_BLOCK_BLIND",
+  "title": {
+    "en": "Block blind from closing",
+    "nl": "Blokkeer gordijn sluiten"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]Block blind from closing",
+    "nl": "[[device]]Blokkeer gordijn sluiten"
+  },
+  "hint": {
+    "en": "Set this when a window is opened inward under the blind to prevent the blind from closing. The blind's contact alarm will be turned on.",
+    "nl": "Zet dit aan als een raam naar binnen toe is opengezet om te voorkomen dat het gordijn sluit. Het contactalarm van het gordijn gaat aan."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
+        "capabilities": "alarm_contact"
+      }
+    }
+  ]
+}

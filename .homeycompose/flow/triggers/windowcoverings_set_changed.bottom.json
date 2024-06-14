@@ -1,0 +1,32 @@
+{
+  "id": "windowcoverings_set_changed.bottom",
+  "title": {
+    "en": "Bottom position changed",
+    "nl": "Onderpositie veranderd"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]Bottom position changed",
+    "nl": "[[device]]Onderpositie veranderd"
+  },
+  "tokens": [
+    {
+      "name": "windowcoverings_set_bottom",
+      "type": "number",
+      "title": {
+        "en": "Bottom position",
+        "nl": "Onderpositie"
+      },
+      "example": 0.5
+    }
+  ],
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_set.bottom"
+      }
+    }
+  ]
+}
