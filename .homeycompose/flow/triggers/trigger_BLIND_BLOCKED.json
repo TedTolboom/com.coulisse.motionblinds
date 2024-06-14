@@ -1,0 +1,25 @@
+{
+  "id": "trigger_BLIND_BLOCKED",
+  "title": {
+    "en": "The blind was blocked",
+    "nl": "Het gordijn werd geblokkeerd"
+  },
+  "_titleFormatted": {
+    "en": "[[device]]The blind was blocked",
+    "nl": "[[device]]Het gordijn werd geblokkeerd"
+  },
+  "hint": {
+    "en": "The blind refused to close because a contact alarm was active, in order to protect the blind.",
+    "nl": "Het gordijn weigerde te sluiten omdat een contactalarm actief was, om zo het gordijn te beschermen."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_blind|driver_venetian|driver_curtain|driver_tdbu",
+        "capabilities": "alarm_contact"
+      }
+    }
+  ]
+}

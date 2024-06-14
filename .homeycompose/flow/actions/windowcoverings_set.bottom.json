@@ -1,0 +1,40 @@
+{
+  "id": "windowcoverings_set.bottom",
+  "title": {
+    "en": "Set the bottom position to",
+    "nl": "Zet de onderpositie naar"
+  },
+  "titleFormatted": {
+    "en": "Set the bottom position to [[windowcoverings_set]]",
+    "nl": "Zet de onderpositie naar [[windowcoverings_set]]"
+  },
+  "hint": {
+    "en": "Change the bottom position to the highest position (100%), lowest position (0%) or a value in between.",
+    "nl": "Verander de onderpositie naar de hoogste positie (100%), laagste positie (0%) of een een waarde daartussen."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_set.bottom"
+      }
+    },
+    {
+      "name": "windowcoverings_set",
+      "title": {
+        "en": "bottom position",
+        "nl": "onderpositie"
+      },
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0
+    }
+  ]
+}

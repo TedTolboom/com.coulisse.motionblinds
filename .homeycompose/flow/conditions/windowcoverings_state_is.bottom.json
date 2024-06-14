@@ -1,0 +1,73 @@
+{
+  "id": "windowcoverings_state_is.bottom",
+  "title": {
+    "en": "The bottom state is !{{|not}}",
+    "nl": "De onderstatus is !{{|niet}}"
+  },
+  "titleFormatted": {
+    "en": "The bottom state is !{{|not}} [[state]]",
+    "nl": "De onderstatus is !{{|niet}} [[state]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": {
+        "driver_id": "driver_tdbu",
+        "capabilities": "windowcoverings_state.bottom"
+      }
+    },
+    {
+      "name": "state",
+      "title": {
+        "en": "Bottom state",
+        "nl": "Onderstatus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "up",
+          "title": {
+            "en": "Up",
+            "nl": "Omhoog",
+            "de": "Oben",
+            "fr": "Haut",
+            "it": "Alzate",
+            "sv": "Upp",
+            "no": "Opp",
+            "es": "Arriba",
+            "da": "Oppe"
+          }
+        },
+        {
+          "id": "idle",
+          "title": {
+            "en": "Idle",
+            "nl": "Stil",
+            "de": "Inaktiv",
+            "fr": "Inactif",
+            "it": "Socchiuse",
+            "sv": "Inaktiv",
+            "no": "Ikke aktiv",
+            "es": "Inactivos",
+            "da": "Inaktiv"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down",
+            "nl": "Omlaag",
+            "de": "Unten",
+            "fr": "Bas",
+            "it": "Abbassate",
+            "sv": "Ned",
+            "no": "Ned",
+            "es": "Abajo",
+            "da": "Nede"
+          }
+        }
+      ]
+    }
+  ]
+}

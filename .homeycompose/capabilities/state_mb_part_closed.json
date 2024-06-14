@@ -1,0 +1,21 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "(Partially) closed",
+    "nl": "(Gedeeltelijk) dicht"
+  },
+  "uiQuickAction": true,
+  "uiComponent": null,
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "(Partially) closed",
+    "nl": "(Gedeeltelijk) gesloten"
+  },
+  "insightsTitleFalse": {
+    "en": "Opened",
+    "nl": "Geopend"
+  },
+  "preventtag": true
+}
